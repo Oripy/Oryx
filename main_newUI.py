@@ -154,7 +154,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
              self.setFrame, 0],
             ['Teinte', formatSun, self.getSolar, 
              self.setSolar, 0],
-            ['Commentaire', str, self.getComment, 
+            ['Commentaire', lambda n: unicode(n, encoding='latin_1'), self.getComment, 
              self.setComment, ''],
             ['Stock', lambda n: str(int(n)), lambda: 1, 
              lambda n: n, 1]]
@@ -164,7 +164,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         self.loadCsv(FILENAME)
         self.loadData()
-        self.new()      
+        self.new()
+        
 
     def initUI(self):
         """ create actions and default values of the interface """
@@ -291,11 +292,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setStatus('Modified')
         self.modif = True
     
-    def new(self):
-        """ set the number to the smallest available eyeglasses number """
+    def getFirstNewNumber(self):
         n = 1
         while self.data.has_key(n):
             n += 1
+        return n
+    
+    def new(self):
+        """ set the number to the smallest available eyeglasses number """
+        n = self.getFirstNewNumber()
         if n != self.currentNum:
             self.eyeglassesNum.setValue(n)
             self.rSphereSpin.setFocus()
@@ -378,8 +383,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def save(self):
         """ Save the modifications and write it to the CSV file """
         item = [QtGui.QStandardItem(str(self.currentNum))] \
-               + [QtGui.QStandardItem(str( \
-                   self.dataStructure[i][1](self.dataStructure[i][2]())) \
+               + [QtGui.QStandardItem( \
+                   self.dataStructure[i][1](self.dataStructure[i][2]()) \
                    ) for i in range(len(self.dataStructure))[1:]]
         if not self.data.has_key(self.currentNum):
             # Add a line to the table if the current item do not exists
@@ -475,11 +480,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 if question == QtGui.QMessageBox.Save:
                     self.save()
                     self.reset()
-                    self.currentNum = self.eyeglassesNum.value()
+                    self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
+                    self.eyeglassesNum.setValue(self.currentNum)
                     self.loadData()
                     return 'Saved'
                 elif question == QtGui.QMessageBox.Discard:
-                    self.currentNum = self.eyeglassesNum.value()
+                    self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
+                    self.eyeglassesNum.setValue(self.currentNum)
                     self.loadData()
                     return 'Discarded'
                 else:
@@ -488,7 +495,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.eyeglassesNum.setValue(self.currentNum)
                     return 'Canceled'
             else:
-                self.currentNum = self.eyeglassesNum.value()
+                self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
+                self.eyeglassesNum.setValue(self.currentNum)
                 self.loadData()
         else:
             self.eyeglassesNum.noWarn = False
@@ -523,7 +531,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         deb = fin
         print 'Resizing columns...'
         self.tableView.resizeColumnsToContents()
-        self.tableView.scrollToBottom()
         fin = time.time()
         print '%0.2f sec' % float(fin-deb)
         
