@@ -7,6 +7,8 @@ Created on Tue Jul 30 10:52:58 2013
 
 from PyQt4 import QtCore, QtGui
 
+from inventoryUI import Ui_MainWindow 
+
 import csv
 import time
 
@@ -64,34 +66,13 @@ MIN_ADD = float(correction['min_add'])
 STEP_ADD = float(correction['step_add'])
 DEFAULT_ADD = float(correction['default_add'])
 
-BIGFONT = QtGui.QFont()
-BIGFONT.setPointSize(16)
-
 ###########################################
 
 ######## Text formating functions #########
-
-def formatCyl(value):
-    """ Ensure that the values are show with 2 decimals
-        and that -0.00 is displayed with a negative sign 
-        -0.00 
-        -4.50
-        -3.75     """
-    value = float(value)
-    if value == 0:
-        return '-0.00'
-    else:
-        return '%0.2f' % value
-
-def formatAxis(value):
-    """ Ensure that 3 digits are displayed 
-        and append a "°" at the end
-        005°
-        045°
-        180°       """
-    value = float(value)
-    return u'%03d°' % value
     
+from anglespinbox import formatAxis
+from negativezerospinbox import formatCyl
+
 def formatType(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
@@ -133,56 +114,19 @@ def getData(value):
 
 ###########################################
 
-
-
-############# Custom Widgets ##############
-
-class dotSpinBox(QtGui.QDoubleSpinBox):
-    """ Spinbox that display values with the following convention:
-        - dot separator 
-        - always show 2 decimals
-        
-        examples:
-            0.00
-            3.50
-            -4.25 """
-    def textFromValue(self, value):
-        return '%0.2f' % value
-
-class negativeZeroSpinBox(QtGui.QDoubleSpinBox):
-    """ Spinbox that display values with the following convention:
-        - dot separator 
-        - always show 2 decimals
-        - zero is always negative
-        
-        examples:
-            -0.00
-            3.50
-            -4.25 """   
-    def textFromValue(self, value):
-        return formatCyl(value)
-
-class angleSpinBox(QtGui.QSpinBox):
-    """ Spinbox that display values with the following convention:
-        - always show 3 digits
-        - append a "°"
-        
-        examples:
-            005°
-            015°
-            155° """
-    def textFromValue(self, value):
-        return formatAxis(value)
-
-###########################################
-
 ############## Main Window ################
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        super(Ui_MainWindow, self).__init__()
+        
+        self.setupUi(self)
         self.initUI()
-
+        
+        self.currentNum = self.eyeglassesNum.value()
+        self.modif = False
+        
         # Data Structure (Name, formating function, get function, 
         #                 set function, default value)
         self.dataStructure = [
@@ -214,284 +158,105 @@ class MainWindow(QtGui.QMainWindow):
              self.setComment, ''],
             ['Stock', lambda n: str(int(n)), lambda: 1, 
              lambda n: n, 1]]
+             
+        self.data = dict()
+        self.model = QtGui.QStandardItemModel(self)
         
         self.loadCsv(FILENAME)
         self.loadData()
-        self.new()
-    
-    def initUI(self):
-        """ Create the interface """
-        self.setWindowTitle('Eyeglasses inventory')
-#      self.setGeometry(300, 300, 300, 200)
-        
-        # List actions and create the menubar
-        exitAction = QtGui.QAction(QtGui.QIcon(u'exit.png'), 
-                                   u'&Quitter', self)
-        exitAction.setShortcut(u'Ctrl+Q')
-        exitAction.setStatusTip(u'Quitter l\'application')
-        exitAction.triggered.connect(QtGui.qApp.quit)
-        
-        saveAction = QtGui.QAction(QtGui.QIcon(u'save.png'), 
-                                   u'&Sauvegarder', self)
-        saveAction.setShortcut(u'Ctrl+S')
-        saveAction.setStatusTip(u'Sauvegarde les modifications en cours')
-        saveAction.triggered.connect(self.save)
-        
-        newAction = QtGui.QAction(QtGui.QIcon(u'new.png'), 
-                                  u'&Nouvelle paire', self)
-        newAction.setShortcut(u'Ctrl+N')
-        newAction.setStatusTip(u'Nouvelle paire de lunettes')
-        newAction.triggered.connect(self.new)
+        self.new()      
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu(u'&Fichier')
-        fileMenu.addAction(newAction)
-        fileMenu.addAction(saveAction)
-        fileMenu.addSeparator()
-        fileMenu.addAction(exitAction)
-        
-#        self.statusBar().showMessage(u'Prêt')
-        
+    def initUI(self):
+        """ create actions and default values of the interface """
+        # List actions and create the menubar
+        self.exitAction.triggered.connect(QtGui.qApp.quit)
+        self.saveAction.triggered.connect(self.save)
+        self.newAction.triggered.connect(self.new)
+               
         # Numbering/Actions panel
-        self.eyeglassesNum = QtGui.QSpinBox()
-        
-        self.eyeglassesNum.setFont(BIGFONT)
-        self.eyeglassesNum.setMinimum(1)
-        self.eyeglassesNum.setMaximum(100000)
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
         
         self.currentNum = self.eyeglassesNum.value()
         self.eyeglassesNum.noWarn = False
         
-        self.saveButton = QtGui.QPushButton(u'Sauvegarder')
-        self.saveButton.setFont(BIGFONT)
-        self.saveButton.clicked.connect(saveAction.trigger)
-        
-        self.status = QtGui.QLabel("")
-        
-        self.newButton = QtGui.QPushButton(u'Nouvelle paire de lunettes')
-        self.newButton.setFont(BIGFONT)
-        self.newButton.clicked.connect(newAction.trigger)
-        
-        numberingLayout = QtGui.QHBoxLayout()       
-        numberingLayout.addWidget(self.eyeglassesNum)
-        numberingLayout.addWidget(self.newButton)
-        numberingLayout.addWidget(self.saveButton)
-        numberingLayout.addWidget(self.status)
-        numberingLayout.addStretch()
+        self.saveButton.clicked.connect(self.saveAction.trigger)
+        self.newButton.clicked.connect(self.newAction.trigger)
         
         # Right Eye     
         # Correction
-        self.rSphereSpin = dotSpinBox()
         self.rSphereSpin.setMaximum(MAX_SPHERE)
         self.rSphereSpin.setMinimum(MIN_SPHERE)
         self.rSphereSpin.setSingleStep(STEP_SPHERE)
         self.rSphereSpin.setValue(DEFAULT_SPHERE)
         self.rSphereSpin.valueChanged.connect(self.modified)
         
-        self.rCylSpin = negativeZeroSpinBox()
         self.rCylSpin.setMaximum(MAX_CYL)
         self.rCylSpin.setMinimum(MIN_CYL)
         self.rCylSpin.setSingleStep(STEP_CYL)
         self.rCylSpin.setValue(DEFAULT_CYL)
         self.rCylSpin.valueChanged.connect(self.modified)
         
-        self.rAxisSpin = angleSpinBox()
         self.rAxisSpin.setMaximum(MAX_AXIS)
         self.rAxisSpin.setMinimum(MIN_AXIS)
         self.rAxisSpin.setSingleStep(STEP_AXIS)
         self.rAxisSpin.setValue(DEFAULT_AXIS)
         self.rAxisSpin.valueChanged.connect(self.modified)
         
-        self.rAddSpin = dotSpinBox()
         self.rAddSpin.setMaximum(MAX_ADD)
         self.rAddSpin.setMinimum(MIN_ADD)
         self.rAddSpin.setSingleStep(STEP_ADD)
         self.rAddSpin.setValue(DEFAULT_ADD)
         self.rAddSpin.valueChanged.connect(self.enableAddition)
         
-        self.rLinkCheckbox = QtGui.QCheckBox(u'Lié')
-        self.rLinkCheckbox.setChecked(True)
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
         
-        self.rLinkCheckbox.setFocusPolicy(QtCore.Qt.ClickFocus)
-        
-        # Right Eye layout
-        self.rightEyeGroupBox = QtGui.QGroupBox(u'Œil Droit')
-        rightEyeLayout = QtGui.QGridLayout(self.rightEyeGroupBox)
-        
-        rightEyeLayout.addWidget(QtGui.QLabel(u'Sphere'), 0, 0)
-        rightEyeLayout.addWidget(QtGui.QLabel(u'Cylindre'), 0, 1)
-        rightEyeLayout.addWidget(QtGui.QLabel(u'Axe'), 0, 2)
-        rightEyeLayout.addWidget(QtGui.QLabel(u'Addition'), 0, 3)
-        
-        rightEyeLayout.addWidget(self.rSphereSpin, 1, 0)
-        rightEyeLayout.addWidget(self.rCylSpin, 1, 1)
-        rightEyeLayout.addWidget(self.rAxisSpin, 1, 2)
-        rightEyeLayout.addWidget(self.rAddSpin, 1, 3)
-        
-        rightEyeLayout.addWidget(self.rLinkCheckbox, 2, 3)
-
         # Left Eye
         # Correction
-        self.lSphereSpin = dotSpinBox()
         self.lSphereSpin.setMaximum(MAX_SPHERE)
         self.lSphereSpin.setMinimum(MIN_SPHERE)
         self.lSphereSpin.setSingleStep(STEP_SPHERE)
         self.lSphereSpin.setValue(DEFAULT_SPHERE)
         self.lSphereSpin.valueChanged.connect(self.modified)
         
-        self.lCylSpin = negativeZeroSpinBox()
         self.lCylSpin.setMaximum(MAX_CYL)
         self.lCylSpin.setMinimum(MIN_CYL)
         self.lCylSpin.setSingleStep(STEP_CYL)
         self.lCylSpin.setValue(DEFAULT_CYL)
         self.lCylSpin.valueChanged.connect(self.modified)
         
-        self.lAxisSpin = angleSpinBox()
         self.lAxisSpin.setMaximum(MAX_AXIS)
         self.lAxisSpin.setMinimum(MIN_AXIS)
         self.lAxisSpin.setSingleStep(STEP_AXIS)
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAxisSpin.valueChanged.connect(self.modified)
         
-        self.lAddSpin = dotSpinBox()
         self.lAddSpin.setMaximum(MAX_ADD)
         self.lAddSpin.setMinimum(MIN_ADD)
         self.lAddSpin.setSingleStep(STEP_ADD)
         self.lAddSpin.setValue(DEFAULT_ADD)
         self.lAddSpin.valueChanged.connect(self.enableAddition)
         
-        self.lLinkCheckbox = QtGui.QCheckBox(u'Lié')
-        self.lLinkCheckbox.setChecked(True)
         self.lLinkCheckbox.stateChanged.connect(self.linkChanged)
-        
-        self.lLinkCheckbox.setFocusPolicy(QtCore.Qt.ClickFocus)
-        
-        # Left eye layout
-        self.leftEyeGroupBox = QtGui.QGroupBox(u'Œil Gauche')
-        leftEyeLayout = QtGui.QGridLayout(self.leftEyeGroupBox)
-        
-        leftEyeLayout.addWidget(QtGui.QLabel(u'Sphere'), 0, 0)
-        leftEyeLayout.addWidget(QtGui.QLabel(u'Cylindre'), 0, 1)
-        leftEyeLayout.addWidget(QtGui.QLabel(u'Axe'), 0, 2)
-        leftEyeLayout.addWidget(QtGui.QLabel(u'Addition'), 0, 3)
-        
-        leftEyeLayout.addWidget(self.lSphereSpin, 1, 0)
-        leftEyeLayout.addWidget(self.lCylSpin, 1, 1)
-        leftEyeLayout.addWidget(self.lAxisSpin, 1, 2)
-        leftEyeLayout.addWidget(self.lAddSpin, 1, 3)
-        
-        leftEyeLayout.addWidget(self.lLinkCheckbox, 2, 3)
-
-        # Addition
-        self.addGroupBox = QtGui.QGroupBox(u'Addition')
-        addLayout = QtGui.QVBoxLayout()
-        
-        self.addRadioP = QtGui.QRadioButton(u'Progressif')
+              
+        # Addition        
         self.addRadioP.toggled.connect(self.modified)
-        self.addRadioBF = QtGui.QRadioButton(u'Bifocal')
         self.addRadioBF.toggled.connect(self.modified)
-        self.addRadioTF = QtGui.QRadioButton(u'Trifocal')
         self.addRadioTF.toggled.connect(self.modified)
-        
-        self.addRadioP.setChecked(True)
-        
-        addLayout.addWidget(self.addRadioP)
-        addLayout.addWidget(self.addRadioBF)
-        addLayout.addWidget(self.addRadioTF)
-        
-        self.addGroupBox.setLayout(addLayout)
-        self.addGroupBox.setSizePolicy(QtGui.QSizePolicy.Fixed, 
-                                       QtGui.QSizePolicy.Fixed)
-        
-        self.addGroupBox.setDisabled(True)
-        
+               
         # Comments
-        self.commentEdit = QtGui.QTextEdit()
-        self.commentEdit.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                       QtGui.QSizePolicy.Fixed)
-        self.commentEdit.setAcceptRichText(False)
-        self.commentEdit.setTabChangesFocus(True)
         self.commentEdit.textChanged.connect(self.modified)
 
-        # Solar
-        self.solarGroupBox = QtGui.QGroupBox(u'Teinte')
-        self.solarGroupBox.setSizePolicy(QtGui.QSizePolicy.Fixed,
-                                         QtGui.QSizePolicy.Fixed)
-        solarLayout = QtGui.QHBoxLayout()
-        
-        self.solarRadioNo = QtGui.QRadioButton(u'Non teinté (T1, T2)')
+        # Solar        
         self.solarRadioNo.toggled.connect(self.modified)
-        self.solarRadioYes = QtGui.QRadioButton(u'Teinté (T3, T4)')
         self.solarRadioYes.toggled.connect(self.modified)
-        self.solarRadioNo.setChecked(True)
-        
-        solarLayout.addWidget(self.solarRadioNo)
-        solarLayout.addWidget(self.solarRadioYes)
-        
-        self.solarGroupBox.setLayout(solarLayout)
 
         # Frame
-        self.childGroupBox = QtGui.QGroupBox(u'Monture')
-        self.childGroupBox.setSizePolicy(QtGui.QSizePolicy.Fixed,
-                                         QtGui.QSizePolicy.Fixed)
-        childLayout = QtGui.QHBoxLayout()
-        
-        self.childRadioNo = QtGui.QRadioButton(u'Adulte')
         self.childRadioNo.toggled.connect(self.modified)
-        self.childRadioYes = QtGui.QRadioButton(u'Enfant')
         self.childRadioYes.toggled.connect(self.modified)
-        self.childRadioNo.setChecked(True)
         
-        childLayout.addWidget(self.childRadioNo)
-        childLayout.addWidget(self.childRadioYes)
-        
-        self.childGroupBox.setLayout(childLayout)
-
         # Table
-        self.tableView = QtGui.QTableView(self)
-        
-        
-        self.tableView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.tableView.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.tableView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        self.tableView.horizontalHeader().setStretchLastSection(True)
-        self.tableView.verticalHeader().hide()
-        self.tableView.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.tableView.doubleClicked.connect(self.selectLine)
-        
-        ######## General arrangement ########
-        self.mainWidget = QtGui.QWidget(self)
-        self.setCentralWidget(self.mainWidget)
-
-        mainLayout = QtGui.QVBoxLayout(self.mainWidget)
-        mainLayout.addLayout(numberingLayout)
-        
-        eyesLayout = QtGui.QHBoxLayout()
-        eyesLayout.addWidget(self.rightEyeGroupBox)
-        eyesLayout.addWidget(self.leftEyeGroupBox)
-        mainLayout.addLayout(eyesLayout)
-        
-        otherLayout = QtGui.QHBoxLayout()
-        optionsLayout = QtGui.QVBoxLayout()
-        commentLayout = QtGui.QVBoxLayout()
-        
-        optionsLayout.addWidget(self.addGroupBox)
-        optionsLayout.addWidget(self.childGroupBox)
-        optionsLayout.addWidget(self.solarGroupBox)
-        
-        commentLayout.addWidget(QtGui.QLabel(u'Commentaire :'))
-        commentLayout.addWidget(self.commentEdit)
-        
-        otherLayout.addLayout(optionsLayout)
-        otherLayout.addLayout(commentLayout)
-        
-        mainLayout.addLayout(otherLayout)
-        
-        mainLayout.addWidget(self.tableView)
-        #####################################
-
+            
     def closeEvent(self, event):
         """ Reimplementation of the closeEvent
             to warn the user about potential dataloss """
@@ -696,7 +461,7 @@ class MainWindow(QtGui.QMainWindow):
             self.status.setPalette(palette)
 
     def warnModified(self):
-        """ Warn the user that unsaved data will be lost if unsaved """        
+        """ Warn the user that unsaved data will be lost if unsaved """      
         if not(self.eyeglassesNum.noWarn):
             if self.modif:
                 text = (u'Les lunettes '+str(self.currentNum)+' '
@@ -733,9 +498,6 @@ class MainWindow(QtGui.QMainWindow):
         """ Load data from the CSV file and displays it in the table """
         deb = time.time()
         print 'Creating model...'
-        self.data = dict()
-        
-        self.model = QtGui.QStandardItemModel(self)
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
                           for i in xrange(len(self.dataStructure))])
