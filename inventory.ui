@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1057</width>
-    <height>638</height>
+    <width>714</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Eyeglasses inventory</string>
+   <string>Oryx Optical DBSM - Inventory</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -100,41 +100,85 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QPushButton" name="backupButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string>Backup</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="eyesLayout">
         <item>
          <widget class="QGroupBox" name="rightEyeGroupBox">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
           <property name="title">
-           <string>Œil Droit</string>
+           <string>OD (Œil Droit)</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
            <item row="0" column="0">
             <layout class="QGridLayout" name="rightEyeLayout">
              <item row="0" column="0">
               <widget class="QLabel" name="label_2">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Sphere</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="0" column="3">
               <widget class="QLabel" name="label_5">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Addition</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="0" column="2">
               <widget class="QLabel" name="label_4">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Axe</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="1" column="2">
               <widget class="angleSpinBox" name="rAxisSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
                <property name="minimum">
                 <number>5</number>
                </property>
@@ -148,13 +192,26 @@
              </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_3">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Cylindre</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="2" column="3">
               <widget class="QCheckBox" name="rLinkCheckbox">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
@@ -164,13 +221,31 @@
               </widget>
              </item>
              <item row="1" column="3">
-              <widget class="dotSpinBox" name="rAddSpin"/>
+              <widget class="dotSpinBox" name="rAddSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
              <item row="1" column="1">
-              <widget class="negativeZeroSpinBox" name="rCylSpin"/>
+              <widget class="negativeZeroSpinBox" name="rCylSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0">
-              <widget class="dotSpinBox" name="rSphereSpin"/>
+              <widget class="dotSpinBox" name="rSphereSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -179,35 +254,69 @@
         </item>
         <item>
          <widget class="QGroupBox" name="leftEyeGroupBox">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
           <property name="title">
-           <string>Œil Gauche</string>
+           <string>OG (Œil Gauche)</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
            <item row="0" column="0">
             <layout class="QGridLayout" name="leftEyeLayout">
              <item row="0" column="2">
               <widget class="QLabel" name="label_8">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Axe</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_9">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Cylindre</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="0" column="0">
               <widget class="QLabel" name="label_6">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Sphere</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="1" column="2">
               <widget class="angleSpinBox" name="lAxisSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
                <property name="minimum">
                 <number>5</number>
                </property>
@@ -221,13 +330,26 @@
              </item>
              <item row="0" column="3">
               <widget class="QLabel" name="label_7">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Addition</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item row="2" column="3">
               <widget class="QCheckBox" name="lLinkCheckbox">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::ClickFocus</enum>
                </property>
@@ -237,13 +359,30 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="dotSpinBox" name="lSphereSpin"/>
+              <widget class="dotSpinBox" name="lSphereSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
              <item row="1" column="1">
-              <widget class="negativeZeroSpinBox" name="lCylSpin"/>
+              <widget class="negativeZeroSpinBox" name="lCylSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
              </item>
              <item row="1" column="3">
               <widget class="dotSpinBox" name="lAddSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
                <property name="buttonSymbols">
                 <enum>QAbstractSpinBox::PlusMinus</enum>
                </property>
@@ -355,25 +494,21 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="0" column="0">
-              <layout class="QHBoxLayout" name="solarLayout">
-               <item>
-                <widget class="QRadioButton" name="solarRadioNo">
-                 <property name="text">
-                  <string>Non teinté (ou T1, T2)</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="solarRadioYes">
-                 <property name="text">
-                  <string>Teinté (photochromique ou T3, T4)</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QRadioButton" name="solarRadioNo">
+               <property name="text">
+                <string>Non teinté (ou T1, T2)</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QRadioButton" name="solarRadioYes">
+               <property name="text">
+                <string>Teinté (Photochromique ou T3, T4)</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -397,8 +532,16 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="tabChangesFocus">
              <bool>true</bool>
+            </property>
+            <property name="backgroundVisible">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -440,8 +583,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1057</width>
-     <height>22</height>
+     <width>714</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -450,6 +593,7 @@
     </property>
     <addaction name="newAction"/>
     <addaction name="saveAction"/>
+    <addaction name="backupAction"/>
     <addaction name="separator"/>
     <addaction name="exitAction"/>
    </widget>
@@ -465,7 +609,7 @@
   </action>
   <action name="saveAction">
    <property name="text">
-    <string>Enregistrer</string>
+    <string>Sauvegarder</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -477,6 +621,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="backupAction">
+   <property name="text">
+    <string>Backup</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sauvegarde la base de donnée dans un fichier externe&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
    </property>
   </action>
  </widget>
@@ -497,6 +652,28 @@
    <header>anglespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>newButton</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>eyeglassesNum</tabstop>
+  <tabstop>rSphereSpin</tabstop>
+  <tabstop>rCylSpin</tabstop>
+  <tabstop>rAxisSpin</tabstop>
+  <tabstop>rAddSpin</tabstop>
+  <tabstop>lSphereSpin</tabstop>
+  <tabstop>lCylSpin</tabstop>
+  <tabstop>lAxisSpin</tabstop>
+  <tabstop>lAddSpin</tabstop>
+  <tabstop>addRadioP</tabstop>
+  <tabstop>addRadioBF</tabstop>
+  <tabstop>addRadioTF</tabstop>
+  <tabstop>childRadioNo</tabstop>
+  <tabstop>childRadioYes</tabstop>
+  <tabstop>solarRadioNo</tabstop>
+  <tabstop>solarRadioYes</tabstop>
+  <tabstop>commentEdit</tabstop>
+  <tabstop>backupButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

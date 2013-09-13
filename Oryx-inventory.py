@@ -11,6 +11,7 @@ from inventoryUI import Ui_MainWindow
 
 import csv
 import time
+import os
 
 ############## Configuration ##############
 import ConfigParser
@@ -72,7 +73,7 @@ DEFAULT_ADD = float(correction['default_add'])
     
 from anglespinbox import formatAxis
 from negativezerospinbox import formatCyl
-from dotspinbox import formatPower
+from dotspinbox import formatSph
 
 def formatType(value):
     """ Convert saved numbers into respective human readable text """
@@ -133,32 +134,28 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.dataStructure = [
             ['Num', lambda n: str(int(n)), self.eyeglassesNum.value, 
              self.eyeglassesNum.setValue, 1],
-            ['OD Sphere', formatPower, 
-             self.rSphereSpin.value, self.rSphereSpin.setValue, DEFAULT_SPHERE],
+            ['OD Sphere', formatSph, self.rSphereSpin.value,
+              self.rSphereSpin.setValue, DEFAULT_SPHERE],
             ['OD Cylindre', formatCyl, self.rCylSpin.value, 
              self.rCylSpin.setValue, DEFAULT_CYL],
             ['OD Axe', formatAxis, self.rAxisSpin.value, 
              self.rAxisSpin.setValue, DEFAULT_AXIS],
-            ['OD Add', formatPower, self.rAddSpin.value, 
+            ['OD Add', formatSph, self.rAddSpin.value, 
              self.rAddSpin.setValue, DEFAULT_ADD],
-            ['OG Sphere', formatPower, self.lSphereSpin.value, 
+            ['OG Sphere', formatSph, self.lSphereSpin.value, 
              self.lSphereSpin.setValue, DEFAULT_SPHERE],
             ['OG Cylindre', formatCyl, self.lCylSpin.value, 
              self.lCylSpin.setValue, DEFAULT_CYL],
             ['OG Axe', formatAxis, self.lAxisSpin.value, 
              self.lAxisSpin.setValue, DEFAULT_AXIS],
-            ['OG Add', formatPower, self.lAddSpin.value, 
+            ['OG Add', formatSph, self.lAddSpin.value, 
              self.lAddSpin.setValue, DEFAULT_ADD],
-            ['Type', formatType, self.getAddType, 
-             self.setAddType, 0],
-            ['Monture', formatFrame, self.getFrame, 
-             self.setFrame, 0],
-            ['Teinte', formatSun, self.getSolar, 
-             self.setSolar, 0],
-            ['Commentaire', lambda n: unicode(n, encoding='latin_1'), self.getComment, 
-             self.setComment, ''],
-            ['Stock', lambda n: str(int(n)), lambda: 1, 
-             lambda n: n, 1]]
+            ['Multifocal', formatType, self.getAddType, self.setAddType, 0],
+            ['Monture', formatFrame, self.getFrame, self.setFrame, 0],
+            ['Teinte', formatSun, self.getSolar, self.setSolar, 0],
+            ['Commentaire', lambda n: unicode(n, encoding='latin_1'),
+             self.getComment, self.setComment, ''],
+            ['Stock', lambda n: str(int(n)), lambda: 1, lambda n: n, 1]]
              
         self.data = dict()
         self.model = QtGui.QStandardItemModel(self)
@@ -174,6 +171,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.exitAction.triggered.connect(QtGui.qApp.quit)
         self.saveAction.triggered.connect(self.save)
         self.newAction.triggered.connect(self.new)
+        self.backupAction.triggered.connect(self.backup)
                
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
@@ -183,6 +181,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         self.saveButton.clicked.connect(self.saveAction.trigger)
         self.newButton.clicked.connect(self.newAction.trigger)
+        self.backupButton.clicked.connect(self.backupAction.trigger)
         
         # Right Eye     
         # Correction
@@ -387,8 +386,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                + [QtGui.QStandardItem( \
                    self.dataStructure[i][1](self.dataStructure[i][2]()) \
                    ) for i in range(len(self.dataStructure))[1:]]
-        if not self.data.has_key(self.currentNum):
-            # Add a line to the table if the current item do not exists
+        rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
+        item[1].setBackground(rightcolor)
+        item[2].setBackground(rightcolor)
+        item[3].setBackground(rightcolor)
+        item[4].setBackground(rightcolor)
+        
+        leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+        item[5].setBackground(leftcolor)
+        item[6].setBackground(leftcolor)
+        item[7].setBackground(leftcolor)
+        item[8].setBackground(leftcolor)
+        if not self.data.has_key(self.currentNum) and self.modif:
+            # Add a line to the table if the current item do not exists (and has been modified)
             self.model.appendRow(item)
         else:
             # Alter the existing line
@@ -472,20 +482,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if self.modif:
                 text = (u'Les lunettes '+str(self.currentNum)+' '
                         u'n\'ont pas été enregistrées.\n'
-                        u'Voulez-vous sauvegarder les changements ?')
-                question = QtGui.QMessageBox.warning(self, u'Sauvegarde',
+                        u'Abandonner les changements ?')
+                question = QtGui.QMessageBox.warning(self, u'Lunettes Modifiées !',
                     text,
-                    QtGui.QMessageBox.Save,
-                    QtGui.QMessageBox.Discard,
-                    QtGui.QMessageBox.Cancel)
-                if question == QtGui.QMessageBox.Save:
-                    self.save()
-                    self.reset()
-                    self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
-                    self.eyeglassesNum.setValue(self.currentNum)
-                    self.loadData()
-                    return 'Saved'
-                elif question == QtGui.QMessageBox.Discard:
+                    QtGui.QMessageBox.Yes,
+                    QtGui.QMessageBox.No)
+
+                if question == QtGui.QMessageBox.Yes:
                     self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
                     self.eyeglassesNum.setValue(self.currentNum)
                     self.loadData()
@@ -518,6 +521,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             for row in csv.reader(fileInput):
                 items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
                           for i in xrange(len(self.dataStructure))]
+                
+                rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
+                items[1].setBackground(rightcolor)
+                items[2].setBackground(rightcolor)
+                items[3].setBackground(rightcolor)
+                items[4].setBackground(rightcolor)
+                
+                leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+                items[5].setBackground(leftcolor)
+                items[6].setBackground(leftcolor)
+                items[7].setBackground(leftcolor)
+                items[8].setBackground(leftcolor)
                 self.model.appendRow(items)
                 
                 self.data[int(row[0])] = [getData(row[a])
@@ -541,6 +556,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             dataWriter = csv.writer(fileInput)
             for key, values in self.data.iteritems():
                 dataWriter.writerow([key]+values)
+                
+    def backup(self):
+        new_filename = os.getcwd()+'\\'+'oryxdata_backup_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv'
+        filename = QtGui.QFileDialog.getSaveFileName(self, u'Choix du nom de fichier de Backup', new_filename, u'csv (*.csv)')        
+        if filename != '':
+            self.writeCvs(filename)
 
 ###########################################
 
@@ -548,9 +569,8 @@ if __name__ == '__main__':
 
     import sys
     app = QtGui.QApplication(sys.argv)
-    splash = QtGui.QSplashScreen(QtGui.QPixmap("splash.jpg"))
-    splash.show()
+#    splash = QtGui.QSplashScreen(QtGui.QPixmap("splash.jpg"))
+#    splash.show()
     mainWin = MainWindow()
     mainWin.show()
-    splash.finish(mainWin)
     sys.exit(app.exec_())
