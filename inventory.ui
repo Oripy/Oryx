@@ -167,7 +167,7 @@
               <widget class="dotSpinBox" name="rAddSpin"/>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="rCylSpin"/>
+              <widget class="negativeZeroSpinBox" name="rCylSpin"/>
              </item>
              <item row="1" column="0">
               <widget class="dotSpinBox" name="rSphereSpin"/>
@@ -243,7 +243,11 @@
               <widget class="negativeZeroSpinBox" name="lCylSpin"/>
              </item>
              <item row="1" column="3">
-              <widget class="dotSpinBox" name="lAddSpin"/>
+              <widget class="dotSpinBox" name="lAddSpin">
+               <property name="buttonSymbols">
+                <enum>QAbstractSpinBox::PlusMinus</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -268,7 +272,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Addition</string>
+             <string>Multifocal</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_9">
              <item row="1" column="0">
@@ -355,7 +359,7 @@
                <item>
                 <widget class="QRadioButton" name="solarRadioNo">
                  <property name="text">
-                  <string>Non teinté (T1, T2)</string>
+                  <string>Non teinté (ou T1, T2)</string>
                  </property>
                  <property name="checked">
                   <bool>true</bool>
@@ -365,7 +369,7 @@
                <item>
                 <widget class="QRadioButton" name="solarRadioYes">
                  <property name="text">
-                  <string>Teinté (T3, T4)</string>
+                  <string>Teinté (photochromique ou T3, T4)</string>
                  </property>
                 </widget>
                </item>
@@ -437,7 +441,7 @@
      <x>0</x>
      <y>0</y>
      <width>1057</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

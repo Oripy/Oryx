@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'inventory.ui'
 #
-# Created: Fri Aug 02 17:49:00 2013
-#      by: PyQt4 UI code generator 4.9.5
+# Created: Wed Aug  7 12:31:10 2013
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -98,7 +107,7 @@ class Ui_MainWindow(object):
         self.rAddSpin = dotSpinBox(self.rightEyeGroupBox)
         self.rAddSpin.setObjectName(_fromUtf8("rAddSpin"))
         self.rightEyeLayout.addWidget(self.rAddSpin, 1, 3, 1, 1)
-        self.rCylSpin = QtGui.QDoubleSpinBox(self.rightEyeGroupBox)
+        self.rCylSpin = negativeZeroSpinBox(self.rightEyeGroupBox)
         self.rCylSpin.setObjectName(_fromUtf8("rCylSpin"))
         self.rightEyeLayout.addWidget(self.rCylSpin, 1, 1, 1, 1)
         self.rSphereSpin = dotSpinBox(self.rightEyeGroupBox)
@@ -141,6 +150,7 @@ class Ui_MainWindow(object):
         self.lCylSpin.setObjectName(_fromUtf8("lCylSpin"))
         self.leftEyeLayout.addWidget(self.lCylSpin, 1, 1, 1, 1)
         self.lAddSpin = dotSpinBox(self.leftEyeGroupBox)
+        self.lAddSpin.setButtonSymbols(QtGui.QAbstractSpinBox.PlusMinus)
         self.lAddSpin.setObjectName(_fromUtf8("lAddSpin"))
         self.leftEyeLayout.addWidget(self.lAddSpin, 1, 3, 1, 1)
         self.gridLayout_8.addLayout(self.leftEyeLayout, 0, 0, 1, 1)
@@ -244,7 +254,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.mainLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1057, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1057, 22))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.fileMenu = QtGui.QMenu(self.menubar)
         self.fileMenu.setObjectName(_fromUtf8("fileMenu"))
@@ -265,40 +275,40 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Eyeglasses inventory", None, QtGui.QApplication.UnicodeUTF8))
-        self.newButton.setText(QtGui.QApplication.translate("MainWindow", "Nouvelle paire de lunettes", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveButton.setText(QtGui.QApplication.translate("MainWindow", "Sauvegarder", None, QtGui.QApplication.UnicodeUTF8))
-        self.status.setText(QtGui.QApplication.translate("MainWindow", "Empty", None, QtGui.QApplication.UnicodeUTF8))
-        self.rightEyeGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Œil Droit", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Sphere", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Addition", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Axe", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Cylindre", None, QtGui.QApplication.UnicodeUTF8))
-        self.rLinkCheckbox.setText(QtGui.QApplication.translate("MainWindow", "Lié", None, QtGui.QApplication.UnicodeUTF8))
-        self.leftEyeGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Œil Gauche", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_8.setText(QtGui.QApplication.translate("MainWindow", "Axe", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Cylindre", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Sphere", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Addition", None, QtGui.QApplication.UnicodeUTF8))
-        self.lLinkCheckbox.setText(QtGui.QApplication.translate("MainWindow", "Lié", None, QtGui.QApplication.UnicodeUTF8))
-        self.addGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Addition", None, QtGui.QApplication.UnicodeUTF8))
-        self.addRadioP.setText(QtGui.QApplication.translate("MainWindow", "Progressif", None, QtGui.QApplication.UnicodeUTF8))
-        self.addRadioBF.setText(QtGui.QApplication.translate("MainWindow", "Bifocal", None, QtGui.QApplication.UnicodeUTF8))
-        self.addRadioTF.setText(QtGui.QApplication.translate("MainWindow", "Trifocal", None, QtGui.QApplication.UnicodeUTF8))
-        self.childGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Monture", None, QtGui.QApplication.UnicodeUTF8))
-        self.childRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Adulte", None, QtGui.QApplication.UnicodeUTF8))
-        self.childRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Enfant", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Teinte", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teinté (T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teinté (T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Commentaire :", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow", "Fichier", None, QtGui.QApplication.UnicodeUTF8))
-        self.newAction.setText(QtGui.QApplication.translate("MainWindow", "Nouveau", None, QtGui.QApplication.UnicodeUTF8))
-        self.newAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveAction.setText(QtGui.QApplication.translate("MainWindow", "Enregistrer", None, QtGui.QApplication.UnicodeUTF8))
-        self.saveAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
-        self.exitAction.setText(QtGui.QApplication.translate("MainWindow", "Quitter", None, QtGui.QApplication.UnicodeUTF8))
-        self.exitAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Eyeglasses inventory", None))
+        self.newButton.setText(_translate("MainWindow", "Nouvelle paire de lunettes", None))
+        self.saveButton.setText(_translate("MainWindow", "Sauvegarder", None))
+        self.status.setText(_translate("MainWindow", "Empty", None))
+        self.rightEyeGroupBox.setTitle(_translate("MainWindow", "Œil Droit", None))
+        self.label_2.setText(_translate("MainWindow", "Sphere", None))
+        self.label_5.setText(_translate("MainWindow", "Addition", None))
+        self.label_4.setText(_translate("MainWindow", "Axe", None))
+        self.label_3.setText(_translate("MainWindow", "Cylindre", None))
+        self.rLinkCheckbox.setText(_translate("MainWindow", "Lié", None))
+        self.leftEyeGroupBox.setTitle(_translate("MainWindow", "Œil Gauche", None))
+        self.label_8.setText(_translate("MainWindow", "Axe", None))
+        self.label_9.setText(_translate("MainWindow", "Cylindre", None))
+        self.label_6.setText(_translate("MainWindow", "Sphere", None))
+        self.label_7.setText(_translate("MainWindow", "Addition", None))
+        self.lLinkCheckbox.setText(_translate("MainWindow", "Lié", None))
+        self.addGroupBox.setTitle(_translate("MainWindow", "Multifocal", None))
+        self.addRadioP.setText(_translate("MainWindow", "Progressif", None))
+        self.addRadioBF.setText(_translate("MainWindow", "Bifocal", None))
+        self.addRadioTF.setText(_translate("MainWindow", "Trifocal", None))
+        self.childGroupBox.setTitle(_translate("MainWindow", "Monture", None))
+        self.childRadioNo.setText(_translate("MainWindow", "Adulte", None))
+        self.childRadioYes.setText(_translate("MainWindow", "Enfant", None))
+        self.solarGroupBox.setTitle(_translate("MainWindow", "Teinte", None))
+        self.solarRadioNo.setText(_translate("MainWindow", "Non teinté (ou T1, T2)", None))
+        self.solarRadioYes.setText(_translate("MainWindow", "Teinté (photochromique ou T3, T4)", None))
+        self.label_10.setText(_translate("MainWindow", "Commentaire :", None))
+        self.fileMenu.setTitle(_translate("MainWindow", "Fichier", None))
+        self.newAction.setText(_translate("MainWindow", "Nouveau", None))
+        self.newAction.setShortcut(_translate("MainWindow", "Ctrl+N", None))
+        self.saveAction.setText(_translate("MainWindow", "Enregistrer", None))
+        self.saveAction.setShortcut(_translate("MainWindow", "Ctrl+S", None))
+        self.exitAction.setText(_translate("MainWindow", "Quitter", None))
+        self.exitAction.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
 
 from anglespinbox import angleSpinBox
 from negativezerospinbox import negativeZeroSpinBox

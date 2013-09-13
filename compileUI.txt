@@ -1,1 +1,3 @@
 pyuic4 -o inventoryUI.py -x inventory.ui
+
+/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/pyuic4 -x searchUI.ui -o searchUI.py
