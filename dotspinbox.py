@@ -31,5 +31,6 @@ class dotSpinBox(QtGui.QDoubleSpinBox):
             0.00
             +3.50
             -4.25 """
+            
     def textFromValue(self, value):
         return formatSph(value)

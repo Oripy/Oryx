@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>714</width>
+    <width>788</width>
     <height>636</height>
    </rect>
   </property>
@@ -50,6 +50,20 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="status">
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Empty</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="newButton">
           <property name="font">
            <font>
@@ -57,7 +71,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Nouvelle paire de lunettes</string>
+           <string>Nouvelle paire</string>
           </property>
          </widget>
         </item>
@@ -69,21 +83,17 @@
            </font>
           </property>
           <property name="text">
-           <string>Sauvegarder</string>
+           <string>Enregistrer</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="status">
-          <property name="font">
-           <font>
-            <pointsize>16</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
+         <widget class="QPushButton" name="deleteButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
           </property>
           <property name="text">
-           <string>Empty</string>
+           <string>Supprimer</string>
           </property>
          </widget>
         </item>
@@ -107,6 +117,16 @@
           </property>
           <property name="text">
            <string>Backup</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="restoreButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string>Restaurer</string>
           </property>
          </widget>
         </item>
@@ -179,6 +199,9 @@
                  <pointsize>16</pointsize>
                 </font>
                </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
                <property name="minimum">
                 <number>5</number>
                </property>
@@ -187,6 +210,9 @@
                </property>
                <property name="singleStep">
                 <number>5</number>
+               </property>
+               <property name="value">
+                <number>180</number>
                </property>
               </widget>
              </item>
@@ -244,6 +270,23 @@
                 <font>
                  <pointsize>16</pointsize>
                 </font>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="rLabelCylPos">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde</string>
+               </property>
+               <property name="text">
+                <string>Cylindre positif</string>
                </property>
               </widget>
              </item>
@@ -317,6 +360,9 @@
                  <pointsize>16</pointsize>
                 </font>
                </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
                <property name="minimum">
                 <number>5</number>
                </property>
@@ -325,6 +371,9 @@
                </property>
                <property name="singleStep">
                 <number>5</number>
+               </property>
+               <property name="value">
+                <number>180</number>
                </property>
               </widget>
              </item>
@@ -388,6 +437,23 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="lLabelCylPos">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde</string>
+               </property>
+               <property name="text">
+                <string>Cylindre positif</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -433,13 +499,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QRadioButton" name="addRadioTF">
-                 <property name="text">
-                  <string>Trifocal</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
             </layout>
@@ -457,26 +516,29 @@
              <string>Monture</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
+             <item row="4" column="0">
+              <widget class="QRadioButton" name="childRadioYes">
+               <property name="text">
+                <string>Enfant</string>
+               </property>
+              </widget>
+             </item>
              <item row="3" column="0">
-              <layout class="QHBoxLayout" name="childLayout">
-               <item>
-                <widget class="QRadioButton" name="childRadioNo">
-                 <property name="text">
-                  <string>Adulte</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="childRadioYes">
-                 <property name="text">
-                  <string>Enfant</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QRadioButton" name="childRadioNo">
+               <property name="text">
+                <string>Adulte</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QRadioButton" name="childRadioHalf">
+               <property name="text">
+                <string>Demi-lune</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -527,7 +589,7 @@
           <item>
            <widget class="QPlainTextEdit" name="commentEdit">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -583,7 +645,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>714</width>
+     <width>788</width>
      <height>21</height>
     </rect>
    </property>
@@ -593,8 +655,12 @@
     </property>
     <addaction name="newAction"/>
     <addaction name="saveAction"/>
-    <addaction name="backupAction"/>
+    <addaction name="deleteAction"/>
     <addaction name="separator"/>
+    <addaction name="backupAction"/>
+    <addaction name="restoreAction"/>
+    <addaction name="separator"/>
+    <addaction name="printAction"/>
     <addaction name="exitAction"/>
    </widget>
    <addaction name="fileMenu"/>
@@ -628,10 +694,40 @@
     <string>Backup</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sauvegarde la base de donnée dans un fichier externe&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>Sauvegarde la base de donnée dans un fichier externe</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="restoreAction">
+   <property name="text">
+    <string>Restaurer</string>
+   </property>
+   <property name="toolTip">
+    <string>Charge un Backup. Attention, les données actuellement affichées sont détruites !</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="deleteAction">
+   <property name="text">
+    <string>Supprimer</string>
+   </property>
+   <property name="toolTip">
+    <string>Supprimer les lunettes sélectionnées</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="printAction">
+   <property name="text">
+    <string>Imprimer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Crée un fichier PDF contenant la liste des lunettes triées</string>
    </property>
   </action>
  </widget>
@@ -654,7 +750,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>newButton</tabstop>
-  <tabstop>saveButton</tabstop>
   <tabstop>eyeglassesNum</tabstop>
   <tabstop>rSphereSpin</tabstop>
   <tabstop>rCylSpin</tabstop>
@@ -666,13 +761,13 @@
   <tabstop>lAddSpin</tabstop>
   <tabstop>addRadioP</tabstop>
   <tabstop>addRadioBF</tabstop>
-  <tabstop>addRadioTF</tabstop>
   <tabstop>childRadioNo</tabstop>
   <tabstop>childRadioYes</tabstop>
+  <tabstop>childRadioHalf</tabstop>
   <tabstop>solarRadioNo</tabstop>
   <tabstop>solarRadioYes</tabstop>
   <tabstop>commentEdit</tabstop>
-  <tabstop>backupButton</tabstop>
+  <tabstop>saveButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

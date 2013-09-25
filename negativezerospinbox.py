@@ -16,8 +16,10 @@ def formatCyl(value):
     value = float(value)
     if value == 0:
         return '(-0.00)'
-    else:
+    elif value < 0:
         return '(%0.2f)' % value
+    else:
+        return '(+%0.2f)' % value
 
 class negativeZeroSpinBox(QtGui.QDoubleSpinBox):
     """ Spinbox that display values with the following convention:

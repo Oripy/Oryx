@@ -27,4 +27,22 @@ class angleSpinBox(QtGui.QSpinBox):
             155° """
     def textFromValue(self, value):
         return formatAxis(value)
+    
+    def valueFromText(self, text):
+        try:
+            out = int(text[0:3])
+            if out % 5 >= 3:
+                out = out / 5 * 5 + 5
+            else:
+                out = out / 5 * 5
+        except:
+            out = 180
+        return out
+    
+    def validate(self, text, num):
+        if self.valueFromText(text) % 5 == 0:
+            return (QtGui.QValidator.Acceptable, num)
+        else:
+            return (QtGui.QValidator.Intermediate, num)
+        
 

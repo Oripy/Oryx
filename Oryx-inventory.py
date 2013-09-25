@@ -9,6 +9,8 @@ from PyQt4 import QtCore, QtGui
 
 from inventoryUI import Ui_MainWindow 
 
+from printlist import createpdf
+
 import csv
 import time
 import os
@@ -82,8 +84,6 @@ def formatType(value):
         return u'Progressif'
     elif value == 2:
         return u'Bifocal'
-    elif value == 3:
-        return u'Trifocal'
     else:
         return u''
 
@@ -100,6 +100,8 @@ def formatFrame(value):
     value = float(value)
     if value == 1:
         return u'Enfant'
+    elif value == 2:
+        return u'Demi-lunes'
     else:
         return u'Adulte'    
 
@@ -113,6 +115,9 @@ def getData(value):
         except:
             out = value
     return out
+
+redPalette = QtGui.QPalette()
+redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 
 ###########################################
 
@@ -164,14 +169,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadData()
         self.new()
         
+        self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
     def initUI(self):
         """ create actions and default values of the interface """
         # List actions and create the menubar
         self.exitAction.triggered.connect(QtGui.qApp.quit)
         self.saveAction.triggered.connect(self.save)
+        self.deleteAction.triggered.connect(self.delete)
         self.newAction.triggered.connect(self.new)
         self.backupAction.triggered.connect(self.backup)
+        self.restoreAction.triggered.connect(self.restore)
+        self.printAction.triggered.connect(self.printpdf)
                
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
@@ -180,8 +189,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.eyeglassesNum.noWarn = False
         
         self.saveButton.clicked.connect(self.saveAction.trigger)
+        self.deleteButton.clicked.connect(self.deleteAction.trigger)
         self.newButton.clicked.connect(self.newAction.trigger)
         self.backupButton.clicked.connect(self.backupAction.trigger)
+        self.restoreButton.clicked.connect(self.restoreAction.trigger)
         
         # Right Eye     
         # Correction
@@ -196,6 +207,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rCylSpin.setSingleStep(STEP_CYL)
         self.rCylSpin.setValue(DEFAULT_CYL)
         self.rCylSpin.valueChanged.connect(self.modified)
+        
+        self.rLabelCylPos.setVisible(False)
+        self.rLabelCylPos.setPalette(redPalette)
         
         self.rAxisSpin.setMaximum(MAX_AXIS)
         self.rAxisSpin.setMinimum(MIN_AXIS)
@@ -225,6 +239,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lCylSpin.setValue(DEFAULT_CYL)
         self.lCylSpin.valueChanged.connect(self.modified)
         
+        self.lLabelCylPos.setVisible(False)
+        self.lLabelCylPos.setPalette(redPalette)
+        
         self.lAxisSpin.setMaximum(MAX_AXIS)
         self.lAxisSpin.setMinimum(MIN_AXIS)
         self.lAxisSpin.setSingleStep(STEP_AXIS)
@@ -242,7 +259,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Addition        
         self.addRadioP.toggled.connect(self.modified)
         self.addRadioBF.toggled.connect(self.modified)
-        self.addRadioTF.toggled.connect(self.modified)
                
         # Comments
         self.commentEdit.textChanged.connect(self.modified)
@@ -254,6 +270,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Frame
         self.childRadioNo.toggled.connect(self.modified)
         self.childRadioYes.toggled.connect(self.modified)
+        self.childRadioHalf.toggled.connect(self.modified)
         
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
@@ -291,9 +308,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ Action when a value is modified """
         self.setStatus('Modified')
         self.modif = True
+        
+        self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
+        self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
     
     def getFirstNewNumber(self):
-        n = 1
+        n = self.currentNum
         while self.data.has_key(n):
             n += 1
         return n
@@ -313,15 +333,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             0 means section is disabled
             1 means Progressive
             2 means Bifocal
-            3 means Trifocal
         """
         if (self.rAddSpin.value() != 0) or (self.lAddSpin.value() != 0):
             if self.addRadioP.isChecked():
                 return 1
             elif self.addRadioBF.isChecked():
                 return 2
-            else:
-                return 3
         else:
             return 0
     
@@ -329,12 +346,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ selects the radio button corresponding to the input code
             0 or 1 selects Progressive
             2 selects Bifocal
-            3 selects Trifocal
         """
         if value == 2:
             self.addRadioBF.setChecked(True)
-        elif value == 3:
-            self.addRadioTF.setChecked(True)
         else:
             self.addRadioP.setChecked((True))
     
@@ -359,18 +373,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ returns the code corresponding to the selected radio button
             0 means adult frame
             1 means child frame
+            2 means half-lenses
         """
-        return int(self.childRadioYes.isChecked())
+        if self.childRadioYes.isChecked():
+            return 1
+        elif self.childRadioNo.isChecked():
+            return 0
+        else:
+            return 2
     
     def setFrame(self, value):
         """ selects the radio button corresponding to the input code
             0 selects adult frame
             1 selects child frame
+            2 selects half-lenses
         """
         if value == 1:
             self.childRadioYes.setChecked(True)
-        else:
+        elif value == 0:
             self.childRadioNo.setChecked(True)
+        else:
+            self.childRadioHalf.setChecked(True)
             
     def getComment(self):
         """ returns the comment formated to suitable codec """
@@ -380,12 +403,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ write the input value to the comment field """
         self.commentEdit.setPlainText(unicode(value, encoding='latin_1'))
     
+    def convert(self):
+        """ convert the data entered if cylinder is positive """
+        if self.dataStructure[2][2]() > 0:
+            self.dataStructure[1][3](self.dataStructure[1][2]()+self.dataStructure[2][2]())
+            self.dataStructure[2][3](-self.dataStructure[2][2]())
+            self.dataStructure[3][3]((self.dataStructure[3][2]()+90) % 180)
+        
+        if self.dataStructure[6][2]() > 0:
+            self.dataStructure[5][3](self.dataStructure[5][2]()+self.dataStructure[6][2]())
+            self.dataStructure[6][3](-self.dataStructure[6][2]())
+            self.dataStructure[7][3]((self.dataStructure[7][2]()+90) % 180)
+    
     def save(self):
         """ Save the modifications and write it to the CSV file """
+        self.convert()        
+        
         item = [QtGui.QStandardItem(str(self.currentNum))] \
                + [QtGui.QStandardItem( \
                    self.dataStructure[i][1](self.dataStructure[i][2]()) \
                    ) for i in range(len(self.dataStructure))[1:]]
+        
+        # For each item, add the data value to allow correct sorting
+        for item_data in item:
+            item_data.setData(getData(item_data.text()), QtCore.Qt.EditRole)
+        
         rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
         item[1].setBackground(rightcolor)
         item[2].setBackground(rightcolor)
@@ -398,7 +440,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         item[7].setBackground(leftcolor)
         item[8].setBackground(leftcolor)
         if not self.data.has_key(self.currentNum) and self.modif:
-            # Add a line to the table if the current item do not exists (and has been modified)
+            # Add a line to the table if the current item do not exists
+            # (and has been modified)
             self.model.appendRow(item)
         else:
             # Alter the existing line
@@ -412,10 +455,37 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.modif:
             self.data[self.currentNum] = [self.dataStructure[i][2]()
                           for i in range(len(self.dataStructure))[1:]]
-            self.writeCvs(FILENAME)    
+            self.writeCsv(FILENAME)    
             self.setStatus('Saved')
             self.modif = False
         self.scrollTo(self.currentNum)
+        
+        self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+    
+    def delete(self):
+        """ Delete given entry and write the modification to the CSV file """
+        text = (u'Les lunettes numéro '+str(self.currentNum)+' '
+                u'vont être supprimées.\n'
+                u'\n'
+                u'Souhaitez-vous continuer ?')
+        question = QtGui.QMessageBox.warning(self,
+            u'Supprimer les données ?',
+            text,
+            QtGui.QMessageBox.Yes,
+            QtGui.QMessageBox.No)
+
+        if question == QtGui.QMessageBox.Yes:
+            if self.data.has_key(self.currentNum):
+                rows = self.model.findItems(str(self.currentNum))
+                if len(rows) == 1:
+                    self.model.takeRow(rows[0].row())
+                else:
+                    print "Error when trying to find the right row to delete"
+                self.data.pop(self.currentNum)
+                self.writeCsv(FILENAME)    
+                self.setStatus('New')
+                self.modif = False
+                
     
     def loadData(self):
         """ Load data from the self.data variable
@@ -446,8 +516,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def selectLine(self):
         """ change the eyeglasses number to the selected line in the table """
         row = self.tableView.selectionModel().currentIndex().row()
-        self.currentNum = int(self.model.item(row, 0).text())
-        self.eyeglassesNum.setValue(self.currentNum)
+        self.eyeglassesNum.setValue(int(self.model.item(row, 0).text()))
 
     def reset(self):
         """ Reset the values in the form to the default values """
@@ -461,7 +530,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ Display the current status (Saved/Modified/New)
             with different colors """
         if value == 'Saved':
-            self.status.setText(u'Sauvegardé')
+            self.status.setText(u'Enregistré')
             palette = QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.green)
             self.status.setPalette(palette)
@@ -483,14 +552,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 text = (u'Les lunettes '+str(self.currentNum)+' '
                         u'n\'ont pas été enregistrées.\n'
                         u'Abandonner les changements ?')
-                question = QtGui.QMessageBox.warning(self, u'Lunettes Modifiées !',
+                question = QtGui.QMessageBox.warning(self,
+                    u'Lunettes Modifiées !',
                     text,
                     QtGui.QMessageBox.Yes,
                     QtGui.QMessageBox.No)
 
                 if question == QtGui.QMessageBox.Yes:
-                    self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
-                    self.eyeglassesNum.setValue(self.currentNum)
+                    self.currentNum = self.eyeglassesNum.value()
+#                    self.eyeglassesNum.setValue(self.currentNum)
                     self.loadData()
                     return 'Discarded'
                 else:
@@ -499,8 +569,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.eyeglassesNum.setValue(self.currentNum)
                     return 'Canceled'
             else:
-                self.currentNum = min(self.getFirstNewNumber(), self.eyeglassesNum.value())
-                self.eyeglassesNum.setValue(self.currentNum)
+                self.currentNum = self.eyeglassesNum.value()
+#                self.eyeglassesNum.setValue(self.currentNum)
                 self.loadData()
         else:
             self.eyeglassesNum.noWarn = False
@@ -511,6 +581,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         deb = time.time()
         print 'Creating model...'
         self.model.clear()
+        self.data = dict()
         self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
                           for i in xrange(len(self.dataStructure))])
         fin = time.time()
@@ -521,7 +592,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             for row in csv.reader(fileInput):
                 items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
                           for i in xrange(len(self.dataStructure))]
-                
+
+                # For each item, add the data value to allow correct sorting
+                for item in items:
+                    item.setData(getData(item.text()), QtCore.Qt.EditRole)
+                    
                 rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
                 items[1].setBackground(rightcolor)
                 items[2].setBackground(rightcolor)
@@ -549,8 +624,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.resizeColumnsToContents()
         fin = time.time()
         print '%0.2f sec' % float(fin-deb)
+        deb = fin
+        print 'Sorting...'
+        self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+        fin = time.time()
+        print '%0.2f sec' % float(fin-deb)
         
-    def writeCvs(self, fileName):
+    def writeCsv(self, fileName):
         """ Write data in the CSV file """
         with open(fileName, "wb") as fileInput:
             dataWriter = csv.writer(fileInput)
@@ -559,10 +639,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 
     def backup(self):
         new_filename = os.getcwd()+'\\'+'oryxdata_backup_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv'
-        filename = QtGui.QFileDialog.getSaveFileName(self, u'Choix du nom de fichier de Backup', new_filename, u'csv (*.csv)')        
+        filename = QtGui.QFileDialog.getSaveFileName(self, 
+                   u'Choix du nom de fichier de Backup', 
+                   new_filename, u'csv (*.csv)')        
         if filename != '':
-            self.writeCvs(filename)
+            self.writeCsv(filename)
+    
+    def restore(self):
+        text = (u'Attention, l\'ensemble des données actuelles seront perdues et\n'
+                u'remplacées par les données du fichier de backup sélectionné.\n'
+                u'\n'
+                u'Souhaitez-vous continuer ?')
+        question = QtGui.QMessageBox.warning(self,
+            u'Ecraser les données ?',
+            text,
+            QtGui.QMessageBox.Yes,
+            QtGui.QMessageBox.No)
 
+        if question == QtGui.QMessageBox.Yes:
+            filename = QtGui.QFileDialog.getOpenFileName(self, 
+                       u'Choix du fichier de Backup à restaurer',
+                       os.getcwd(), u'csv (*.csv)')
+            if filename != '':
+                self.loadCsv(filename)
+                self.writeCsv(FILENAME)
+    
+    def printpdf(self):
+        createpdf(self.model)
+        
 ###########################################
 
 if __name__ == '__main__':
