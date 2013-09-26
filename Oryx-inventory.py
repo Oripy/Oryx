@@ -119,6 +119,9 @@ def getData(value):
 redPalette = QtGui.QPalette()
 redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 
+rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
+leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+
 ###########################################
 
 ############## Main Window ################
@@ -459,6 +462,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.setStatus('Saved')
             self.modif = False
         self.scrollTo(self.currentNum)
+
+        self.new()    
         
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
     
@@ -578,16 +583,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def loadCsv(self, fileName):
         """ Load data from the CSV file and displays it in the table """
-        deb = time.time()
-        print 'Creating model...'
         self.model.clear()
         self.data = dict()
         self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
                           for i in xrange(len(self.dataStructure))])
-        fin = time.time()
-        print '%0.2f sec' % float(fin-deb)
-        deb = fin
-        print 'Loading data...'
         with open(fileName, "rb") as fileInput:
             for row in csv.reader(fileInput):
                 items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
@@ -597,13 +596,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 for item in items:
                     item.setData(getData(item.text()), QtCore.Qt.EditRole)
                     
-                rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
                 items[1].setBackground(rightcolor)
                 items[2].setBackground(rightcolor)
                 items[3].setBackground(rightcolor)
                 items[4].setBackground(rightcolor)
-                
-                leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+
                 items[5].setBackground(leftcolor)
                 items[6].setBackground(leftcolor)
                 items[7].setBackground(leftcolor)
@@ -612,23 +609,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 
                 self.data[int(row[0])] = [getData(row[a])
                           for a in range(len(self.dataStructure))[1:]]
-        fin = time.time()
-        print '%0.2f sec' % float(fin-deb)
-        deb = fin
-        print 'Populating table...'
         self.tableView.setModel(self.model)        
-        fin = time.time()
-        print '%0.2f sec' % float(fin-deb)
-        deb = fin
-        print 'Resizing columns...'
         self.tableView.resizeColumnsToContents()
-        fin = time.time()
-        print '%0.2f sec' % float(fin-deb)
-        deb = fin
-        print 'Sorting...'
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-        fin = time.time()
-        print '%0.2f sec' % float(fin-deb)
         
     def writeCsv(self, fileName):
         """ Write data in the CSV file """

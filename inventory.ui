@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Oryx Optical DBSM - Inventory</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>glasses.ico</normaloff>glasses.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -134,6 +138,19 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="eyesLayout">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QGroupBox" name="rightEyeGroupBox">
           <property name="font">
@@ -458,6 +475,19 @@
            </item>
           </layout>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>

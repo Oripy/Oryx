@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'inventory.ui'
 #
-# Created: Thu Sep 26 20:12:23 2013
-#      by: PyQt4 UI code generator 4.10.2
+# Created: Thu Sep 26 16:50:46 2013
+#      by: PyQt4 UI code generator 4.9.5
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,21 +12,15 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+    _fromUtf8 = lambda s: s
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(788, 636)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("glasses.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -88,6 +82,8 @@ class Ui_MainWindow(object):
         self.mainLayout.addLayout(self.numberingLayout)
         self.eyesLayout = QtGui.QHBoxLayout()
         self.eyesLayout.setObjectName(_fromUtf8("eyesLayout"))
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.eyesLayout.addItem(spacerItem1)
         self.rightEyeGroupBox = QtGui.QGroupBox(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -255,6 +251,8 @@ class Ui_MainWindow(object):
         self.leftEyeLayout.addWidget(self.lLabelCylPos, 2, 1, 1, 1)
         self.gridLayout_8.addLayout(self.leftEyeLayout, 0, 0, 1, 1)
         self.eyesLayout.addWidget(self.leftEyeGroupBox)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.eyesLayout.addItem(spacerItem2)
         self.mainLayout.addLayout(self.eyesLayout)
         self.otherLayout = QtGui.QHBoxLayout()
         self.otherLayout.setObjectName(_fromUtf8("otherLayout"))
@@ -404,58 +402,58 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.commentEdit, self.saveButton)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "Oryx Optical DBSM - Inventory", None))
-        self.status.setText(_translate("MainWindow", "Empty", None))
-        self.newButton.setText(_translate("MainWindow", "Nouvelle paire", None))
-        self.saveButton.setText(_translate("MainWindow", "Enregistrer", None))
-        self.deleteButton.setText(_translate("MainWindow", "Supprimer", None))
-        self.backupButton.setText(_translate("MainWindow", "Backup", None))
-        self.restoreButton.setText(_translate("MainWindow", "Restaurer", None))
-        self.rightEyeGroupBox.setTitle(_translate("MainWindow", "OD (Œil Droit)", None))
-        self.label_2.setText(_translate("MainWindow", "Sphere", None))
-        self.label_5.setText(_translate("MainWindow", "Addition", None))
-        self.label_4.setText(_translate("MainWindow", "Axe", None))
-        self.label_3.setText(_translate("MainWindow", "Cylindre", None))
-        self.rLinkCheckbox.setText(_translate("MainWindow", "Lié", None))
-        self.rLabelCylPos.setToolTip(_translate("MainWindow", "Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde", None))
-        self.rLabelCylPos.setText(_translate("MainWindow", "Cylindre positif", None))
-        self.leftEyeGroupBox.setTitle(_translate("MainWindow", "OG (Œil Gauche)", None))
-        self.label_8.setText(_translate("MainWindow", "Axe", None))
-        self.label_9.setText(_translate("MainWindow", "Cylindre", None))
-        self.label_6.setText(_translate("MainWindow", "Sphere", None))
-        self.label_7.setText(_translate("MainWindow", "Addition", None))
-        self.lLinkCheckbox.setText(_translate("MainWindow", "Lié", None))
-        self.lLabelCylPos.setToolTip(_translate("MainWindow", "Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde", None))
-        self.lLabelCylPos.setText(_translate("MainWindow", "Cylindre positif", None))
-        self.addGroupBox.setTitle(_translate("MainWindow", "Multifocal", None))
-        self.addRadioP.setText(_translate("MainWindow", "Progressif", None))
-        self.addRadioBF.setText(_translate("MainWindow", "Bifocal", None))
-        self.childGroupBox.setTitle(_translate("MainWindow", "Monture", None))
-        self.childRadioYes.setText(_translate("MainWindow", "Enfant", None))
-        self.childRadioNo.setText(_translate("MainWindow", "Adulte", None))
-        self.childRadioHalf.setText(_translate("MainWindow", "Demi-lune", None))
-        self.solarGroupBox.setTitle(_translate("MainWindow", "Teinte", None))
-        self.solarRadioNo.setText(_translate("MainWindow", "Non teinté (ou T1, T2)", None))
-        self.solarRadioYes.setText(_translate("MainWindow", "Teinté (Photochromique ou T3, T4)", None))
-        self.label_10.setText(_translate("MainWindow", "Commentaire :", None))
-        self.fileMenu.setTitle(_translate("MainWindow", "Fichier", None))
-        self.newAction.setText(_translate("MainWindow", "Nouveau", None))
-        self.newAction.setShortcut(_translate("MainWindow", "Ctrl+N", None))
-        self.saveAction.setText(_translate("MainWindow", "Sauvegarder", None))
-        self.saveAction.setShortcut(_translate("MainWindow", "Ctrl+S", None))
-        self.exitAction.setText(_translate("MainWindow", "Quitter", None))
-        self.exitAction.setShortcut(_translate("MainWindow", "Ctrl+Q", None))
-        self.backupAction.setText(_translate("MainWindow", "Backup", None))
-        self.backupAction.setToolTip(_translate("MainWindow", "Sauvegarde la base de donnée dans un fichier externe", None))
-        self.backupAction.setShortcut(_translate("MainWindow", "Ctrl+Shift+B", None))
-        self.restoreAction.setText(_translate("MainWindow", "Restaurer", None))
-        self.restoreAction.setToolTip(_translate("MainWindow", "Charge un Backup. Attention, les données actuellement affichées sont détruites !", None))
-        self.restoreAction.setShortcut(_translate("MainWindow", "Ctrl+Shift+R", None))
-        self.deleteAction.setText(_translate("MainWindow", "Supprimer", None))
-        self.deleteAction.setToolTip(_translate("MainWindow", "Supprimer les lunettes sélectionnées", None))
-        self.deleteAction.setShortcut(_translate("MainWindow", "Ctrl+Shift+D", None))
-        self.printAction.setText(_translate("MainWindow", "Imprimer...", None))
-        self.printAction.setToolTip(_translate("MainWindow", "Crée un fichier PDF contenant la liste des lunettes triées", None))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Oryx Optical DBSM - Inventory", None, QtGui.QApplication.UnicodeUTF8))
+        self.status.setText(QtGui.QApplication.translate("MainWindow", "Empty", None, QtGui.QApplication.UnicodeUTF8))
+        self.newButton.setText(QtGui.QApplication.translate("MainWindow", "Nouvelle paire", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveButton.setText(QtGui.QApplication.translate("MainWindow", "Enregistrer", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteButton.setText(QtGui.QApplication.translate("MainWindow", "Supprimer", None, QtGui.QApplication.UnicodeUTF8))
+        self.backupButton.setText(QtGui.QApplication.translate("MainWindow", "Backup", None, QtGui.QApplication.UnicodeUTF8))
+        self.restoreButton.setText(QtGui.QApplication.translate("MainWindow", "Restaurer", None, QtGui.QApplication.UnicodeUTF8))
+        self.rightEyeGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "OD (Œil Droit)", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Sphere", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Addition", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Axe", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Cylindre", None, QtGui.QApplication.UnicodeUTF8))
+        self.rLinkCheckbox.setText(QtGui.QApplication.translate("MainWindow", "Lié", None, QtGui.QApplication.UnicodeUTF8))
+        self.rLabelCylPos.setToolTip(QtGui.QApplication.translate("MainWindow", "Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde", None, QtGui.QApplication.UnicodeUTF8))
+        self.rLabelCylPos.setText(QtGui.QApplication.translate("MainWindow", "Cylindre positif", None, QtGui.QApplication.UnicodeUTF8))
+        self.leftEyeGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "OG (Œil Gauche)", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_8.setText(QtGui.QApplication.translate("MainWindow", "Axe", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Cylindre", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Sphere", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Addition", None, QtGui.QApplication.UnicodeUTF8))
+        self.lLinkCheckbox.setText(QtGui.QApplication.translate("MainWindow", "Lié", None, QtGui.QApplication.UnicodeUTF8))
+        self.lLabelCylPos.setToolTip(QtGui.QApplication.translate("MainWindow", "Le cylindre indiqué est positif, une conversion sera effectuée lors de la Sauvegarde", None, QtGui.QApplication.UnicodeUTF8))
+        self.lLabelCylPos.setText(QtGui.QApplication.translate("MainWindow", "Cylindre positif", None, QtGui.QApplication.UnicodeUTF8))
+        self.addGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Multifocal", None, QtGui.QApplication.UnicodeUTF8))
+        self.addRadioP.setText(QtGui.QApplication.translate("MainWindow", "Progressif", None, QtGui.QApplication.UnicodeUTF8))
+        self.addRadioBF.setText(QtGui.QApplication.translate("MainWindow", "Bifocal", None, QtGui.QApplication.UnicodeUTF8))
+        self.childGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Monture", None, QtGui.QApplication.UnicodeUTF8))
+        self.childRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Enfant", None, QtGui.QApplication.UnicodeUTF8))
+        self.childRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Adulte", None, QtGui.QApplication.UnicodeUTF8))
+        self.childRadioHalf.setText(QtGui.QApplication.translate("MainWindow", "Demi-lune", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Teinte", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teinté (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teinté (Photochromique ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Commentaire :", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow", "Fichier", None, QtGui.QApplication.UnicodeUTF8))
+        self.newAction.setText(QtGui.QApplication.translate("MainWindow", "Nouveau", None, QtGui.QApplication.UnicodeUTF8))
+        self.newAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveAction.setText(QtGui.QApplication.translate("MainWindow", "Sauvegarder", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
+        self.exitAction.setText(QtGui.QApplication.translate("MainWindow", "Quitter", None, QtGui.QApplication.UnicodeUTF8))
+        self.exitAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Q", None, QtGui.QApplication.UnicodeUTF8))
+        self.backupAction.setText(QtGui.QApplication.translate("MainWindow", "Backup", None, QtGui.QApplication.UnicodeUTF8))
+        self.backupAction.setToolTip(QtGui.QApplication.translate("MainWindow", "Sauvegarde la base de donnée dans un fichier externe", None, QtGui.QApplication.UnicodeUTF8))
+        self.backupAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+B", None, QtGui.QApplication.UnicodeUTF8))
+        self.restoreAction.setText(QtGui.QApplication.translate("MainWindow", "Restaurer", None, QtGui.QApplication.UnicodeUTF8))
+        self.restoreAction.setToolTip(QtGui.QApplication.translate("MainWindow", "Charge un Backup. Attention, les données actuellement affichées sont détruites !", None, QtGui.QApplication.UnicodeUTF8))
+        self.restoreAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+R", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteAction.setText(QtGui.QApplication.translate("MainWindow", "Supprimer", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteAction.setToolTip(QtGui.QApplication.translate("MainWindow", "Supprimer les lunettes sélectionnées", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteAction.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+D", None, QtGui.QApplication.UnicodeUTF8))
+        self.printAction.setText(QtGui.QApplication.translate("MainWindow", "Imprimer...", None, QtGui.QApplication.UnicodeUTF8))
+        self.printAction.setToolTip(QtGui.QApplication.translate("MainWindow", "Crée un fichier PDF contenant la liste des lunettes triées", None, QtGui.QApplication.UnicodeUTF8))
 
 from anglespinbox import angleSpinBox
 from negativezerospinbox import negativeZeroSpinBox

@@ -8,7 +8,15 @@ import py2exe
 # windows is a list of scripts that have their own UI and
 # thus don't need to run in a console.
 
-setup(windows=['Oryx-inventory.py'],
+setup(windows=[
+      {
+          "script": 'Oryx-inventory.py',
+          "icon_resources": [(1, 'glasses.ico')]
+      },
+      {
+          "script": 'Oryx-search.py',
+          "icon_resources": [(1, "glasses.ico")]
+      }],
       options={
 
 # And now, configure py2exe by passing more options;
