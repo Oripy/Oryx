@@ -62,7 +62,7 @@
            <string>OD (Œil Droit)</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
-           <item row="1" column="0">
+           <item row="4" column="0">
             <layout class="QGridLayout" name="rightEyeLayout">
              <item row="0" column="0">
               <widget class="QLabel" name="label_2">
@@ -212,23 +212,45 @@
              </item>
             </layout>
            </item>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="rMasterRadio">
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Œil droit directeur</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup</string>
-             </attribute>
-            </widget>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <widget class="QRadioButton" name="rMasterRadio">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="text">
+                <string>Œil droit préférentiel</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="rIndifCheckBox">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="text">
+                <string>Valeurs indifférentes</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -244,7 +266,7 @@
            <string>OG (Œil Gauche)</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="1" column="0">
+           <item row="2" column="0">
             <layout class="QGridLayout" name="leftEyeLayout">
              <item row="1" column="1">
               <widget class="negativeZeroSpinBox" name="lCylSpin">
@@ -398,19 +420,44 @@
             </layout>
            </item>
            <item row="0" column="0">
-            <widget class="QRadioButton" name="lMasterRadio">
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <property name="topMargin">
+              <number>0</number>
              </property>
-             <property name="text">
-              <string>Œil gauche directeur</string>
-             </property>
-             <attribute name="buttonGroup">
-              <string notr="true">buttonGroup</string>
-             </attribute>
-            </widget>
+             <item>
+              <widget class="QRadioButton" name="lMasterRadio">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="text">
+                <string>Œil gauche préférentiel</string>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="lIndifCheckBox">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="text">
+                <string>Valeurs indifférentes</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -476,7 +523,7 @@
            <item>
             <widget class="QRadioButton" name="childRadioHalf">
              <property name="text">
-              <string>Demi-lune</string>
+              <string>Demi-lunes</string>
              </property>
             </widget>
            </item>
@@ -1096,8 +1143,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>rMasterRadio</tabstop>
-  <tabstop>lMasterRadio</tabstop>
   <tabstop>rSphereSpin</tabstop>
   <tabstop>rCylSpin</tabstop>
   <tabstop>rAxisSpin</tabstop>

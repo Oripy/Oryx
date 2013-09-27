@@ -79,12 +79,14 @@ PARAM_AXIS_TOL0 = float(search['param_axis_tol0'])
 PARAM_AXIS_TOL1 = float(search['param_axis_tol1'])
 PARAM_AXIS_TOL2 = float(search['param_axis_tol2'])
 
-ADD_DELTA_MAX = float(search['add_delta_max'])
+ADD_DELTA_MAX = float(search['add_delta_max'])+.25
 
 SPHERE_COEF = float(search['sphere_coef'])
 CYL_COEF = float(search['cyl_coef'])
 AXIS_COEF = float(search['axis_coef'])
 ADD_COEF = float(search['add_coef'])
+
+SCORE_SHAPE_PARAM = float(search['score_shape_param'])
 
 ###########################################
 
@@ -136,6 +138,9 @@ redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
 leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
 
+redcolor = QtGui.QColor(QtCore.Qt.red).lighter(125)
+
+
 def percentcolor(value):
     return QtGui.QColor(int(255*(100-value)/100), int(255*value/100), 0, 128)
 
@@ -145,9 +150,9 @@ def percentcolor(value):
 
 def scoringFunction(delta, minimum, maximum):
     if delta >= 0:
-        return max(-(delta/maximum)**2 + 1, 0)
+        return max(-(delta/maximum)**SCORE_SHAPE_PARAM + 1, 0)
     else:
-        return max(-(delta/minimum)**2 + 1, 0)
+        return max(-(delta/minimum)**SCORE_SHAPE_PARAM + 1, 0)
 
 def eye_score(data, target):
     s = score_sphere(data, target)
@@ -155,16 +160,18 @@ def eye_score(data, target):
     a = score_axis(data, target)
     p = score_add(data, target)
     score = (s**SPHERE_COEF)*(c**CYL_COEF)*(a**AXIS_COEF)*(p**ADD_COEF)
+    print s, c, a, p
     return score
     
 def sphericalEquivalentRefraction(data, target):
-    delta_cyl = target[1] - data[1]
+    delta_cyl =  data[1] - target[1]
+    print data, target, target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
     return target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
     
 def score_sphere(data, target):
     if (data[0] < 0 and target[0] > 0) or (data[0] > 0 and target[0] < 0):
         return 0
-    delta_sph = sphericalEquivalentRefraction(data, target) - data[0]
+    delta_sph = data[0] - sphericalEquivalentRefraction(data, target)
     if data[0] >= 0:
         score = scoringFunction(delta_sph, SPHERE_DELTA_MIN, SPHERE_DELTA_MAX)
     else:
@@ -172,7 +179,7 @@ def score_sphere(data, target):
     return score
     
 def score_cyl(data, target):
-    delta_cyl = target[1] - data[1]
+    delta_cyl =  data[1] - target[1]
     return scoringFunction(delta_cyl, CYL_DELTA_MIN, CYL_DELTA_MAX)
     
 def score_axis(data, target):
@@ -182,12 +189,9 @@ def score_axis(data, target):
     tolerance = PARAM_AXIS_TOL2*data[1]**2+PARAM_AXIS_TOL1*data[1]+PARAM_AXIS_TOL0
     tolerance = tolerance - (tolerance % 5) + (5 if (tolerance % 5) >= 2.5 else 0)
     
-    delta_axis = (target[2] - data[2])
+    delta_axis = (data[2] - target[2])
     delta_axis = abs((delta_axis + 90) % 180 - 90)
-    if delta_axis > tolerance:
-        return 0
-    else:
-        return -(delta_axis/tolerance)**2 + 1
+    return scoringFunction(delta_axis, -tolerance, tolerance)
     
 def score_add(data, target):
     if target[3] == 0 and data[3] != 0:
@@ -402,7 +406,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         new_data = dict()
         
         for num, value in self.data.iteritems():
-            if value[12] == 1:
+            score = self.score(value, query)
+            if value[12] == 1 and score != 0:
                 new_data[num] = [self.score(value, query)]+value
         
         self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.iteritems()])
@@ -411,6 +416,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model.clear()
         self.model.setHorizontalHeaderLabels([u'Score']+[self.dataStructure[i][0]
           for i in xrange(len(self.dataStructure))])
+        
+        frame = self.getFrame()
+        solar = self.getSolar()
         
         for row in data:
             items = [QtGui.QStandardItem("{0:.2f}%".format(row[0]))]+[
@@ -433,6 +441,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             items[8].setBackground(leftcolor)
             items[9].setBackground(leftcolor)
             
+            if row[10] != frame:
+                items[11].setBackground(redcolor)
+        
+            if row[11] != solar:
+                items[12].setBackground(redcolor)
+            
             self.model.appendRow(items)
             
             self.model.setSortRole(sortRole)
@@ -440,13 +454,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.tableView.resizeColumnsToContents()
     
     def score(self, data, target):
-        # Frame
-        if data[10] != target[10]:
-            return 0
-        
-        # Sun
-        if data[11] != target[11]:
-            return 0
+#        # Frame
+#        if data[10] != target[10]:
+#            return 0
+#        
+#        # Sun
+#        if data[11] != target[11]:
+#            return 0
         
         # Correction
         mLeft, mRight = self.getMasterEyeCoef()
