@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'inventory.ui'
 #
-# Created: Thu Sep 26 16:50:46 2013
+# Created: Fri Sep 27 10:38:47 2013
 #      by: PyQt4 UI code generator 4.9.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(788, 636)
+        MainWindow.resize(798, 636)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("glasses.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -290,14 +290,14 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
         self.childRadioYes = QtGui.QRadioButton(self.childGroupBox)
         self.childRadioYes.setObjectName(_fromUtf8("childRadioYes"))
-        self.gridLayout_5.addWidget(self.childRadioYes, 4, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.childRadioYes, 5, 0, 1, 1)
         self.childRadioNo = QtGui.QRadioButton(self.childGroupBox)
         self.childRadioNo.setChecked(True)
         self.childRadioNo.setObjectName(_fromUtf8("childRadioNo"))
         self.gridLayout_5.addWidget(self.childRadioNo, 3, 0, 1, 1)
         self.childRadioHalf = QtGui.QRadioButton(self.childGroupBox)
         self.childRadioHalf.setObjectName(_fromUtf8("childRadioHalf"))
-        self.gridLayout_5.addWidget(self.childRadioHalf, 5, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.childRadioHalf, 4, 0, 1, 1)
         self.optionsLayout.addWidget(self.childGroupBox)
         self.solarGroupBox = QtGui.QGroupBox(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
@@ -323,7 +323,7 @@ class Ui_MainWindow(object):
         self.label_10.setObjectName(_fromUtf8("label_10"))
         self.commentLayout.addWidget(self.label_10)
         self.commentEdit = QtGui.QPlainTextEdit(self.centralwidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.commentEdit.sizePolicy().hasHeightForWidth())
@@ -350,7 +350,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.mainLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 788, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 798, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.fileMenu = QtGui.QMenu(self.menubar)
         self.fileMenu.setObjectName(_fromUtf8("fileMenu"))
@@ -395,8 +395,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.addRadioP, self.addRadioBF)
         MainWindow.setTabOrder(self.addRadioBF, self.childRadioNo)
         MainWindow.setTabOrder(self.childRadioNo, self.childRadioYes)
-        MainWindow.setTabOrder(self.childRadioYes, self.childRadioHalf)
-        MainWindow.setTabOrder(self.childRadioHalf, self.solarRadioNo)
+        MainWindow.setTabOrder(self.childRadioYes, self.solarRadioNo)
         MainWindow.setTabOrder(self.solarRadioNo, self.solarRadioYes)
         MainWindow.setTabOrder(self.solarRadioYes, self.commentEdit)
         MainWindow.setTabOrder(self.commentEdit, self.saveButton)
@@ -433,8 +432,8 @@ class Ui_MainWindow(object):
         self.childRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Adulte", None, QtGui.QApplication.UnicodeUTF8))
         self.childRadioHalf.setText(QtGui.QApplication.translate("MainWindow", "Demi-lune", None, QtGui.QApplication.UnicodeUTF8))
         self.solarGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Teinte", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teinté (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teinté (Photochromique ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teintés (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teintés (Photochromiques ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Commentaire :", None, QtGui.QApplication.UnicodeUTF8))
         self.fileMenu.setTitle(QtGui.QApplication.translate("MainWindow", "Fichier", None, QtGui.QApplication.UnicodeUTF8))
         self.newAction.setText(QtGui.QApplication.translate("MainWindow", "Nouveau", None, QtGui.QApplication.UnicodeUTF8))

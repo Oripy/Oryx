@@ -123,14 +123,11 @@ def formatFrame(value):
         return u'Adulte'    
 
 def getData(value):
-    """ returns an int, float or string depending on the input type """
+    """ returns a float or string depending on the input type """
     try:
-        out = int(value)
+        out = float(value)
     except:
-        try:
-            out = float(value)
-        except:
-            out = value
+        out = value
     return out
 
 redPalette = QtGui.QPalette()
@@ -147,13 +144,10 @@ def percentcolor(value):
 ######## Score related functions #########
 
 def scoringFunction(delta, minimum, maximum):
-    if (delta > maximum) or (delta < minimum):
-        return 0
+    if delta >= 0:
+        return max(-(delta/maximum)**2 + 1, 0)
     else:
-        if delta >= 0:
-            return -(delta/maximum)**2 + 1
-        else:
-            return -(delta/minimum)**2 + 1
+        return max(-(delta/minimum)**2 + 1, 0)
 
 def eye_score(data, target):
     s = score_sphere(data, target)
@@ -166,7 +160,7 @@ def eye_score(data, target):
 def sphericalEquivalentRefraction(data, target):
     delta_cyl = target[1] - data[1]
     return target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
-
+    
 def score_sphere(data, target):
     if (data[0] < 0 and target[0] > 0) or (data[0] > 0 and target[0] < 0):
         return 0
@@ -176,11 +170,11 @@ def score_sphere(data, target):
     else:
         score = scoringFunction(delta_sph, -SPHERE_DELTA_MAX, -SPHERE_DELTA_MIN)
     return score
-
+    
 def score_cyl(data, target):
     delta_cyl = target[1] - data[1]
     return scoringFunction(delta_cyl, CYL_DELTA_MIN, CYL_DELTA_MAX)
-
+    
 def score_axis(data, target):
     # if no cylinder correction, axis is not taken into account
     if (data[1] == 0) or (target[1] == 0):
@@ -194,12 +188,14 @@ def score_axis(data, target):
         return 0
     else:
         return -(delta_axis/tolerance)**2 + 1
-        
+    
 def score_add(data, target):
     if target[3] == 0 and data[3] != 0:
         return 0
     delta_add = target[3] - data[3]
     return scoringFunction(delta_add, -ADD_DELTA_MAX, target[3]+0.25)
+    
+sortRole = QtCore.Qt.UserRole + 1
 
 ###########################################
 
@@ -218,29 +214,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Data Structure (Name, formating function, get function, 
         #                 set function, default value)
         self.dataStructure = [
-            ['Num', lambda n: str(int(n)), lambda: 1, self.eyeglassesNum.setValue, 1],
+            ['Num', lambda n: str(int(n)), lambda: 1,
+             lambda n: n, 1, self.eyeglassesNum.setValue],
             ['OD Sphere', formatSph, self.rSphereSpin.value,
-              self.setRSphere, DEFAULT_SPHERE],
+             self.rSphereSpin.setValue, DEFAULT_SPHERE, self.setRSphere],
             ['OD Cylindre', formatCyl, self.rCylSpin.value, 
-             self.setRCyl, DEFAULT_CYL],
+             self.rCylSpin.setValue, DEFAULT_CYL, self.setRCyl],
             ['OD Axe', formatAxis, self.rAxisSpin.value, 
-             self.setRAxis, DEFAULT_AXIS],
+             self.rAxisSpin.setValue, DEFAULT_AXIS, self.setRAxis],
             ['OD Add', formatSph, self.rAddSpin.value, 
-             self.setRAdd, DEFAULT_ADD],
+             self.rAddSpin.setValue, DEFAULT_ADD, self.setRAdd],
             ['OG Sphere', formatSph, self.lSphereSpin.value,
-             self.setLSphere, DEFAULT_SPHERE],
+             self.lSphereSpin.setValue, DEFAULT_SPHERE, self.setLSphere],
             ['OG Cylindre', formatCyl, self.lCylSpin.value, 
-             self.setLCyl, DEFAULT_CYL],
+             self.lCylSpin.setValue, DEFAULT_CYL, self.setLCyl],
             ['OG Axe', formatAxis, self.lAxisSpin.value, 
-             self.setLAxis, DEFAULT_AXIS],
+             self.lAxisSpin.setValue, DEFAULT_AXIS, self.setLAxis],
             ['OG Add', formatSph, self.lAddSpin.value, 
-             self.setLAdd, DEFAULT_ADD],
-            ['Multifocal', formatType, lambda: 0, self.setAddType, 0],
-            ['Monture', formatFrame, self.getFrame, self.setFrame, -1],
-            ['Teinte', formatSun, self.getSolar, self.setSolar, -1],
+             self.lAddSpin.setValue, DEFAULT_ADD, self.setLAdd],
+            ['Multifocal', formatType, lambda: 0, 
+             lambda n: n, 0, self.setAddType],
+            ['Monture', formatFrame, self.getFrame, 
+             self.setFrame, -1, self.setFrameLabel],
+            ['Teinte', formatSun, self.getSolar, 
+             self.setSolar, -1, self.setSolarLabel],
             ['Commentaire', lambda n: unicode(n, encoding='latin_1'),
-             lambda: '', self.setComment, ''],
-            ['Stock', lambda n: str(int(n)), lambda: 1, lambda n: n, 1]
+             lambda: '', lambda n: n, '', self.setComment],
+            ['Stock', lambda n: str(int(n)), lambda: 1, 
+             lambda n: n, 1, lambda n: n]
             ]
              
         self.data = dict()
@@ -248,7 +249,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.setModel(self.model)     
         
         self.loadCsv(FILENAME)
-        
+        self.loadData(self.eyeglassesNum.value())
         self.tableView.sortByColumn(1, QtCore.Qt.AscendingOrder)
 
     def initUI(self):
@@ -266,7 +267,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.addButton.clicked.connect(self.addToStock)
         self.removeButton.clicked.connect(self.removeFromStock)
         
-        # Right Eye     
+        # Right Eye
+        self.rMasterRadio.toggled.connect(self.modified)
         # Correction
         self.rSphereSpin.setMaximum(MAX_SPHERE)
         self.rSphereSpin.setMinimum(MIN_SPHERE)
@@ -298,6 +300,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
         
         # Left Eye
+        self.lMasterRadio.toggled.connect(self.modified)
         # Correction
         self.lSphereSpin.setMaximum(MAX_SPHERE)
         self.lSphereSpin.setMinimum(MIN_SPHERE)
@@ -408,23 +411,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model.clear()
         self.model.setHorizontalHeaderLabels([u'Score']+[self.dataStructure[i][0]
           for i in xrange(len(self.dataStructure))])
-
+        
         for row in data:
-            items = [QtGui.QStandardItem("{0:.2f}".format(row[0]))]+[
+            items = [QtGui.QStandardItem("{0:.2f}%".format(row[0]))]+[
                      QtGui.QStandardItem(self.dataStructure[i][1](row[i+1])) 
                          for i in xrange(len(self.dataStructure))]
-    
+            
             # For each item, add the data value to allow correct sorting
-            for item in items:
-                item.setData(getData(item.text()), QtCore.Qt.EditRole)
-
-            items[0].setBackground(percentcolor(getData(items[0].text())))
-
+            for i, item in enumerate(items):
+                item.setData(getData(row[i]), sortRole)
+            
+            items[0].setBackground(percentcolor(row[0]))
+            
             items[2].setBackground(rightcolor)
             items[3].setBackground(rightcolor)
             items[4].setBackground(rightcolor)
             items[5].setBackground(rightcolor)
-
+            
             items[6].setBackground(leftcolor)
             items[7].setBackground(leftcolor)
             items[8].setBackground(leftcolor)
@@ -432,16 +435,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             
             self.model.appendRow(items)
             
+            self.model.setSortRole(sortRole)
             self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)           
             self.tableView.resizeColumnsToContents()
     
     def score(self, data, target):
         # Frame
-        if data[8] != target[8]:
+        if data[10] != target[10]:
             return 0
-            
+        
         # Sun
-        if data[9] != target[9]:
+        if data[11] != target[11]:
             return 0
         
         # Correction
@@ -514,7 +518,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         return int(self.solarRadioYes.isChecked())
     
-    def setSolar(self, value):
+    def setSolarLabel(self, value):
         """ set the text corresponding to the solar value
         """
         if value == 0:
@@ -523,6 +527,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.solarLabel.setText(u'Teinté')
         else:
             self.solarLabel.setText(u'')
+    
+    def setSolar(self, value):
+        """ selects the radio button corresponding to the input code
+            0 selects normal lenses
+            1 selects solar lenses
+        """
+        if value == 1:
+            self.solarRadioYes.setChecked(True)
+        else:
+            self.solarRadioNo.setChecked(True)
     
     def setAddType(self, value):
         """ set the text corresponding to the AddType value
@@ -547,7 +561,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             return 2
     
-    def setFrame(self, value):
+    def setFrameLabel(self, value):
         """ set the text corresponding to the Frame value
         """
         if value == 1:
@@ -558,7 +572,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.frameLabel.setText(u'Demi-lune')
         else:
             self.frameLabel.setText(u'Aucune lunettes avec ce numéro')
-            
+    
+    def setFrame(self, value):
+        """ selects the radio button corresponding to the input code
+            0 selects adult frame
+            1 selects child frame
+            2 selects half-lenses
+        """
+        if value == 1:
+            self.childRadioYes.setChecked(True)
+        elif value == 0:
+            self.childRadioNo.setChecked(True)
+        else:
+            self.childRadioHalf.setChecked(True)    
+    
     def setComment(self, value):
         """ write the input value to the comment field """
         pass
@@ -578,11 +605,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                  
     def loadData(self, num):
         """ Load data from the self.data variable
-            and display it in the form """
+            and display it in the stock box """
         self.rLinkCheckbox.setChecked(False)
         if self.data.has_key(num):
             for i, element in enumerate(self.dataStructure[1:]):
-                element[3](self.data[num][i])
+                element[5](self.data[num][i])
             self.eyeglassesNum.setValue(num)
             
             if self.data[num][12] == 1:
@@ -593,7 +620,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.removeButton.setDisabled(True)
         else:
             for i, element in enumerate(self.dataStructure[1:]):
-                element[3](element[4])
+                element[5](element[4])
             self.addButton.setDisabled(True)
             self.removeButton.setDisabled(True)
     

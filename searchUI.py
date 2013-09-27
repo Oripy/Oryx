@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'search.ui'
 #
-# Created: Thu Sep 26 16:51:46 2013
+# Created: Fri Sep 27 10:38:58 2013
 #      by: PyQt4 UI code generator 4.9.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.setEnabled(True)
-        MainWindow.resize(734, 641)
+        MainWindow.resize(798, 641)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("glasses.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -522,7 +522,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addLayout(self.mainLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 734, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 798, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.fileMenu = QtGui.QMenu(self.menubar)
         self.fileMenu.setObjectName(_fromUtf8("fileMenu"))
@@ -592,8 +592,8 @@ class Ui_MainWindow(object):
         self.childRadioHalf.setText(QtGui.QApplication.translate("MainWindow", "Demi-lune", None, QtGui.QApplication.UnicodeUTF8))
         self.childRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Enfant", None, QtGui.QApplication.UnicodeUTF8))
         self.solarGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Teinte", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teinté (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
-        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teinté (Photochromique ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teintés (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
+        self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teintés (Photochromiques ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))
         self.resetButton.setText(QtGui.QApplication.translate("MainWindow", "Remise à zéro", None, QtGui.QApplication.UnicodeUTF8))
         self.searchButton.setText(QtGui.QApplication.translate("MainWindow", "Rechercher", None, QtGui.QApplication.UnicodeUTF8))
         self.distantSearchButton.setText(QtGui.QApplication.translate("MainWindow", "Vision de loin", None, QtGui.QApplication.UnicodeUTF8))

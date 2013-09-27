@@ -106,14 +106,11 @@ def formatFrame(value):
         return u'Adulte'    
 
 def getData(value):
-    """ returns an int, float or string depending on the input type """
+    """ returns a float or string depending on the input type """
     try:
-        out = int(value)
+        out = float(value)
     except:
-        try:
-            out = float(value)
-        except:
-            out = value
+        out = value
     return out
 
 redPalette = QtGui.QPalette()
@@ -121,6 +118,8 @@ redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 
 rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
 leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+
+sortRole = QtCore.Qt.UserRole + 1
 
 ###########################################
 
@@ -169,10 +168,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model = QtGui.QStandardItemModel(self)
         
         self.loadCsv(FILENAME)
-        self.loadData()
+        self.displayData(self.data)
         self.new()
-        
-        self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
     def initUI(self):
         """ create actions and default values of the interface """
@@ -277,6 +274,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
+        self.tableView.setSortingEnabled(True)
             
     def closeEvent(self, event):
         """ Reimplementation of the closeEvent
@@ -428,8 +426,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                    ) for i in range(len(self.dataStructure))[1:]]
         
         # For each item, add the data value to allow correct sorting
-        for item_data in item:
-            item_data.setData(getData(item_data.text()), QtCore.Qt.EditRole)
+        for i, item_data in enumerate(item):
+            item_data.setData(self.dataStructure[i][2](), sortRole)
         
         rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
         item[1].setBackground(rightcolor)
@@ -465,6 +463,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.new()    
         
+        self.model.setSortRole(sortRole)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
     
     def delete(self):
@@ -583,34 +582,43 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def loadCsv(self, fileName):
         """ Load data from the CSV file and displays it in the table """
-        self.model.clear()
         self.data = dict()
-        self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
-                          for i in xrange(len(self.dataStructure))])
         with open(fileName, "rb") as fileInput:
-            for row in csv.reader(fileInput):
-                items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
-                          for i in xrange(len(self.dataStructure))]
-
-                # For each item, add the data value to allow correct sorting
-                for item in items:
-                    item.setData(getData(item.text()), QtCore.Qt.EditRole)
-                    
-                items[1].setBackground(rightcolor)
-                items[2].setBackground(rightcolor)
-                items[3].setBackground(rightcolor)
-                items[4].setBackground(rightcolor)
-
-                items[5].setBackground(leftcolor)
-                items[6].setBackground(leftcolor)
-                items[7].setBackground(leftcolor)
-                items[8].setBackground(leftcolor)
-                self.model.appendRow(items)
-                
+            for row in csv.reader(fileInput):               
                 self.data[int(row[0])] = [getData(row[a])
                           for a in range(len(self.dataStructure))[1:]]
+
+    def displayData(self, data):
+        """ Load data from the CSV file and displays it in the table """
+        self.model.clear()
+        self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
+                          for i in xrange(len(self.dataStructure))])
+                          
+        for key, values in data.iteritems():
+            row = [key] + values
+            
+            items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
+                         for i in xrange(len(self.dataStructure))]
+
+            # For each item, add the data value to allow correct sorting
+            for i, item in enumerate(items):
+                item.setData(getData(row[i]), sortRole)
+            
+            items[1].setBackground(rightcolor)
+            items[2].setBackground(rightcolor)
+            items[3].setBackground(rightcolor)
+            items[4].setBackground(rightcolor)
+
+            items[5].setBackground(leftcolor)
+            items[6].setBackground(leftcolor)
+            items[7].setBackground(leftcolor)
+            items[8].setBackground(leftcolor)
+            
+            self.model.appendRow(items)
+                
         self.tableView.setModel(self.model)        
         self.tableView.resizeColumnsToContents()
+        self.model.setSortRole(sortRole)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
         
     def writeCsv(self, fileName):
@@ -621,7 +629,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 dataWriter.writerow([key]+values)
                 
     def backup(self):
-        new_filename = os.getcwd()+'\\'+'oryxdata_backup_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv'
+        new_filename = os.path.join(os.getcwd(), 'oryxdata_backup_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
         filename = QtGui.QFileDialog.getSaveFileName(self, 
                    u'Choix du nom de fichier de Backup', 
                    new_filename, u'csv (*.csv)')        
@@ -645,6 +653,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                        os.getcwd(), u'csv (*.csv)')
             if filename != '':
                 self.loadCsv(filename)
+                self.displayData(self.data)
                 self.writeCsv(FILENAME)
     
     def printpdf(self):

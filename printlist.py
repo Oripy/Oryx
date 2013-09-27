@@ -72,7 +72,7 @@ def createpdf(model):
     if dlg.exec_():
         sort, stock = dlg.getValues()
     
-        new_filename = os.getcwd()+'\\'+'oryx_print_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.pdf'
+        new_filename = os.path.join(os.getcwd(), 'oryx_print_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.pdf')
         filename = QtGui.QFileDialog.getSaveFileName(None,
                        u'Choix du nom du fichier PDF', 
                        new_filename, u'PDF (*.pdf)')   

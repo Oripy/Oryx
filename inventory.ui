@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
+    <width>798</width>
     <height>636</height>
    </rect>
   </property>
@@ -546,7 +546,7 @@
              <string>Monture</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_5">
-             <item row="4" column="0">
+             <item row="5" column="0">
               <widget class="QRadioButton" name="childRadioYes">
                <property name="text">
                 <string>Enfant</string>
@@ -563,7 +563,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="4" column="0">
               <widget class="QRadioButton" name="childRadioHalf">
                <property name="text">
                 <string>Demi-lune</string>
@@ -588,7 +588,7 @@
              <item row="0" column="0">
               <widget class="QRadioButton" name="solarRadioNo">
                <property name="text">
-                <string>Non teinté (ou T1, T2)</string>
+                <string>Non teintés (ou T1, T2)</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -598,7 +598,7 @@
              <item row="1" column="0">
               <widget class="QRadioButton" name="solarRadioYes">
                <property name="text">
-                <string>Teinté (Photochromique ou T3, T4)</string>
+                <string>Teintés (Photochromiques ou T3, T4)</string>
                </property>
               </widget>
              </item>
@@ -619,7 +619,7 @@
           <item>
            <widget class="QPlainTextEdit" name="commentEdit">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -675,7 +675,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>788</width>
+     <width>798</width>
      <height>21</height>
     </rect>
    </property>
@@ -793,7 +793,6 @@
   <tabstop>addRadioBF</tabstop>
   <tabstop>childRadioNo</tabstop>
   <tabstop>childRadioYes</tabstop>
-  <tabstop>childRadioHalf</tabstop>
   <tabstop>solarRadioNo</tabstop>
   <tabstop>solarRadioYes</tabstop>
   <tabstop>commentEdit</tabstop>

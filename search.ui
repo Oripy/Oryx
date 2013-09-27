@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>734</width>
+    <width>798</width>
     <height>641</height>
    </rect>
   </property>
@@ -505,7 +505,7 @@
            <item>
             <widget class="QRadioButton" name="solarRadioNo">
              <property name="text">
-              <string>Non teinté (ou T1, T2)</string>
+              <string>Non teintés (ou T1, T2)</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -515,7 +515,7 @@
            <item>
             <widget class="QRadioButton" name="solarRadioYes">
              <property name="text">
-              <string>Teinté (Photochromique ou T3, T4)</string>
+              <string>Teintés (Photochromiques ou T3, T4)</string>
              </property>
             </widget>
            </item>
@@ -1014,7 +1014,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>734</width>
+     <width>798</width>
      <height>21</height>
     </rect>
    </property>
