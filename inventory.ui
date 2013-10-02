@@ -566,7 +566,7 @@
              <item row="4" column="0">
               <widget class="QRadioButton" name="childRadioHalf">
                <property name="text">
-                <string>Demi-lune</string>
+                <string>Demi-lunes</string>
                </property>
               </widget>
              </item>

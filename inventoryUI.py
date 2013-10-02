@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'inventory.ui'
 #
-# Created: Fri Sep 27 10:38:47 2013
+# Created: Wed Oct 02 18:46:48 2013
 #      by: PyQt4 UI code generator 4.9.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -430,7 +430,7 @@ class Ui_MainWindow(object):
         self.childGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Monture", None, QtGui.QApplication.UnicodeUTF8))
         self.childRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Enfant", None, QtGui.QApplication.UnicodeUTF8))
         self.childRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Adulte", None, QtGui.QApplication.UnicodeUTF8))
-        self.childRadioHalf.setText(QtGui.QApplication.translate("MainWindow", "Demi-lune", None, QtGui.QApplication.UnicodeUTF8))
+        self.childRadioHalf.setText(QtGui.QApplication.translate("MainWindow", "Demi-lunes", None, QtGui.QApplication.UnicodeUTF8))
         self.solarGroupBox.setTitle(QtGui.QApplication.translate("MainWindow", "Teinte", None, QtGui.QApplication.UnicodeUTF8))
         self.solarRadioNo.setText(QtGui.QApplication.translate("MainWindow", "Non teintés (ou T1, T2)", None, QtGui.QApplication.UnicodeUTF8))
         self.solarRadioYes.setText(QtGui.QApplication.translate("MainWindow", "Teintés (Photochromiques ou T3, T4)", None, QtGui.QApplication.UnicodeUTF8))

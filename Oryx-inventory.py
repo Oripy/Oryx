@@ -409,12 +409,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.dataStructure[2][2]() > 0:
             self.dataStructure[1][3](self.dataStructure[1][2]()+self.dataStructure[2][2]())
             self.dataStructure[2][3](-self.dataStructure[2][2]())
-            self.dataStructure[3][3]((self.dataStructure[3][2]()+90) % 180)
+            self.dataStructure[3][3]((self.dataStructure[3][2]()+90) % 180)            
         
         if self.dataStructure[6][2]() > 0:
             self.dataStructure[5][3](self.dataStructure[5][2]()+self.dataStructure[6][2]())
             self.dataStructure[6][3](-self.dataStructure[6][2]())
             self.dataStructure[7][3]((self.dataStructure[7][2]()+90) % 180)
+        
     
     def save(self):
         """ Save the modifications and write it to the CSV file """
@@ -428,6 +429,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # For each item, add the data value to allow correct sorting
         for i, item_data in enumerate(item):
             item_data.setData(self.dataStructure[i][2](), sortRole)
+        
+        if self.dataStructure[2][2]() == 0:
+            item[3].setData(u'000°', QtCore.Qt.DisplayRole)
+            item[3].setData(0, sortRole)
+        
+        if self.dataStructure[6][2]() == 0:
+            item[7].setData(u'000°', QtCore.Qt.DisplayRole)
+            item[7].setData(0, sortRole)
         
         rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
         item[1].setBackground(rightcolor)
@@ -454,8 +463,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 print "Error when trying to update the TableView"
         if self.modif:
+            self.loadCsv(FILENAME)
             self.data[self.currentNum] = [self.dataStructure[i][2]()
                           for i in range(len(self.dataStructure))[1:]]
+            if self.data[self.currentNum][1] == 0:
+                self.data[self.currentNum][2] = 0 
+            if self.data[self.currentNum][5] == 0: 
+                self.data[self.currentNum][6] = 0
             self.writeCsv(FILENAME)    
             self.setStatus('Saved')
             self.modif = False
@@ -485,6 +499,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.model.takeRow(rows[0].row())
                 else:
                     print "Error when trying to find the right row to delete"
+                self.loadCsv(FILENAME)
                 self.data.pop(self.currentNum)
                 self.writeCsv(FILENAME)    
                 self.setStatus('New')
@@ -634,6 +649,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                    u'Choix du nom de fichier de Backup', 
                    new_filename, u'csv (*.csv)')        
         if filename != '':
+            self.loadCsv(FILENAME)
             self.writeCsv(filename)
     
     def restore(self):

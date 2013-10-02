@@ -273,6 +273,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         # Right Eye
         self.rMasterRadio.toggled.connect(self.modified)
+
+        self.rIndifCheckBox.stateChanged.connect(self.rIndifChanged)        
+        
         # Correction
         self.rSphereSpin.setMaximum(MAX_SPHERE)
         self.rSphereSpin.setMinimum(MIN_SPHERE)
@@ -305,6 +308,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         # Left Eye
         self.lMasterRadio.toggled.connect(self.modified)
+        
+        self.lIndifCheckBox.stateChanged.connect(self.lIndifChanged)
+        
         # Correction
         self.lSphereSpin.setMaximum(MAX_SPHERE)
         self.lSphereSpin.setMinimum(MIN_SPHERE)
@@ -350,6 +356,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.clicked.connect(self.selectLine)
 
     def addToStock(self):
+        self.loadCsv(FILENAME)
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 0:
             self.data[num][12] = 1
@@ -360,6 +367,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.writeCsv(FILENAME)
 
     def removeFromStock(self):
+        self.loadCsv(FILENAME)
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 1:
             self.data[num][12] = 0
@@ -441,10 +449,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             items[8].setBackground(leftcolor)
             items[9].setBackground(leftcolor)
             
-            if row[10] != frame:
+            if row[11] != frame:
+                print row[10]
+                print frame
                 items[11].setBackground(redcolor)
         
-            if row[11] != solar:
+            if row[12] != solar:
                 items[12].setBackground(redcolor)
             
             self.model.appendRow(items)
@@ -464,8 +474,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         # Correction
         mLeft, mRight = self.getMasterEyeCoef()
-        lScore = eye_score(data[4:8], target[4:8])
-        rScore = eye_score(data[0:4], target[0:4])
+        if not self.lIndifCheckBox.isChecked():
+            lScore = eye_score(data[4:8], target[4:8])
+        else:
+            lScore = 1
+        if not self.rIndifCheckBox.isChecked():
+            rScore = eye_score(data[0:4], target[0:4])
+        else:
+            rScore = 1
+        
         score = 100 * lScore**mLeft * rScore**mRight
         return score
 
@@ -489,6 +506,28 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lLinkCheckbox.setChecked(state)
         self.rLinkCheckbox.setChecked(state)
         
+    def lIndifChanged(self):
+        """ Activate/deactivate the spinboxes """
+        state = self.sender().isChecked()
+        self.lSphereSpin.setDisabled(state)
+        self.lCylSpin.setDisabled(state)
+        self.lAxisSpin.setDisabled(state)
+        self.lAddSpin.setDisabled(state)
+        self.lMasterRadio.setDisabled(state)
+        if state:
+            self.rMasterRadio.setChecked(state)
+        
+    def rIndifChanged(self):
+        """ Activate/deactivate the spinboxes """
+        state = self.sender().isChecked()
+        self.rSphereSpin.setDisabled(state)
+        self.rCylSpin.setDisabled(state)
+        self.rAxisSpin.setDisabled(state)
+        self.rAddSpin.setDisabled(state)
+        self.rMasterRadio.setDisabled(state)
+        if state:
+            self.lMasterRadio.setChecked(state)
+            
     def modified(self):
         """ Action when a value is modified """
         self.model.clear()
