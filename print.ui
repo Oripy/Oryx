@@ -41,16 +41,16 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="lRadio">
+           <widget class="QRadioButton" name="rRadio">
             <property name="text">
-             <string>Trier par Sphere de l'OG</string>
+             <string>Trier par Sphere de l'OD</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="rRadio">
+           <widget class="QRadioButton" name="lRadio">
             <property name="text">
-             <string>Trier par Sphere de l'OD</string>
+             <string>Trier par Sphere de l'OG</string>
             </property>
            </widget>
           </item>

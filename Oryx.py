@@ -10,7 +10,15 @@ from PyQt4 import QtGui
 from mainUI import Ui_MainWindow
 import inventory
 import search
+import hashlib
+from codecs import encode
 
+import ConfigParser
+
+CONFIG = ConfigParser.ConfigParser()
+CONFIG.read('config.ini')
+
+PASSWORD = CONFIG.get('Main', 'pass')
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -25,6 +33,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.inventory_win = inventory.MainWindow()
         self.search_win = search.MainWindow()
         
+        self.passwordButton.clicked.connect(self.unlock)
+        self.passwordEdit.returnPressed.connect(self.unlock)
+        
     def inventory(self):
         """ show the inventory window maximized """
         self.inventory_win.showMaximized()
@@ -34,6 +45,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ show the search window maximized """
         self.search_win.showMaximized()
         self.search_win.activateWindow()
+    
+    def unlock(self):
+        """ Test the password and unlock if successful """
+        coded_pass = hashlib.sha512(encode(self.passwordEdit.text(),
+                                           'rot13')).hexdigest()[5:69]
+#        print coded_pass, len(coded_pass)
+        if coded_pass == PASSWORD:
+            self.searchButton.setEnabled(True)
+            self.inventoryButton.setEnabled(True)
+            self.passwordEdit.setText('')
+        else:
+            self.searchButton.setEnabled(False)
+            self.inventoryButton.setEnabled(False)
+            self.passwordEdit.setText('')
+            self.passwordEdit.setFocus()
+        
         
 if __name__ == '__main__':
     import sys

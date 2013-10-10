@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'print.ui'
 #
-# Created: Wed Sep 25 11:21:58 2013
+# Created: Thu Oct 10 18:17:05 2013
 #      by: PyQt4 UI code generator 4.9.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,12 +34,12 @@ class Ui_Dialog(object):
         self.numRadio.setChecked(True)
         self.numRadio.setObjectName(_fromUtf8("numRadio"))
         self.verticalLayout.addWidget(self.numRadio)
-        self.lRadio = QtGui.QRadioButton(self.groupBox)
-        self.lRadio.setObjectName(_fromUtf8("lRadio"))
-        self.verticalLayout.addWidget(self.lRadio)
         self.rRadio = QtGui.QRadioButton(self.groupBox)
         self.rRadio.setObjectName(_fromUtf8("rRadio"))
         self.verticalLayout.addWidget(self.rRadio)
+        self.lRadio = QtGui.QRadioButton(self.groupBox)
+        self.lRadio.setObjectName(_fromUtf8("lRadio"))
+        self.verticalLayout.addWidget(self.lRadio)
         self.formLayout.setLayout(0, QtGui.QFormLayout.LabelRole, self.verticalLayout)
         self.verticalLayout_2.addWidget(self.groupBox)
         self.stockCheckBox = QtGui.QCheckBox(Dialog)
@@ -61,8 +61,8 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Impression", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Tri", None, QtGui.QApplication.UnicodeUTF8))
         self.numRadio.setText(QtGui.QApplication.translate("Dialog", "Trier par numéro", None, QtGui.QApplication.UnicodeUTF8))
-        self.lRadio.setText(QtGui.QApplication.translate("Dialog", "Trier par Sphere de l\'OG", None, QtGui.QApplication.UnicodeUTF8))
         self.rRadio.setText(QtGui.QApplication.translate("Dialog", "Trier par Sphere de l\'OD", None, QtGui.QApplication.UnicodeUTF8))
+        self.lRadio.setText(QtGui.QApplication.translate("Dialog", "Trier par Sphere de l\'OG", None, QtGui.QApplication.UnicodeUTF8))
         self.stockCheckBox.setText(QtGui.QApplication.translate("Dialog", "Imprimer uniquement les lunettes encore en stock", None, QtGui.QApplication.UnicodeUTF8))
 
 
