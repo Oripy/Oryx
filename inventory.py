@@ -18,56 +18,59 @@ import os
 ############## Configuration ##############
 import ConfigParser
 
-Config = ConfigParser.ConfigParser()
-Config.read('config.ini')
+CONFIG = ConfigParser.ConfigParser()
+CONFIG.read('config.ini')
 
 def configSectionMap(section):
     """ Retreive values from a section of the config file
         return: a dictionnary containing all key: value from the section """
     dict1 = {}
-    options = Config.options(section)
+    options = CONFIG.options(section)
     for option in options:
         try:
-            dict1[option] = Config.get(section, option)
+            dict1[option] = CONFIG.get(section, option)
             if dict1[option] == -1:
                 print 'skip: %s' % option
         except:
             print 'exception on %s!' % option
             dict1[option] = None
     return dict1
-    
-FILENAME = configSectionMap('Main')['filename']
 
-try:
-    with open(FILENAME):
-        pass
-except IOError:
-    # Create the file
-    f = open(FILENAME, 'w+')
-    f.write('')
-    f.close()
+MAIN = configSectionMap('Main')
 
-correction = configSectionMap('Correction')
+FILENAME = MAIN['filename']
+AUTOSAVE_INTERVAL = float(MAIN['autosave_interval'])
+AUTOSAVE_MAX_NUM = int(MAIN['autosave_max_num'])
+AUTOSAVE_DIR = os.path.join(os.getcwd(), 'autosave')
 
-MAX_SPHERE = float(correction['max_sphere'])
-MIN_SPHERE = float(correction['min_sphere'])
-STEP_SPHERE = float(correction['step_sphere'])
-DEFAULT_SPHERE = float(correction['default_sphere'])
+CORRECTION = configSectionMap('Correction')
 
-MAX_CYL = float(correction['max_cyl'])
-MIN_CYL = float(correction['min_cyl'])
-STEP_CYL = float(correction['step_cyl'])
-DEFAULT_CYL = float(correction['default_cyl'])
+MAX_SPHERE = float(CORRECTION['max_sphere'])
+MIN_SPHERE = float(CORRECTION['min_sphere'])
+STEP_SPHERE = float(CORRECTION['step_sphere'])
+DEFAULT_SPHERE = float(CORRECTION['default_sphere'])
 
-MAX_AXIS = float(correction['max_axis'])
-MIN_AXIS = float(correction['min_axis'])
-STEP_AXIS = float(correction['step_axis'])
-DEFAULT_AXIS = float(correction['default_axis'])
+MAX_CYL = float(CORRECTION['max_cyl'])
+MIN_CYL = float(CORRECTION['min_cyl'])
+STEP_CYL = float(CORRECTION['step_cyl'])
+DEFAULT_CYL = float(CORRECTION['default_cyl'])
 
-MAX_ADD = float(correction['max_add'])
-MIN_ADD = float(correction['min_add'])
-STEP_ADD = float(correction['step_add'])
-DEFAULT_ADD = float(correction['default_add'])
+MAX_AXIS = float(CORRECTION['max_axis'])
+MIN_AXIS = float(CORRECTION['min_axis'])
+STEP_AXIS = float(CORRECTION['step_axis'])
+DEFAULT_AXIS = float(CORRECTION['default_axis'])
+
+MAX_ADD = float(CORRECTION['max_add'])
+MIN_ADD = float(CORRECTION['min_add'])
+STEP_ADD = float(CORRECTION['step_add'])
+DEFAULT_ADD = float(CORRECTION['default_add'])
+
+# Create the data file if it doesn't exists
+open(FILENAME, 'a').close()
+
+# Create autosaves dir if it doesn't exists
+if not os.path.exists(AUTOSAVE_DIR):
+    os.makedirs(AUTOSAVE_DIR)
 
 ###########################################
 
@@ -109,17 +112,34 @@ def getData(value):
     """ returns a float or string depending on the input type """
     try:
         out = float(value)
-    except:
+    except ValueError:
         out = value
     return out
 
-redPalette = QtGui.QPalette()
-redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
+def getListAutosaves():
+    """ returns the list of autosave files in autosave folder """
+    list_autosaves = os.listdir(AUTOSAVE_DIR)
+    for item in list_autosaves:
+        if item[:18] != 'oryxdata_autosave_':
+            list_autosaves.remove(item)
+    list_autosaves.sort()
+    return list_autosaves
 
-rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
-leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+def getLastAutoSaved():
+    """ returns the time and date of the last autosaved file 
+        if no autosave file, returns epoch (1970-01-01_01h00) """
+    if len(getListAutosaves()) > 0:
+        return time.strptime(getListAutosaves()[-1][18:-4], '%Y-%m-%d_%Hh%M')
+    else:
+        return time.localtime(0)
 
-sortRole = QtCore.Qt.UserRole + 1
+RED_PALETTE = QtGui.QPalette()
+RED_PALETTE.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
+
+RIGHT_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(180)
+LEFT_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(180)
+
+SORT_ROLE = QtCore.Qt.UserRole + 1
 
 ###########################################
 
@@ -133,12 +153,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.initUI()
         
-        self.currentNum = self.eyeglassesNum.value()
+        self.current_num = self.eyeglassesNum.value()
         self.modif = False
         
         # Data Structure (Name, formating function, get function, 
         #                 set function, default value)
-        self.dataStructure = [
+        self.data_structure = [
             ['Num', lambda n: str(int(n)), self.eyeglassesNum.value, 
              self.eyeglassesNum.setValue, 1],
             ['OD Sphere', formatSph, self.rSphereSpin.value,
@@ -168,6 +188,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model = QtGui.QStandardItemModel(self)
         
         self.loadCsv(FILENAME)
+        
         self.displayData(self.data)
         self.new()
 
@@ -185,7 +206,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
         
-        self.currentNum = self.eyeglassesNum.value()
+        self.current_num = self.eyeglassesNum.value()
         self.eyeglassesNum.noWarn = False
         
         self.saveButton.clicked.connect(self.saveAction.trigger)
@@ -209,7 +230,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rCylSpin.valueChanged.connect(self.modified)
         
         self.rLabelCylPos.setVisible(False)
-        self.rLabelCylPos.setPalette(redPalette)
+        self.rLabelCylPos.setPalette(RED_PALETTE)
         
         self.rAxisSpin.setMaximum(MAX_AXIS)
         self.rAxisSpin.setMinimum(MIN_AXIS)
@@ -240,7 +261,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lCylSpin.valueChanged.connect(self.modified)
         
         self.lLabelCylPos.setVisible(False)
-        self.lLabelCylPos.setPalette(redPalette)
+        self.lLabelCylPos.setPalette(RED_PALETTE)
         
         self.lAxisSpin.setMaximum(MAX_AXIS)
         self.lAxisSpin.setMinimum(MIN_AXIS)
@@ -314,7 +335,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
     
     def getFirstNewNumber(self):
-        n = self.currentNum
+        """ returns the next available number
+            (starting with the current number) """
+        n = self.current_num
         while self.data.has_key(n):
             n += 1
         return n
@@ -322,7 +345,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def new(self):
         """ set the number to the smallest available eyeglasses number """
         n = self.getFirstNewNumber()
-        if n != self.currentNum:
+        if n != self.current_num:
             self.eyeglassesNum.setValue(n)
             self.rSphereSpin.setFocus()
             self.rSphereSpin.selectAll()
@@ -406,56 +429,55 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     def convert(self):
         """ convert the data entered if cylinder is positive """
-        if self.dataStructure[2][2]() > 0:
-            self.dataStructure[1][3](self.dataStructure[1][2]()+self.dataStructure[2][2]())
-            self.dataStructure[2][3](-self.dataStructure[2][2]())
-            self.dataStructure[3][3]((self.dataStructure[3][2]()+90) % 180)            
+        if self.data_structure[2][2]() > 0:
+            self.data_structure[1][3](
+                    self.data_structure[1][2]() + self.data_structure[2][2]())
+            self.data_structure[2][3](-self.data_structure[2][2]())
+            self.data_structure[3][3]((self.data_structure[3][2]() + 90) % 180)
         
-        if self.dataStructure[6][2]() > 0:
-            self.dataStructure[5][3](self.dataStructure[5][2]()+self.dataStructure[6][2]())
-            self.dataStructure[6][3](-self.dataStructure[6][2]())
-            self.dataStructure[7][3]((self.dataStructure[7][2]()+90) % 180)
-        
+        if self.data_structure[6][2]() > 0:
+            self.data_structure[5][3](
+                    self.data_structure[5][2]() + self.data_structure[6][2]())
+            self.data_structure[6][3](-self.data_structure[6][2]())
+            self.data_structure[7][3]((self.data_structure[7][2]() + 90) % 180)
     
     def save(self):
         """ Save the modifications and write it to the CSV file """
         self.convert()        
         
-        item = [QtGui.QStandardItem(str(self.currentNum))] \
+        item = [QtGui.QStandardItem(str(self.current_num))] \
                + [QtGui.QStandardItem( \
-                   self.dataStructure[i][1](self.dataStructure[i][2]()) \
-                   ) for i in range(len(self.dataStructure))[1:]]
+                   self.data_structure[i][1](self.data_structure[i][2]()) \
+                   ) for i in range(len(self.data_structure))[1:]]
         
         # For each item, add the data value to allow correct sorting
         for i, item_data in enumerate(item):
-            item_data.setData(self.dataStructure[i][2](), sortRole)
+            item_data.setData(self.data_structure[i][2](), SORT_ROLE)
         
-        if self.dataStructure[2][2]() == 0:
+        if self.data_structure[2][2]() == 0:
             item[3].setData(u'000°', QtCore.Qt.DisplayRole)
-            item[3].setData(0, sortRole)
+            item[3].setData(0, SORT_ROLE)
         
-        if self.dataStructure[6][2]() == 0:
+        if self.data_structure[6][2]() == 0:
             item[7].setData(u'000°', QtCore.Qt.DisplayRole)
-            item[7].setData(0, sortRole)
+            item[7].setData(0, SORT_ROLE)
         
-        rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
-        item[1].setBackground(rightcolor)
-        item[2].setBackground(rightcolor)
-        item[3].setBackground(rightcolor)
-        item[4].setBackground(rightcolor)
+        item[1].setBackground(RIGHT_COLOR)
+        item[2].setBackground(RIGHT_COLOR)
+        item[3].setBackground(RIGHT_COLOR)
+        item[4].setBackground(RIGHT_COLOR)
         
-        leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
-        item[5].setBackground(leftcolor)
-        item[6].setBackground(leftcolor)
-        item[7].setBackground(leftcolor)
-        item[8].setBackground(leftcolor)
-        if not self.data.has_key(self.currentNum) and self.modif:
+        item[5].setBackground(LEFT_COLOR)
+        item[6].setBackground(LEFT_COLOR)
+        item[7].setBackground(LEFT_COLOR)
+        item[8].setBackground(LEFT_COLOR)
+        if not self.data.has_key(self.current_num) and self.modif:
             # Add a line to the table if the current item do not exists
             # (and has been modified)
             self.model.appendRow(item)
         else:
             # Alter the existing line
-            rows = self.model.findItems(str(self.currentNum))
+            rows = self.model.findItems(str(self.current_num))
             if len(rows) == 1:
                 row = rows[0].row()
                 for column, elem in enumerate(item):
@@ -464,25 +486,26 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 print "Error when trying to update the TableView"
         if self.modif:
             self.loadCsv(FILENAME)
-            self.data[self.currentNum] = [self.dataStructure[i][2]()
-                          for i in range(len(self.dataStructure))[1:]]
-            if self.data[self.currentNum][1] == 0:
-                self.data[self.currentNum][2] = 0 
-            if self.data[self.currentNum][5] == 0: 
-                self.data[self.currentNum][6] = 0
-            self.writeCsv(FILENAME)    
+            self.data[self.current_num] = [self.data_structure[i][2]()
+                          for i in range(len(self.data_structure))[1:]]
+            if self.data[self.current_num][1] == 0:
+                self.data[self.current_num][2] = 0 
+            if self.data[self.current_num][5] == 0: 
+                self.data[self.current_num][6] = 0
+            self.writeCsv(FILENAME)
+            self.autoSave()
             self.setStatus('Saved')
             self.modif = False
-        self.scrollTo(self.currentNum)
+        self.scrollTo(self.current_num)
 
         self.new()    
         
-        self.model.setSortRole(sortRole)
+        self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
     
     def delete(self):
         """ Delete given entry and write the modification to the CSV file """
-        text = (u'Les lunettes numéro '+str(self.currentNum)+' '
+        text = (u'Les lunettes numéro '+str(self.current_num)+' '
                 u'vont être supprimées.\n'
                 u'\n'
                 u'Souhaitez-vous continuer ?')
@@ -493,14 +516,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
 
         if question == QtGui.QMessageBox.Yes:
-            if self.data.has_key(self.currentNum):
-                rows = self.model.findItems(str(self.currentNum))
+            if self.data.has_key(self.current_num):
+                rows = self.model.findItems(str(self.current_num))
                 if len(rows) == 1:
                     self.model.takeRow(rows[0].row())
                 else:
                     print "Error when trying to find the right row to delete"
                 self.loadCsv(FILENAME)
-                self.data.pop(self.currentNum)
+                self.data.pop(self.current_num)
                 self.writeCsv(FILENAME)    
                 self.setStatus('New')
                 self.modif = False
@@ -510,9 +533,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ Load data from the self.data variable
             and display it in the form """
         self.rLinkCheckbox.setChecked(False)
-        if self.data.has_key(self.currentNum):
-            for i, element in enumerate(self.dataStructure[1:]):
-                element[3](self.data[self.currentNum][i])
+        if self.data.has_key(self.current_num):
+            for i, element in enumerate(self.data_structure[1:]):
+                element[3](self.data[self.current_num][i])
             self.modif = False
             self.setStatus('Saved')
         else:
@@ -521,7 +544,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.rAddSpin.value() == self.lAddSpin.value():
             self.rLinkCheckbox.setChecked(True)
     
-        self.scrollTo(self.currentNum)
+        self.scrollTo(self.current_num)
     
     def scrollTo(self, number):
         """ scrolls and selects the line corresponding to the input number """
@@ -539,7 +562,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def reset(self):
         """ Reset the values in the form to the default values """
-        for element in self.dataStructure[1:]:
+        for element in self.data_structure[1:]:
             element[3](element[4])        
         self.modif = False
         
@@ -568,7 +591,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """ Warn the user that unsaved data will be lost if unsaved """      
         if not(self.eyeglassesNum.noWarn):
             if self.modif:
-                text = (u'Les lunettes '+str(self.currentNum)+' '
+                text = (u'Les lunettes '+str(self.current_num)+' '
                         u'n\'ont pas été enregistrées.\n'
                         u'Abandonner les changements ?')
                 question = QtGui.QMessageBox.warning(self,
@@ -578,85 +601,102 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.No)
 
                 if question == QtGui.QMessageBox.Yes:
-                    self.currentNum = self.eyeglassesNum.value()
-#                    self.eyeglassesNum.setValue(self.currentNum)
+                    self.current_num = self.eyeglassesNum.value()
+#                    self.eyeglassesNum.setValue(self.current_num)
                     self.loadData()
                     return 'Discarded'
                 else:
                     if self.sender() != None:
                         self.eyeglassesNum.noWarn = True
-                    self.eyeglassesNum.setValue(self.currentNum)
+                    self.eyeglassesNum.setValue(self.current_num)
                     return 'Canceled'
             else:
-                self.currentNum = self.eyeglassesNum.value()
-#                self.eyeglassesNum.setValue(self.currentNum)
+                self.current_num = self.eyeglassesNum.value()
+#                self.eyeglassesNum.setValue(self.current_num)
                 self.loadData()
         else:
             self.eyeglassesNum.noWarn = False
             return 'Saved'
+            
+    def autoSave(self):
+        """ Autosaves if more than AUTOSAVE_INTERVAL seconds without save """
+        if (time.time() - time.mktime(getLastAutoSaved())) > AUTOSAVE_INTERVAL:
+            new_filename = os.path.join(AUTOSAVE_DIR, 'oryxdata_autosave_'
+                ''+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
+            self.writeCsv(new_filename)
+            
+            list_autosaves = getListAutosaves()
+            if len(list_autosaves) > AUTOSAVE_MAX_NUM:
+                for item in list_autosaves[:(
+                        len(list_autosaves) - AUTOSAVE_MAX_NUM)]:
+                    os.remove(os.path.join(AUTOSAVE_DIR, item))
 
-    def loadCsv(self, fileName):
+    def loadCsv(self, filename):
         """ Load data from the CSV file and displays it in the table """
         self.data = dict()
-        with open(fileName, "rb") as fileInput:
-            for row in csv.reader(fileInput):               
+        with open(filename, "rb") as file_input:
+            for row in csv.reader(file_input):               
                 self.data[int(row[0])] = [getData(row[a])
-                          for a in range(len(self.dataStructure))[1:]]
+                          for a in range(len(self.data_structure))[1:]]
 
     def displayData(self, data):
         """ Load data from the CSV file and displays it in the table """
         self.model.clear()
-        self.model.setHorizontalHeaderLabels([self.dataStructure[i][0]
-                          for i in xrange(len(self.dataStructure))])
+        self.model.setHorizontalHeaderLabels([self.data_structure[i][0]
+                          for i in xrange(len(self.data_structure))])
                           
         for key, values in data.iteritems():
             row = [key] + values
             
-            items = [QtGui.QStandardItem(self.dataStructure[i][1](row[i])) 
-                         for i in xrange(len(self.dataStructure))]
+            items = [QtGui.QStandardItem(self.data_structure[i][1](row[i])) 
+                         for i in xrange(len(self.data_structure))]
 
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
-                item.setData(getData(row[i]), sortRole)
+                item.setData(getData(row[i]), SORT_ROLE)
             
-            items[1].setBackground(rightcolor)
-            items[2].setBackground(rightcolor)
-            items[3].setBackground(rightcolor)
-            items[4].setBackground(rightcolor)
+            items[1].setBackground(RIGHT_COLOR)
+            items[2].setBackground(RIGHT_COLOR)
+            items[3].setBackground(RIGHT_COLOR)
+            items[4].setBackground(RIGHT_COLOR)
 
-            items[5].setBackground(leftcolor)
-            items[6].setBackground(leftcolor)
-            items[7].setBackground(leftcolor)
-            items[8].setBackground(leftcolor)
+            items[5].setBackground(LEFT_COLOR)
+            items[6].setBackground(LEFT_COLOR)
+            items[7].setBackground(LEFT_COLOR)
+            items[8].setBackground(LEFT_COLOR)
             
             self.model.appendRow(items)
                 
         self.tableView.setModel(self.model)        
         self.tableView.resizeColumnsToContents()
-        self.model.setSortRole(sortRole)
+        self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
         
-    def writeCsv(self, fileName):
+    def writeCsv(self, filename):
         """ Write data in the CSV file """
-        with open(fileName, "wb") as fileInput:
-            dataWriter = csv.writer(fileInput)
+        with open(filename, "wb") as file_input:
+            data_writer = csv.writer(file_input)
             for key, values in self.data.iteritems():
-                dataWriter.writerow([key]+values)
+                data_writer.writerow([key]+values)
                 
     def backup(self):
-        new_filename = os.path.join(os.getcwd(), 'oryxdata_backup_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
+        """ Open a File Chooser dialog and saves the datafile to a new file """
+        new_filename = os.path.join(os.getcwd(),
+                'oryxdata_backup_' + \
+                time.strftime('%Y-%m-%d_%Hh%M', time.localtime()) + '.csv')
         filename = QtGui.QFileDialog.getSaveFileName(self, 
-                   u'Choix du nom de fichier de Backup', 
-                   new_filename, u'csv (*.csv)')        
+                u'Choix du nom de fichier de Backup',
+                new_filename, u'csv (*.csv)')        
         if filename != '':
             self.loadCsv(FILENAME)
             self.writeCsv(filename)
     
     def restore(self):
-        text = (u'Attention, l\'ensemble des données actuelles seront perdues et\n'
-                u'remplacées par les données du fichier de backup sélectionné.\n'
-                u'\n'
-                u'Souhaitez-vous continuer ?')
+        """ After a warning, open a File Chooser dialog and load the data in the
+           selected file a new data """
+        text = (u'Attention, l\'ensemble des données actuelles seront '
+                u'perdues et\n remplacées par les données du fichier de '
+                u'backup sélectionné.\n\n Souhaitez-vous continuer ?')
         question = QtGui.QMessageBox.warning(self,
             u'Ecraser les données ?',
             text,
@@ -673,16 +713,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.writeCsv(FILENAME)
     
     def printpdf(self):
+        """ Print data into a pdf file """
         createpdf(self.model)
-        
-###########################################
 
 if __name__ == '__main__':
-
     import sys
     app = QtGui.QApplication(sys.argv)
-#    splash = QtGui.QSplashScreen(QtGui.QPixmap("splash.jpg"))
-#    splash.show()
     mainWin = MainWindow()
     mainWin.show()
     sys.exit(app.exec_())

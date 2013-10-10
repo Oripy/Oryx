@@ -10,21 +10,23 @@ from PyQt4 import QtCore, QtGui
 from searchUI import Ui_MainWindow 
 
 import csv
+import time
+import os
 
 ############## Configuration ##############
 import ConfigParser
 
-Config = ConfigParser.ConfigParser()
-Config.read('config.ini')
+CONFIG = ConfigParser.ConfigParser()
+CONFIG.read('config.ini')
 
 def configSectionMap(section):
     """ Retreive values from a section of the config file
         return: a dictionnary containing all key: value from the section """
     dict1 = {}
-    options = Config.options(section)
+    options = CONFIG.options(section)
     for option in options:
         try:
-            dict1[option] = Config.get(section, option)
+            dict1[option] = CONFIG.get(section, option)
             if dict1[option] == -1:
                 print 'skip: %s' % option
         except:
@@ -32,62 +34,65 @@ def configSectionMap(section):
             dict1[option] = None
     return dict1
     
-FILENAME = configSectionMap('Main')['filename']
+MAIN = configSectionMap('Main')
 
-try:
-    with open(FILENAME):
-        pass
-except IOError:
-    # Create the file
-    f = open(FILENAME, 'w+')
-    f.write('')
-    f.close()
+FILENAME = MAIN['filename']
+AUTOSAVE_INTERVAL = float(MAIN['autosave_interval'])
+AUTOSAVE_MAX_NUM = int(MAIN['autosave_max_num'])
+AUTOSAVE_DIR = os.path.join(os.getcwd(), 'autosave')
 
-correction = configSectionMap('Correction')
+CORRECTION = configSectionMap('Correction')
 
-MAX_SPHERE = float(correction['max_sphere'])
-MIN_SPHERE = float(correction['min_sphere'])
-STEP_SPHERE = float(correction['step_sphere'])
-DEFAULT_SPHERE = float(correction['default_sphere'])
+MAX_SPHERE = float(CORRECTION['max_sphere'])
+MIN_SPHERE = float(CORRECTION['min_sphere'])
+STEP_SPHERE = float(CORRECTION['step_sphere'])
+DEFAULT_SPHERE = float(CORRECTION['default_sphere'])
 
-MAX_CYL = float(correction['max_cyl'])
-MIN_CYL = float(correction['min_cyl'])
-STEP_CYL = float(correction['step_cyl'])
-DEFAULT_CYL = float(correction['default_cyl'])
+MAX_CYL = float(CORRECTION['max_cyl'])
+MIN_CYL = float(CORRECTION['min_cyl'])
+STEP_CYL = float(CORRECTION['step_cyl'])
+DEFAULT_CYL = float(CORRECTION['default_cyl'])
 
-MAX_AXIS = float(correction['max_axis'])
-MIN_AXIS = float(correction['min_axis'])
-STEP_AXIS = float(correction['step_axis'])
-DEFAULT_AXIS = float(correction['default_axis'])
+MAX_AXIS = float(CORRECTION['max_axis'])
+MIN_AXIS = float(CORRECTION['min_axis'])
+STEP_AXIS = float(CORRECTION['step_axis'])
+DEFAULT_AXIS = float(CORRECTION['default_axis'])
 
-MAX_ADD = float(correction['max_add'])
-MIN_ADD = float(correction['min_add'])
-STEP_ADD = float(correction['step_add'])
-DEFAULT_ADD = float(correction['default_add'])
+MAX_ADD = float(CORRECTION['max_add'])
+MIN_ADD = float(CORRECTION['min_add'])
+STEP_ADD = float(CORRECTION['step_add'])
+DEFAULT_ADD = float(CORRECTION['default_add'])
 
-search = configSectionMap('Search')
+SEARCH = configSectionMap('Search')
 
-MASTER_EYE_COEF = float(search['master_eye_coef'])
+MASTER_EYE_COEF = float(SEARCH['master_eye_coef'])
 
-SPHERE_DELTA_MAX = float(search['sphere_delta_max'])+.25
-SPHERE_DELTA_MIN = float(search['sphere_delta_min'])-.25
+SPHERE_DELTA_MAX = float(SEARCH['sphere_delta_max'])+.25
+SPHERE_DELTA_MIN = float(SEARCH['sphere_delta_min'])-.25
 
-CYL_DELTA_MAX = float(search['cyl_delta_max'])+.25
-CYL_DELTA_MIN = float(search['cyl_delta_min'])-.25
+CYL_DELTA_MAX = float(SEARCH['cyl_delta_max'])+.25
+CYL_DELTA_MIN = float(SEARCH['cyl_delta_min'])-.25
 
-PARAM_AXIS_TOL0 = float(search['param_axis_tol0'])
-PARAM_AXIS_TOL1 = float(search['param_axis_tol1'])
-PARAM_AXIS_TOL2 = float(search['param_axis_tol2'])
+PARAM_AXIS_TOL0 = float(SEARCH['param_axis_tol0'])
+PARAM_AXIS_TOL1 = float(SEARCH['param_axis_tol1'])
+PARAM_AXIS_TOL2 = float(SEARCH['param_axis_tol2'])
 
-ADD_DELTA_MAX = float(search['add_delta_max'])+.25
+ADD_DELTA_MAX = float(SEARCH['add_delta_max'])+.25
 
-SPHERE_COEF = float(search['sphere_coef'])
-CYL_COEF = float(search['cyl_coef'])
-AXIS_COEF = float(search['axis_coef'])
-ADD_COEF = float(search['add_coef'])
+SPHERE_COEF = float(SEARCH['sphere_coef'])
+CYL_COEF = float(SEARCH['cyl_coef'])
+AXIS_COEF = float(SEARCH['axis_coef'])
+ADD_COEF = float(SEARCH['add_coef'])
 
-SCORE_SHAPE_PARAM = float(search['score_shape_param'])
+SCORE_SHAPE_PARAM = float(SEARCH['score_shape_param'])
 
+# Create the data file if it doesn't exists
+open(FILENAME, 'a').close()
+
+# Create autosaves dir if it doesn't exists
+if not os.path.exists(AUTOSAVE_DIR):
+    os.makedirs(AUTOSAVE_DIR)
+    
 ###########################################
 
 ######## Text formating functions #########
@@ -128,20 +133,38 @@ def getData(value):
     """ returns a float or string depending on the input type """
     try:
         out = float(value)
-    except:
+    except ValueError:
         out = value
     return out
 
-redPalette = QtGui.QPalette()
-redPalette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
+def getListAutosaves():
+    """ returns the list of autosave files in autosave folder """
+    list_autosaves = os.listdir(AUTOSAVE_DIR)
+    for item in list_autosaves:
+        if item[:18] != 'oryxdata_autosave_':
+            list_autosaves.remove(item)
+    list_autosaves.sort()
+    return list_autosaves
 
-rightcolor = QtGui.QColor(QtCore.Qt.green).lighter(180)
-leftcolor = QtGui.QColor(QtCore.Qt.red).lighter(180)
+def getLastAutoSaved():
+    """ returns the time and date of the last autosaved file 
+        if no autosave file, returns epoch (1970-01-01_01h00) """
+    if len(getListAutosaves()) > 0:
+        return time.strptime(getListAutosaves()[-1][18:-4], '%Y-%m-%d_%Hh%M')
+    else:
+        return time.localtime(0)
 
-redcolor = QtGui.QColor(QtCore.Qt.red).lighter(125)
+# Color constants
+RED_PALETTE = QtGui.QPalette()
+RED_PALETTE.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
 
+RIGHT_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(180)
+LEFT_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(180)
+
+RED_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(125)
 
 def percentcolor(value):
+    """ returns a color between green and red based on the value """
     return QtGui.QColor(int(255*(100-value)/100), int(255*value/100), 0, 128)
 
 ###########################################
@@ -149,59 +172,72 @@ def percentcolor(value):
 ######## Score related functions #########
 
 def scoringFunction(delta, minimum, maximum):
+    """ returns a score shaped by a polynomial function """
     if delta >= 0:
         return max(-(delta/maximum)**SCORE_SHAPE_PARAM + 1, 0)
     else:
         return max(-(delta/minimum)**SCORE_SHAPE_PARAM + 1, 0)
 
 def eye_score(data, target):
+    """ returns the score for one glass based on each parameter score """
     s = score_sphere(data, target)
     c = score_cyl(data, target)
     a = score_axis(data, target)
     p = score_add(data, target)
-    score = (s**SPHERE_COEF)*(c**CYL_COEF)*(a**AXIS_COEF)*(p**ADD_COEF)
-    print s, c, a, p
+    score = s**SPHERE_COEF * c**CYL_COEF * a**AXIS_COEF * p**ADD_COEF
+#    print s, c, a, p
     return score
     
 def sphericalEquivalentRefraction(data, target):
+    """ returns the Spherical Equivalent Refraction Sphere parameter
+        using a different cylinder """
     delta_cyl =  data[1] - target[1]
-    print data, target, target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
+#    print data, target, target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
     return target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
     
 def score_sphere(data, target):
+    """ returns the score related to the sphere """
     if (data[0] < 0 and target[0] > 0) or (data[0] > 0 and target[0] < 0):
         return 0
     delta_sph = data[0] - sphericalEquivalentRefraction(data, target)
     if data[0] >= 0:
         score = scoringFunction(delta_sph, SPHERE_DELTA_MIN, SPHERE_DELTA_MAX)
     else:
-        score = scoringFunction(delta_sph, -SPHERE_DELTA_MAX, -SPHERE_DELTA_MIN)
+        score = scoringFunction(delta_sph, -SPHERE_DELTA_MAX, 
+                                -SPHERE_DELTA_MIN)
     return score
     
 def score_cyl(data, target):
+    """ returns the score related to the cylinder """
     delta_cyl =  data[1] - target[1]
     return scoringFunction(delta_cyl, CYL_DELTA_MIN, CYL_DELTA_MAX)
     
 def score_axis(data, target):
+    """ returns the score related to the axis """
     # if no cylinder correction, axis is not taken into account
     if (data[1] == 0) or (target[1] == 0):
         return 1
-    tolerance = PARAM_AXIS_TOL2*data[1]**2+PARAM_AXIS_TOL1*data[1]+PARAM_AXIS_TOL0
-    tolerance = tolerance - (tolerance % 5) + (5 if (tolerance % 5) >= 2.5 else 0)
+    tolerance = PARAM_AXIS_TOL2 * target[1]**2 + \
+                PARAM_AXIS_TOL1 * target[1] + PARAM_AXIS_TOL0
+    tolerance = tolerance - (tolerance % 5) + \
+                (5 if (tolerance % 5) >= 2.5 else 0)
     
     delta_axis = (data[2] - target[2])
     delta_axis = abs((delta_axis + 90) % 180 - 90)
     return scoringFunction(delta_axis, -tolerance, tolerance)
     
 def score_add(data, target):
+    """ returns the score related to the addition """
+    # if the search is without addition, returns a null score
     if target[3] == 0 and data[3] != 0:
         return 0
     delta_add = target[3] - data[3]
     return scoringFunction(delta_add, -ADD_DELTA_MAX, target[3]+0.25)
-    
-sortRole = QtCore.Qt.UserRole + 1
 
 ###########################################
+
+# Constant for the sorting role in the Standard Items
+SORT_ROLE = QtCore.Qt.UserRole + 1
 
 ############## Main Window ################
 
@@ -213,11 +249,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.initUI()
         
-        self.setWindowState(QtCore.Qt.WindowMaximized)  
-        
-        # Data Structure (Name, formating function, get function, 
-        #                 set function, default value)
-        self.dataStructure = [
+        # Data Structure [Name, formating function, get function, 
+        #                 set function, default value, display stock function]
+        self.data_structure = [
             ['Num', lambda n: str(int(n)), lambda: 1,
              lambda n: n, 1, self.eyeglassesNum.setValue],
             ['OD Sphere', formatSph, self.rSphereSpin.value,
@@ -255,6 +289,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadCsv(FILENAME)
         self.loadData(self.eyeglassesNum.value())
         self.tableView.sortByColumn(1, QtCore.Qt.AscendingOrder)
+        self.rLinkCheckbox.setChecked(True)
 
     def initUI(self):
         """ create actions and default values of the interface """
@@ -265,7 +300,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.resetAction.triggered.connect(self.reset)
         
         self.searchButton.clicked.connect(self.searchAction.trigger)
-        self.distantSearchButton.clicked.connect(self.distantSearchAction.trigger)
+        self.distantSearchButton.clicked.connect(
+                self.distantSearchAction.trigger)
         self.nearSearchButton.clicked.connect(self.nearSearchAction.trigger)
         self.resetButton.clicked.connect(self.resetAction.trigger)
         self.addButton.clicked.connect(self.addToStock)
@@ -290,7 +326,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rCylSpin.valueChanged.connect(self.modified)
         
         self.rLabelCylPos.setVisible(False)
-        self.rLabelCylPos.setPalette(redPalette)
+        self.rLabelCylPos.setPalette(RED_PALETTE)
         
         self.rAxisSpin.setMaximum(MAX_AXIS)
         self.rAxisSpin.setMinimum(MIN_AXIS)
@@ -303,7 +339,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rAddSpin.setSingleStep(STEP_ADD)
         self.rAddSpin.setValue(DEFAULT_ADD)
         self.rAddSpin.valueChanged.connect(self.enableAddition)
-        
+                
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
         
         # Left Eye
@@ -325,7 +361,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lCylSpin.valueChanged.connect(self.modified)
         
         self.lLabelCylPos.setVisible(False)
-        self.lLabelCylPos.setPalette(redPalette)
+        self.lLabelCylPos.setPalette(RED_PALETTE)
         
         self.lAxisSpin.setMaximum(MAX_AXIS)
         self.lAxisSpin.setMinimum(MIN_AXIS)
@@ -356,6 +392,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.clicked.connect(self.selectLine)
 
     def addToStock(self):
+        """ Place the selected glasses back in stock """
         self.loadCsv(FILENAME)
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 0:
@@ -367,6 +404,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.writeCsv(FILENAME)
 
     def removeFromStock(self):
+        """ Place the selected glasses from stock """
         self.loadCsv(FILENAME)
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 1:
@@ -375,39 +413,50 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.addButton.setDisabled(False)
         self.removeButton.setDisabled(True)
         
+        self.autoSave()
         self.writeCsv(FILENAME)
 
-    def search(self):        
+    def search(self):
+        """ basic search function """
         self.convert()        
         # Fetch query from form
-        query = [self.dataStructure[i][2]()
-                    for i in range(len(self.dataStructure))[1:]]
+        query = [self.data_structure[i][2]()
+                    for i in range(len(self.data_structure))[1:]]
         
         self.abstractSearch(query)
         
     def nearSearch(self):
+        """ search function for near sight glasses 
+            do a basic search but add Addition to each Sphere
+            also removes all progressive and double focal glasses
+            from results """
         self.convert()
         # Fetch query from form
-        query = [self.dataStructure[i][2]()
-                    for i in range(len(self.dataStructure))[1:]]
-        query[1] += query[4]
-        query[5] += query[8]
-        query[4] = 0
-        query[8] = 0
+        query = [self.data_structure[i][2]()
+                    for i in range(len(self.data_structure))[1:]]
+        query[0] += query[3]
+        query[4] += query[7]
+        query[3] = 0
+        query[7] = 0
         
-        self.abstractSearch(query)
+        self.abstractSearch(query, True)
     
     def distSearch(self):
+        """ search function for distant sight glasses 
+            do a basic search but take 0 as addition
+            also removes all progressive and double focal glasses
+            from results """
         self.convert()
         # Fetch query from form
-        query = [self.dataStructure[i][2]()
-                    for i in range(len(self.dataStructure))[1:]]
-        query[4] = 0
-        query[8] = 0
+        query = [self.data_structure[i][2]()
+                    for i in range(len(self.data_structure))[1:]]
+        query[3] = 0
+        query[7] = 0
         
-        self.abstractSearch(query)
+        self.abstractSearch(query, True)
     
-    def abstractSearch(self, query):
+    def abstractSearch(self, query, no_add = False):
+        """ abstract search function that actually do the search mecanism """
         # Get database from file
         self.loadCsv(FILENAME)
         
@@ -415,76 +464,68 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         for num, value in self.data.iteritems():
             score = self.score(value, query)
-            if value[12] == 1 and score != 0:
-                new_data[num] = [self.score(value, query)]+value
+            if value[12] == 1 and score != 0 and \
+               ((not no_add) or value[8] == 0):
+                new_data[num] = [score]+value
         
         self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.iteritems()])
     
     def displayData(self, data):
+        """ display the search results in the tableview """
         self.model.clear()
-        self.model.setHorizontalHeaderLabels([u'Score']+[self.dataStructure[i][0]
-          for i in xrange(len(self.dataStructure))])
+        self.model.setHorizontalHeaderLabels(
+                [u'Score'] + [self.data_structure[i][0]
+                for i in xrange(len(self.data_structure))])
         
         frame = self.getFrame()
         solar = self.getSolar()
         
         for row in data:
             items = [QtGui.QStandardItem("{0:.2f}%".format(row[0]))]+[
-                     QtGui.QStandardItem(self.dataStructure[i][1](row[i+1])) 
-                         for i in xrange(len(self.dataStructure))]
+                     QtGui.QStandardItem(self.data_structure[i][1](row[i+1])) 
+                         for i in xrange(len(self.data_structure))]
             
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
-                item.setData(getData(row[i]), sortRole)
+                item.setData(getData(row[i]), SORT_ROLE)
             
             items[0].setBackground(percentcolor(row[0]))
             
-            items[2].setBackground(rightcolor)
-            items[3].setBackground(rightcolor)
-            items[4].setBackground(rightcolor)
-            items[5].setBackground(rightcolor)
+            items[2].setBackground(RIGHT_COLOR)
+            items[3].setBackground(RIGHT_COLOR)
+            items[4].setBackground(RIGHT_COLOR)
+            items[5].setBackground(RIGHT_COLOR)
             
-            items[6].setBackground(leftcolor)
-            items[7].setBackground(leftcolor)
-            items[8].setBackground(leftcolor)
-            items[9].setBackground(leftcolor)
+            items[6].setBackground(LEFT_COLOR)
+            items[7].setBackground(LEFT_COLOR)
+            items[8].setBackground(LEFT_COLOR)
+            items[9].setBackground(LEFT_COLOR)
             
             if row[11] != frame:
-                print row[10]
-                print frame
-                items[11].setBackground(redcolor)
+                items[11].setBackground(RED_COLOR)
         
             if row[12] != solar:
-                items[12].setBackground(redcolor)
+                items[12].setBackground(RED_COLOR)
             
             self.model.appendRow(items)
             
-            self.model.setSortRole(sortRole)
+            self.model.setSortRole(SORT_ROLE)
             self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)           
             self.tableView.resizeColumnsToContents()
     
     def score(self, data, target):
-#        # Frame
-#        if data[10] != target[10]:
-#            return 0
-#        
-#        # Sun
-#        if data[11] != target[11]:
-#            return 0
-        
-        # Correction
-        mLeft, mRight = self.getMasterEyeCoef()
+        """ Scoring function, taking into account the selected checkboxes """
+        coef_left, coef_right = self.getMasterEyeCoef()
         if not self.lIndifCheckBox.isChecked():
-            lScore = eye_score(data[4:8], target[4:8])
+            left_score = eye_score(data[4:8], target[4:8])
         else:
-            lScore = 1
+            left_score = 1
         if not self.rIndifCheckBox.isChecked():
-            rScore = eye_score(data[0:4], target[0:4])
+            right_score = eye_score(data[0:4], target[0:4])
         else:
-            rScore = 1
+            right_score = 1
         
-        score = 100 * lScore**mLeft * rScore**mRight
-        return score
+        return 100 * left_score**coef_left * right_score**coef_right
 
     def enableAddition(self):
         """ Change the state of both spinboxes in case the link is checked """
@@ -536,32 +577,39 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     def getMasterEyeCoef(self):
         """ returns the coefficient applied to both eyes score """
-        mLeft = (MASTER_EYE_COEF-1) * int(self.lMasterRadio.isChecked()) + 1
-        mRight = (MASTER_EYE_COEF-1) * int(self.rMasterRadio.isChecked()) + 1
-        return mLeft, mRight
+        return ((MASTER_EYE_COEF - 1) * int(self.lMasterRadio.isChecked()) + 1,
+               (MASTER_EYE_COEF - 1) * int(self.rMasterRadio.isChecked()) + 1)
         
     def setRSphere(self, value):
+        """ set the Right Sphere label to value with proper formatting """
         self.rSphereLabel.setText(formatSph(value))
     
     def setLSphere(self, value):
+        """ set the Left Sphere label to value with proper formatting """
         self.lSphereLabel.setText(formatSph(value))
         
     def setRCyl(self, value):
+        """ set the Right Cylinder label to value with proper formatting """
         self.rCylLabel.setText(formatCyl(value))
     
     def setLCyl(self, value):
+        """ set the Left Cylinder label to value with proper formatting """
         self.lCylLabel.setText(formatCyl(value))
        
     def setRAxis(self, value):
+        """ set the Right Axis label to value with proper formatting """
         self.rAxisLabel.setText(formatAxis(value))
     
     def setLAxis(self, value):
+        """ set the Left Axis label to value with proper formatting """
         self.lAxisLabel.setText(formatAxis(value))
     
     def setRAdd(self, value):
+        """ set the Right Addition label to value with proper formatting """
         self.rAddLabel.setText(formatSph(value))
     
     def setLAdd(self, value):
+        """ set the Left Addition label to value with proper formatting """
         self.lAddLabel.setText(formatSph(value))
     
     def getSolar(self):
@@ -641,27 +689,28 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     def setComment(self, value):
         """ write the input value to the comment field """
-        pass
         self.commentEdit.setPlainText(unicode(value, encoding='latin_1'))
     
     def convert(self):
         """ convert the data entered if cylinder is positive """
-        if self.dataStructure[2][2]() > 0:
-            self.dataStructure[1][3](self.dataStructure[1][2]()+self.dataStructure[2][2]())
-            self.dataStructure[2][3](-self.dataStructure[2][2]())
-            self.dataStructure[3][3]((self.dataStructure[3][2]()+90) % 180)
+        if self.data_structure[2][2]() > 0:
+            self.data_structure[1][3](self.data_structure[1][2]() + 
+                    self.data_structure[2][2]())
+            self.data_structure[2][3](-self.data_structure[2][2]())
+            self.data_structure[3][3]((self.data_structure[3][2]()+90) % 180)
         
-        if self.dataStructure[6][2]() > 0:
-            self.dataStructure[5][3](self.dataStructure[5][2]()+self.dataStructure[6][2]())
-            self.dataStructure[6][3](-self.dataStructure[6][2]())
-            self.dataStructure[7][3]((self.dataStructure[7][2]()+90) % 180)
+        if self.data_structure[6][2]() > 0:
+            self.data_structure[5][3](self.data_structure[5][2]() + 
+                    self.data_structure[6][2]())
+            self.data_structure[6][3](-self.data_structure[6][2]())
+            self.data_structure[7][3]((self.data_structure[7][2]()+90) % 180)
                  
     def loadData(self, num):
         """ Load data from the self.data variable
             and display it in the stock box """
         self.rLinkCheckbox.setChecked(False)
         if self.data.has_key(num):
-            for i, element in enumerate(self.dataStructure[1:]):
+            for i, element in enumerate(self.data_structure[1:]):
                 element[5](self.data[num][i])
             self.eyeglassesNum.setValue(num)
             
@@ -672,19 +721,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.addButton.setDisabled(False)
                 self.removeButton.setDisabled(True)
         else:
-            for i, element in enumerate(self.dataStructure[1:]):
+            for i, element in enumerate(self.data_structure[1:]):
                 element[5](element[4])
             self.addButton.setDisabled(True)
             self.removeButton.setDisabled(True)
-    
-    def scrollTo(self, number):
-        """ scrolls and selects the line corresponding to the input number """
-        items = self.model.findItems(str(number))
-        if len(items) != 0:
-            self.tableView.scrollTo(items[0].index())
-            self.tableView.selectRow(items[0].index().row())
-        else:
-            self.tableView.scrollToBottom()
 
     def selectLine(self):
         """ change the eyeglasses number to the selected line in the table """
@@ -709,31 +749,42 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         
         self.rLinkCheckbox.setChecked(True)
         self.lLinkCheckbox.setChecked(True)
+        
+        self.rIndifCheckBox.setChecked(False)
+        self.lIndifCheckBox.setChecked(False)        
         self.model.clear()
 
-    def loadCsv(self, fileName):
+    def autoSave(self):
+        """ Autosaves if more than AUTOSAVE_INTERVAL seconds without save """
+        if (time.time() - time.mktime(getLastAutoSaved())) > AUTOSAVE_INTERVAL:
+            new_filename = os.path.join(AUTOSAVE_DIR, 'oryxdata_autosave_'
+                ''+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
+            self.writeCsv(new_filename)
+            
+            list_autosaves = getListAutosaves()
+            if len(list_autosaves) > AUTOSAVE_MAX_NUM:
+                for item in list_autosaves[:(
+                        len(list_autosaves) - AUTOSAVE_MAX_NUM)]:
+                    os.remove(os.path.join(AUTOSAVE_DIR, item))
+
+    def loadCsv(self, filename):
         """ Load data from the CSV file and displays it in the table """
         self.data = dict()
-        with open(fileName, "rb") as fileInput:
-            for row in csv.reader(fileInput):               
+        with open(filename, "rb") as file_input:
+            for row in csv.reader(file_input):               
                 self.data[int(row[0])] = [getData(row[a])
-                          for a in range(len(self.dataStructure))[1:]]
+                          for a in range(len(self.data_structure))[1:]]
         
-    def writeCsv(self, fileName):
+    def writeCsv(self, filename):
         """ Write data in the CSV file """
-        with open(fileName, "wb") as fileInput:
-            dataWriter = csv.writer(fileInput)
+        with open(filename, "wb") as file_input:
+            data_writer = csv.writer(file_input)
             for key, values in self.data.iteritems():
-                dataWriter.writerow([key]+values)
-        
-###########################################
+                data_writer.writerow([key]+values)
 
 if __name__ == '__main__':
-
     import sys
     app = QtGui.QApplication(sys.argv)
-#    splash = QtGui.QSplashScreen(QtGui.QPixmap("splash.jpg"))
-#    splash.show()
     mainWin = MainWindow()
     mainWin.show()
     sys.exit(app.exec_())

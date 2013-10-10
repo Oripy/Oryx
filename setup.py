@@ -10,12 +10,8 @@ import py2exe
 
 setup(windows=[
       {
-          "script": 'Oryx-inventory.py',
+          "script": 'Oryx.py',
           "icon_resources": [(1, 'glasses.ico')]
-      },
-      {
-          "script": 'Oryx-search.py',
-          "icon_resources": [(1, "glasses.ico")]
       }],
       options={
 
