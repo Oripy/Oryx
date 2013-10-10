@@ -26,9 +26,10 @@ tableFormat = QtGui.QTextTableFormat()
 tableFormat.setAlignment(QtCore.Qt.AlignHCenter) 
 tableFormat.setAlignment(QtCore.Qt.AlignLeft)
 #tableFormat.setBackground(QtGui.QColor("#ffffff"))
-tableFormat.setCellPadding(5)
+tableFormat.setCellPadding(0)
 tableFormat.setCellSpacing(0)
 tableFormat.setBorder(1)
+tableFormat.setHeaderRowCount(1)
 #tableFormat.PageBreakFlag(tableFormat.PageBreak_AlwaysAfter)
 
 headerFormat = QtGui.QTextCharFormat()
@@ -37,6 +38,9 @@ headerFormat.setFontWeight(QtGui.QFont.Bold)
 
 cellFormat = QtGui.QTextCharFormat()
 cellFormat.setFontPointSize(10)
+
+centerAlignment = QtGui.QTextBlockFormat()
+centerAlignment.setAlignment(QtCore.Qt.AlignCenter)
 
 OG = 5
 OD = 1
@@ -112,7 +116,7 @@ def printtable(model, printer, sortedcolum, stock):
         rowCount = model.rowCount()
 
     #Create the table with the right number of rows and columns
-    table = cursor.insertTable(rowCount+1, model.columnCount(), tableFormat)  
+    table = cursor.insertTable(rowCount+1, model.columnCount(), tableFormat) 
 
     frame = cursor.currentFrame()
     frameFormat = frame.frameFormat()
@@ -126,6 +130,7 @@ def printtable(model, printer, sortedcolum, stock):
           
         # place cursor in the right place 
         cellCursor = titre.firstCursorPosition()  
+        cellCursor.setBlockFormat(centerAlignment)
         
         # writing into the cell
         cellCursor.insertText(model.horizontalHeaderItem(i).text(), headerFormat)
@@ -142,6 +147,7 @@ def printtable(model, printer, sortedcolum, stock):
             for col in xrange(table.columns()):
                 cell = table.cellAt(rowPrint,col)
                 cellCursor = cell.firstCursorPosition()
+                cellCursor.setBlockFormat(centerAlignment)
                 cellCursor.insertText(model.item(row,col).text(), cellFormat)   
 
     model.sort(0, QtCore.Qt.AscendingOrder)    

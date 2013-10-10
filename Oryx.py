@@ -48,20 +48,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     
     def unlock(self):
         """ Test the password and unlock if successful """
-        coded_pass = hashlib.sha512(encode(self.passwordEdit.text(),
-                                           'rot13')).hexdigest()[5:69]
-#        print coded_pass, len(coded_pass)
-        if coded_pass == PASSWORD:
-            self.searchButton.setEnabled(True)
-            self.inventoryButton.setEnabled(True)
-            self.passwordEdit.setText('')
-        else:
-            self.searchButton.setEnabled(False)
-            self.inventoryButton.setEnabled(False)
-            self.passwordEdit.setText('')
-            self.passwordEdit.setFocus()
-        
-        
+        password = self.passwordEdit.text()
+        if password != '':
+            coded_pass = hashlib.sha512(encode(password,
+                                               'rot13')).hexdigest()[5:69]
+#            print coded_pass, len(coded_pass)
+            if coded_pass == PASSWORD:
+                self.searchButton.setEnabled(True)
+                self.inventoryButton.setEnabled(True)
+                self.passwordEdit.setText('')
+            else:
+                self.searchButton.setEnabled(False)
+                self.inventoryButton.setEnabled(False)
+                self.passwordEdit.setText('')
+                self.passwordEdit.setFocus()
+
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)

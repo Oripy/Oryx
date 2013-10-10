@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Thu Oct 10 18:17:08 2013
-#      by: PyQt4 UI code generator 4.9.5
+# Created: Thu Oct 10 22:29:34 2013
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -67,6 +76,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_3.setFont(font)
+        self.label_3.setOpenExternalLinks(True)
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.gridLayout_2.addWidget(self.label_3, 5, 0, 1, 4)
         self.horizontalLayout = QtGui.QHBoxLayout()
@@ -91,13 +101,13 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.inventoryButton, self.searchButton)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Oryx", None, QtGui.QApplication.UnicodeUTF8))
-        self.searchButton.setText(QtGui.QApplication.translate("MainWindow", "Search", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:600;\">Oryx Optical DBMS</span></p><p align=\"center\"><span style=\" font-size:12pt;\">Eyeglasses Inventory for Humanitarian Purposes</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.inventoryButton.setText(QtGui.QApplication.translate("MainWindow", "Inventory", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "<html><head/><body><p>an XL-ant software by <a href=\"mailto:pierre.maurier@gadz.org?subject=Support%20Oryx\"><span style=\" text-decoration: underline; color:#0000ff;\">Pierre Maurier</span></a></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.passwordEdit.setPlaceholderText(QtGui.QApplication.translate("MainWindow", "mot de passe", None, QtGui.QApplication.UnicodeUTF8))
-        self.passwordButton.setText(QtGui.QApplication.translate("MainWindow", "OK", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Oryx", None))
+        self.searchButton.setText(_translate("MainWindow", "Search", None))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:600;\">Oryx Optical DBMS</span></p><p align=\"center\"><span style=\" font-size:12pt;\">Eyeglasses Inventory for Humanitarian Purposes</span></p></body></html>", None))
+        self.inventoryButton.setText(_translate("MainWindow", "Inventory", None))
+        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>an XL-ant software by <a href=\"mailto:pierre.maurier@gadz.org?subject=Support%20Oryx\"><span style=\" text-decoration: underline; color:#0000ff;\">Pierre Maurier</span></a></p></body></html>", None))
+        self.passwordEdit.setPlaceholderText(_translate("MainWindow", "mot de passe", None))
+        self.passwordButton.setText(_translate("MainWindow", "OK", None))
 
 
 if __name__ == "__main__":
