@@ -201,7 +201,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.newAction.triggered.connect(self.new)
         self.backupAction.triggered.connect(self.backup)
         self.restoreAction.triggered.connect(self.restore)
-        self.printAction.triggered.connect(self.printpdf)
+        self.printAction.triggered.connect(lambda: createpdf(self.model))
                
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
@@ -711,10 +711,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.loadCsv(filename)
                 self.displayData(self.data)
                 self.writeCsv(FILENAME)
-    
-    def printpdf(self):
-        """ Print data into a pdf file """
-        createpdf(self.model)
 
 if __name__ == '__main__':
     import sys
