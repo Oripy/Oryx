@@ -5,8 +5,10 @@ Created on Fri Oct 11 15:19:55 2013
 @author: pierre
 """
 
+from PyQt4 import QtGui
 from config import AUTOSAVE_DIR, AUTOSAVE_INTERVAL, AUTOSAVE_MAX_NUM, FILENAME
 from formatting import getData
+
 import os
 import time
 import csv
@@ -55,3 +57,40 @@ def autoSave(data):
             for item in list_autosaves[:(
                     len(list_autosaves) - AUTOSAVE_MAX_NUM)]:
                 os.remove(os.path.join(AUTOSAVE_DIR, item))
+
+def backup():
+    """ Open a File Chooser dialog and saves the datafile to a new file """
+    new_filename = os.path.join(os.getcwd(),
+            'oryxdata_backup_' + \
+            time.strftime('%Y-%m-%d_%Hh%M', time.localtime()) + '.csv')
+    filename = QtGui.QFileDialog.getSaveFileName(None, 
+            u'Choix du nom de fichier de Backup',
+            new_filename, u'csv (*.csv)')        
+    if filename != '':
+        data = loadCsv()
+        writeCsv(data, filename)
+
+def restore():
+    """ After a warning, open a File Chooser dialog and load the data in the
+       selected file a new data """
+    text = (u'Attention, l\'ensemble des données actuelles seront '
+            u'perdues et\n remplacées par les données du fichier de '
+            u'backup sélectionné.\n\n Souhaitez-vous continuer ?')
+    question = QtGui.QMessageBox.warning(None,
+        u'Ecraser les données ?',
+        text,
+        QtGui.QMessageBox.Yes,
+        QtGui.QMessageBox.No)
+
+    if question == QtGui.QMessageBox.Yes:
+        filename = QtGui.QFileDialog.getOpenFileName(None, 
+                   u'Choix du fichier de Backup à restaurer',
+                   os.getcwd(), u'csv (*.csv)')
+        if filename != '':
+            data = loadCsv(filename)
+            writeCsv(data)
+            return data
+        else:
+            return []
+    else:
+        return []

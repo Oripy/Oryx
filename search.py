@@ -9,8 +9,6 @@ from PyQt4 import QtCore, QtGui
 
 from searchUI import Ui_MainWindow 
 
-import csv
-import time
 import os
 
 from config import *

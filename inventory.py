@@ -11,8 +11,6 @@ from inventoryUI import Ui_MainWindow
 
 from printlist import createpdf
 
-import csv
-import time
 import os
 
 from config import *
@@ -87,8 +85,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.saveAction.triggered.connect(self.save)
         self.deleteAction.triggered.connect(self.delete)
         self.newAction.triggered.connect(self.new)
-        self.backupAction.triggered.connect(self.backup)
-        self.restoreAction.triggered.connect(self.restore)
+        self.backupAction.triggered.connect(backup)
+        self.restoreAction.triggered.connect(self.restoreAndShow)
         self.printAction.triggered.connect(lambda: createpdf(self.model))
                
         # Numbering/Actions panel
@@ -506,6 +504,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.eyeglassesNum.noWarn = False
             return 'Saved'
 
+    def restoreAndShow(self):
+        restored_data = restore() 
+        if restored_data != []:
+            self.data = restored_data
+            self.displayData(self.data)
+
     def displayData(self, data):
         """ Displays data in the table """
         self.model.clear()
@@ -538,40 +542,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.resizeColumnsToContents()
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-                
-    def backup(self):
-        """ Open a File Chooser dialog and saves the datafile to a new file """
-        new_filename = os.path.join(os.getcwd(),
-                'oryxdata_backup_' + \
-                time.strftime('%Y-%m-%d_%Hh%M', time.localtime()) + '.csv')
-        filename = QtGui.QFileDialog.getSaveFileName(self, 
-                u'Choix du nom de fichier de Backup',
-                new_filename, u'csv (*.csv)')        
-        if filename != '':
-            self.data = loadCsv()
-            writeCsv(self.data)
-    
-    def restore(self):
-        """ After a warning, open a File Chooser dialog and load the data in the
-           selected file a new data """
-        text = (u'Attention, l\'ensemble des données actuelles seront '
-                u'perdues et\n remplacées par les données du fichier de '
-                u'backup sélectionné.\n\n Souhaitez-vous continuer ?')
-        question = QtGui.QMessageBox.warning(self,
-            u'Ecraser les données ?',
-            text,
-            QtGui.QMessageBox.Yes,
-            QtGui.QMessageBox.No)
-
-        if question == QtGui.QMessageBox.Yes:
-            filename = QtGui.QFileDialog.getOpenFileName(self, 
-                       u'Choix du fichier de Backup à restaurer',
-                       os.getcwd(), u'csv (*.csv)')
-            if filename != '':
-                self.data = loadCsv(filename)
-                self.displayData(self.data)
-                writeCsv(self.data)
-
+         
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)
