@@ -142,7 +142,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model = QtGui.QStandardItemModel(self)
         self.tableView.setModel(self.model)     
         
-        self.loadCsv(FILENAME)
+        self.data = loadCsv()
         self.loadData(self.eyeglassesNum.value())
         self.tableView.sortByColumn(1, QtCore.Qt.AscendingOrder)
         self.rLinkCheckbox.setChecked(True)
@@ -249,7 +249,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def addToStock(self):
         """ Place the selected glasses back in stock """
-        self.loadCsv(FILENAME)
+        self.data = loadCsv()
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 0:
             self.data[num][12] = 1
@@ -261,7 +261,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def removeFromStock(self):
         """ Place the selected glasses from stock """
-        self.loadCsv(FILENAME)
+        self.data = loadCsv()
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 1:
             self.data[num][12] = 0
@@ -314,8 +314,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def abstractSearch(self, query, no_add = False):
         """ abstract search function that actually do the search mecanism """
         # Get database from file
-        self.loadCsv(FILENAME)
-        
+        self.data = loadCsv()
         new_data = dict()
         
         for num, value in self.data.iteritems():
@@ -613,14 +612,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.rIndifCheckBox.setChecked(False)
         self.lIndifCheckBox.setChecked(False)        
         self.model.clear()
-
-    def loadCsv(self, filename):
-        """ Load data from the CSV file and displays it in the table """
-        self.data = dict()
-        with open(filename, "rb") as file_input:
-            for row in csv.reader(file_input):               
-                self.data[int(row[0])] = [getData(row[a])
-                          for a in range(len(self.data_structure))[1:]]
 
 if __name__ == '__main__':
     import sys

@@ -75,7 +75,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.data = dict()
         self.model = QtGui.QStandardItemModel(self)
         
-        self.loadCsv(FILENAME)
+        self.data = loadCsv()
         
         self.displayData(self.data)
         self.new()
@@ -373,7 +373,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 print "Error when trying to update the TableView"
         if self.modif:
-            self.loadCsv(FILENAME)
+            self.data = loadCsv()
             self.data[self.current_num] = [self.data_structure[i][2]()
                           for i in range(len(self.data_structure))[1:]]
             if self.data[self.current_num][1] == 0:
@@ -410,7 +410,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.model.takeRow(rows[0].row())
                 else:
                     print "Error when trying to find the right row to delete"
-                self.loadCsv(FILENAME)
+                self.data = loadCsv()
                 self.data.pop(self.current_num)
                 writeCsv(self.data)    
                 self.setStatus('New')
@@ -506,16 +506,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.eyeglassesNum.noWarn = False
             return 'Saved'
 
-    def loadCsv(self, filename):
-        """ Load data from the CSV file and displays it in the table """
-        self.data = dict()
-        with open(filename, "rb") as file_input:
-            for row in csv.reader(file_input):               
-                self.data[int(row[0])] = [getData(row[a])
-                          for a in range(len(self.data_structure))[1:]]
-
     def displayData(self, data):
-        """ Load data from the CSV file and displays it in the table """
+        """ Displays data in the table """
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.data_structure[i][0]
                           for i in xrange(len(self.data_structure))])
@@ -556,7 +548,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 u'Choix du nom de fichier de Backup',
                 new_filename, u'csv (*.csv)')        
         if filename != '':
-            self.loadCsv(FILENAME)
+            self.data = loadCsv()
             writeCsv(self.data)
     
     def restore(self):
@@ -576,7 +568,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                        u'Choix du fichier de Backup à restaurer',
                        os.getcwd(), u'csv (*.csv)')
             if filename != '':
-                self.loadCsv(filename)
+                self.data = loadCsv(filename)
                 self.displayData(self.data)
                 writeCsv(self.data)
 

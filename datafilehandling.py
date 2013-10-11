@@ -6,6 +6,7 @@ Created on Fri Oct 11 15:19:55 2013
 """
 
 from config import AUTOSAVE_DIR, AUTOSAVE_INTERVAL, AUTOSAVE_MAX_NUM, FILENAME
+from formatting import getData
 import os
 import time
 import csv
@@ -33,7 +34,15 @@ def writeCsv(data, filename = FILENAME):
         data_writer = csv.writer(file_input)
         for key, values in data.iteritems():
             data_writer.writerow([key]+values)
-            
+
+def loadCsv(filename = FILENAME):
+    """ Returns data from the CSV file """
+    data = dict()
+    with open(filename, "rb") as file_input:
+        for row in csv.reader(file_input):               
+            data[int(row[0])] = [getData(row[a]) for a in range(14)[1:]]
+    return data
+
 def autoSave(data):
     """ Autosaves if more than AUTOSAVE_INTERVAL seconds without save """
     if (time.time() - time.mktime(getLastAutoSaved())) > AUTOSAVE_INTERVAL:
