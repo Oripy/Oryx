@@ -15,7 +15,7 @@ import os
 
 from config import *
 from formatting import *
-from datafilehandling import getLastAutoSaved, getListAutosaves
+from datafilehandling import *
 
 # Create the data file if it doesn't exists
 open(FILENAME, 'a').close()
@@ -257,7 +257,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.addButton.setDisabled(True)
         self.removeButton.setDisabled(False)
         
-        self.writeCsv(FILENAME)
+        writeCsv(self.data)
 
     def removeFromStock(self):
         """ Place the selected glasses from stock """
@@ -269,8 +269,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.addButton.setDisabled(False)
         self.removeButton.setDisabled(True)
         
-        self.autoSave()
-        self.writeCsv(FILENAME)
+        autoSave(self.data)
+        writeCsv(self.data)
 
     def search(self):
         """ basic search function """
@@ -614,19 +614,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lIndifCheckBox.setChecked(False)        
         self.model.clear()
 
-    def autoSave(self):
-        """ Autosaves if more than AUTOSAVE_INTERVAL seconds without save """
-        if (time.time() - time.mktime(getLastAutoSaved())) > AUTOSAVE_INTERVAL:
-            new_filename = os.path.join(AUTOSAVE_DIR, 'oryxdata_autosave_'
-                ''+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
-            self.writeCsv(new_filename)
-            
-            list_autosaves = getListAutosaves()
-            if len(list_autosaves) > AUTOSAVE_MAX_NUM:
-                for item in list_autosaves[:(
-                        len(list_autosaves) - AUTOSAVE_MAX_NUM)]:
-                    os.remove(os.path.join(AUTOSAVE_DIR, item))
-
     def loadCsv(self, filename):
         """ Load data from the CSV file and displays it in the table """
         self.data = dict()
@@ -634,13 +621,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             for row in csv.reader(file_input):               
                 self.data[int(row[0])] = [getData(row[a])
                           for a in range(len(self.data_structure))[1:]]
-        
-    def writeCsv(self, filename):
-        """ Write data in the CSV file """
-        with open(filename, "wb") as file_input:
-            data_writer = csv.writer(file_input)
-            for key, values in self.data.iteritems():
-                data_writer.writerow([key]+values)
 
 if __name__ == '__main__':
     import sys

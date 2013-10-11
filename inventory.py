@@ -17,7 +17,7 @@ import os
 
 from config import *
 from formatting import *
-from datafilehandling import getLastAutoSaved, getListAutosaves
+from datafilehandling import *
 
 # Create the data file if it doesn't exists
 open(FILENAME, 'a').close()
@@ -380,8 +380,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.data[self.current_num][2] = 0 
             if self.data[self.current_num][5] == 0: 
                 self.data[self.current_num][6] = 0
-            self.writeCsv(FILENAME)
-            self.autoSave()
+            writeCsv(self.data)
+            autoSave(self.data)
             self.setStatus('Saved')
             self.modif = False
         self.scrollTo(self.current_num)
@@ -412,10 +412,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     print "Error when trying to find the right row to delete"
                 self.loadCsv(FILENAME)
                 self.data.pop(self.current_num)
-                self.writeCsv(FILENAME)    
+                writeCsv(self.data)    
                 self.setStatus('New')
                 self.modif = False
-                
+                self.reset()
     
     def loadData(self):
         """ Load data from the self.data variable
@@ -505,19 +505,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             self.eyeglassesNum.noWarn = False
             return 'Saved'
-            
-    def autoSave(self):
-        """ Autosaves if more than AUTOSAVE_INTERVAL seconds without save """
-        if (time.time() - time.mktime(getLastAutoSaved())) > AUTOSAVE_INTERVAL:
-            new_filename = os.path.join(AUTOSAVE_DIR, 'oryxdata_autosave_'
-                ''+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.csv')
-            self.writeCsv(new_filename)
-            
-            list_autosaves = getListAutosaves()
-            if len(list_autosaves) > AUTOSAVE_MAX_NUM:
-                for item in list_autosaves[:(
-                        len(list_autosaves) - AUTOSAVE_MAX_NUM)]:
-                    os.remove(os.path.join(AUTOSAVE_DIR, item))
 
     def loadCsv(self, filename):
         """ Load data from the CSV file and displays it in the table """
@@ -559,13 +546,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.tableView.resizeColumnsToContents()
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-        
-    def writeCsv(self, filename):
-        """ Write data in the CSV file """
-        with open(filename, "wb") as file_input:
-            data_writer = csv.writer(file_input)
-            for key, values in self.data.iteritems():
-                data_writer.writerow([key]+values)
                 
     def backup(self):
         """ Open a File Chooser dialog and saves the datafile to a new file """
@@ -577,7 +557,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 new_filename, u'csv (*.csv)')        
         if filename != '':
             self.loadCsv(FILENAME)
-            self.writeCsv(filename)
+            writeCsv(self.data)
     
     def restore(self):
         """ After a warning, open a File Chooser dialog and load the data in the
@@ -598,7 +578,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if filename != '':
                 self.loadCsv(filename)
                 self.displayData(self.data)
-                self.writeCsv(FILENAME)
+                writeCsv(self.data)
 
 if __name__ == '__main__':
     import sys
