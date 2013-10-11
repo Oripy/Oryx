@@ -13,12 +13,7 @@ import search
 import hashlib
 from codecs import encode
 
-import ConfigParser
-
-CONFIG = ConfigParser.ConfigParser()
-CONFIG.read('config.ini')
-
-PASSWORD = CONFIG.get('Main', 'pass')
+from config import PASSWORD
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
