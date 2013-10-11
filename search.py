@@ -13,8 +13,9 @@ import csv
 import time
 import os
 
-############## Configuration ##############
 from config import *
+from formatting import *
+from datafilehandling import getLastAutoSaved, getListAutosaves
 
 # Create the data file if it doesn't exists
 open(FILENAME, 'a').close()
@@ -22,82 +23,9 @@ open(FILENAME, 'a').close()
 # Create autosaves dir if it doesn't exists
 if not os.path.exists(AUTOSAVE_DIR):
     os.makedirs(AUTOSAVE_DIR)
-    
-###########################################
 
-######## Text formating functions #########
-    
-from anglespinbox import formatAxis
-from negativezerospinbox import formatCyl
-from dotspinbox import formatSph
-
-def formatType(value):
-    """ Convert saved numbers into respective human readable text """
-    value = float(value)
-    if value == 1:
-        return u'Progressif'
-    elif value == 2:
-        return u'Bifocal'
-    else:
-        return u''
-
-def formatSun(value):
-    """ Convert saved numbers into respective human readable text """
-    value = float(value)
-    if value == 1:
-        return u'Teintés'
-    else:
-        return u'Non teintés'
-
-def formatFrame(value):
-    """ Convert saved numbers into respective human readable text """
-    value = float(value)
-    if value == 1:
-        return u'Enfant'
-    elif value == 2:
-        return u'Demi-lunes'
-    else:
-        return u'Adulte'    
-
-def getData(value):
-    """ returns a float or string depending on the input type """
-    try:
-        out = float(value)
-    except ValueError:
-        out = value
-    return out
-
-def getListAutosaves():
-    """ returns the list of autosave files in autosave folder """
-    list_autosaves = os.listdir(AUTOSAVE_DIR)
-    for item in list_autosaves:
-        if item[:18] != 'oryxdata_autosave_':
-            list_autosaves.remove(item)
-    list_autosaves.sort()
-    return list_autosaves
-
-def getLastAutoSaved():
-    """ returns the time and date of the last autosaved file 
-        if no autosave file, returns epoch (1970-01-01_01h00) """
-    if len(getListAutosaves()) > 0:
-        return time.strptime(getListAutosaves()[-1][18:-4], '%Y-%m-%d_%Hh%M')
-    else:
-        return time.localtime(0)
-
-# Color constants
-RED_PALETTE = QtGui.QPalette()
-RED_PALETTE.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
-
-RIGHT_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(180)
-LEFT_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(180)
-
-RED_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(125)
-
-def percentcolor(value):
-    """ returns a color between green and red based on the value """
-    return QtGui.QColor(int(255*(100-value)/100), int(255*value/100), 0, 128)
-
-###########################################
+# Constant for the sorting role in the Standard Items
+SORT_ROLE = QtCore.Qt.UserRole + 1
 
 ######## Score related functions #########
 
@@ -166,8 +94,6 @@ def score_add(data, target):
 
 ###########################################
 
-# Constant for the sorting role in the Standard Items
-SORT_ROLE = QtCore.Qt.UserRole + 1
 
 ############## Main Window ################
 

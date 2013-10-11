@@ -78,3 +78,10 @@ AXIS_COEF = float(SEARCH['axis_coef'])
 ADD_COEF = float(SEARCH['add_coef'])
 
 SCORE_SHAPE_PARAM = float(SEARCH['score_shape_param'])
+
+# Create the data file if it doesn't exists
+open(FILENAME, 'a').close()
+
+# Create autosaves dir if it doesn't exists
+if not os.path.exists(AUTOSAVE_DIR):
+    os.makedirs(AUTOSAVE_DIR)
