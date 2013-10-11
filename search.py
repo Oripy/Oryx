@@ -509,9 +509,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             
             self.model.appendRow(items)
             
-            self.model.setSortRole(SORT_ROLE)
-            self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)           
-            self.tableView.resizeColumnsToContents()
+        self.model.setSortRole(SORT_ROLE)
+        self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)           
+        self.tableView.resizeColumnsToContents()
+        w = self.tableView.width()
+        for column in xrange(self.model.columnCount()-2):
+            w -= self.tableView.columnWidth(column)
+        self.tableView.setColumnWidth(13, max(w - 60, 100))
     
     def score(self, data, target):
         """ Scoring function, taking into account the selected checkboxes """
