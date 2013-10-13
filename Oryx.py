@@ -58,29 +58,38 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if coded_pass == '6ee8a0e5f49f94b81db62add489861890c608b57b0cdfca527cb6a26b8929f08':
                 self.searchButton.setEnabled(True)
                 self.inventoryButton.setEnabled(True)
-                self.passwordEdit.setText('')
+                self.passwordEdit.setPlaceholderText('Mot de passe principal')
             elif coded_pass == PASSWORD:
-                self.time_remaining = passwords.value(coded_pass, 300*60*60).toInt()[0]
+                self.time_remaining = passwords.value(coded_pass,
+                                                      300*60*60).toInt()[0]
                 self.start_time = time.time()
-                self.timer.start(1000)
-                
-                self.searchButton.setEnabled(True)
-                self.inventoryButton.setEnabled(True)
-                self.passwordEdit.setText('')
+                self.timer.start(10000)
+                self.updateClock()
+                if self.time_remaining > 0:
+                    self.searchButton.setEnabled(True)
+                    self.inventoryButton.setEnabled(True)
+                    self.passwordEdit.setPlaceholderText('Mot de passe OK')
+                else:
+                    self.passwordEdit.setPlaceholderText('Temps écoulé')
             else:
                 self.timer.stop()
                 self.searchButton.setEnabled(False)
                 self.inventoryButton.setEnabled(False)
-                self.passwordEdit.setText('')
                 self.passwordEdit.setFocus()
+                self.passwordEdit.setPlaceholderText('Mauvais mot de passe')
+            self.passwordEdit.setText('')
 
     def updateClock(self):
-        if int(time.time() - self.start_time) > 0:
-            t = self.time_remaining - int(time.time() - self.start_time)
+        time_now = time.time()
+        delta = int(time_now - self.start_time)
+        if delta >= 0:
+            t = self.time_remaining - delta
             hours = t / 3600
             minutes = (t - hours * 3600) / 60
 #            seconds = t - hours * 3600 - minutes * 60
-            self.timerLabel.setText(str(hours) + ':' + str(minutes))
+            self.timerLabel.setText('%d:%02d' % (hours, minutes))            
+            self.time_remaining = t
+            self.start_time = time_now
             passwords.setValue(PASSWORD, t)
 
 if __name__ == '__main__':
