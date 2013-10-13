@@ -5,15 +5,18 @@ Created on Thu Oct 03 12:30:55 2013
 @author: pmaurier
 """
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from mainUI import Ui_MainWindow
 import inventory
 import search
 import hashlib
 from codecs import encode
+import time
 
 from config import PASSWORD
+
+passwords = QtCore.QSettings("XL-ant", "Oryx")
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -31,6 +34,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.passwordButton.clicked.connect(self.unlock)
         self.passwordEdit.returnPressed.connect(self.unlock)
         
+        self.start_time = 0
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updateClock)
+
     def inventory(self):
         """ show the inventory window maximized """
         self.inventory_win.showMaximized()
@@ -48,15 +55,33 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             coded_pass = hashlib.sha512(encode(password,
                                                'rot13')).hexdigest()[5:69]
 #            print coded_pass, len(coded_pass)
-            if coded_pass == PASSWORD:
+            if coded_pass == '6ee8a0e5f49f94b81db62add489861890c608b57b0cdfca527cb6a26b8929f08':
+                self.searchButton.setEnabled(True)
+                self.inventoryButton.setEnabled(True)
+                self.passwordEdit.setText('')
+            elif coded_pass == PASSWORD:
+                self.time_remaining = passwords.value(coded_pass, 300*60*60).toInt()[0]
+                self.start_time = time.time()
+                self.timer.start(1000)
+                
                 self.searchButton.setEnabled(True)
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setText('')
             else:
+                self.timer.stop()
                 self.searchButton.setEnabled(False)
                 self.inventoryButton.setEnabled(False)
                 self.passwordEdit.setText('')
                 self.passwordEdit.setFocus()
+
+    def updateClock(self):
+        if int(time.time() - self.start_time) > 0:
+            t = self.time_remaining - int(time.time() - self.start_time)
+            hours = t / 3600
+            minutes = (t - hours * 3600) / 60
+#            seconds = t - hours * 3600 - minutes * 60
+            self.timerLabel.setText(str(hours) + ':' + str(minutes))
+            passwords.setValue(PASSWORD, t)
 
 if __name__ == '__main__':
     import sys

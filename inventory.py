@@ -194,7 +194,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def enableAddition(self):
         """ Enable the right addition group
             when addition value is different from 0.00 """
-        
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
             self.addGroupBox.setDisabled(True)
         else:
@@ -488,7 +487,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
                 if question == QtGui.QMessageBox.Yes:
                     self.current_num = self.eyeglassesNum.value()
-#                    self.eyeglassesNum.setValue(self.current_num)
                     self.loadData()
                     return 'Discarded'
                 else:
@@ -498,13 +496,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     return 'Canceled'
             else:
                 self.current_num = self.eyeglassesNum.value()
-#                self.eyeglassesNum.setValue(self.current_num)
                 self.loadData()
         else:
             self.eyeglassesNum.noWarn = False
             return 'Saved'
 
     def restoreAndShow(self):
+        """ Restore data from file and displays it in the table """
         restored_data = restore() 
         if restored_data != []:
             self.data = restored_data

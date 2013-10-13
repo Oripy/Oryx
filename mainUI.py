@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Thu Oct 10 22:29:34 2013
+# Created: Sun Oct 13 09:58:11 2013
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -72,13 +72,6 @@ class Ui_MainWindow(object):
         self.inventoryButton.setAutoDefault(True)
         self.inventoryButton.setObjectName(_fromUtf8("inventoryButton"))
         self.gridLayout_2.addWidget(self.inventoryButton, 3, 1, 1, 1)
-        self.label_3 = QtGui.QLabel(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.label_3.setFont(font)
-        self.label_3.setOpenExternalLinks(True)
-        self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.gridLayout_2.addWidget(self.label_3, 5, 0, 1, 4)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(-1, 9, -1, -1)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
@@ -91,6 +84,17 @@ class Ui_MainWindow(object):
         self.passwordButton.setObjectName(_fromUtf8("passwordButton"))
         self.horizontalLayout.addWidget(self.passwordButton)
         self.gridLayout_2.addLayout(self.horizontalLayout, 2, 1, 1, 2)
+        self.label_3 = QtGui.QLabel(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_3.setFont(font)
+        self.label_3.setOpenExternalLinks(True)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.gridLayout_2.addWidget(self.label_3, 5, 0, 1, 3)
+        self.timerLabel = QtGui.QLabel(self.centralwidget)
+        self.timerLabel.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.timerLabel.setObjectName(_fromUtf8("timerLabel"))
+        self.gridLayout_2.addWidget(self.timerLabel, 5, 3, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -105,9 +109,10 @@ class Ui_MainWindow(object):
         self.searchButton.setText(_translate("MainWindow", "Search", None))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:600;\">Oryx Optical DBMS</span></p><p align=\"center\"><span style=\" font-size:12pt;\">Eyeglasses Inventory for Humanitarian Purposes</span></p></body></html>", None))
         self.inventoryButton.setText(_translate("MainWindow", "Inventory", None))
-        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>an XL-ant software by <a href=\"mailto:pierre.maurier@gadz.org?subject=Support%20Oryx\"><span style=\" text-decoration: underline; color:#0000ff;\">Pierre Maurier</span></a></p></body></html>", None))
         self.passwordEdit.setPlaceholderText(_translate("MainWindow", "mot de passe", None))
         self.passwordButton.setText(_translate("MainWindow", "OK", None))
+        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>an XL-ant software by <a href=\"mailto:pierre.maurier@gadz.org?subject=Support%20Oryx\"><span style=\" text-decoration: underline; color:#0000ff;\">Pierre Maurier</span></a></p></body></html>", None))
+        self.timerLabel.setText(_translate("MainWindow", "00:00", None))
 
 
 if __name__ == "__main__":
