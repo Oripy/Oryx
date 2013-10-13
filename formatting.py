@@ -7,10 +7,6 @@ Created on Fri Oct 11 15:12:10 2013
 
 from PyQt4 import QtCore, QtGui
 
-from anglespinbox import formatAxis
-from negativezerospinbox import formatCyl
-from dotspinbox import formatSph
-
 # Color constants
 RED_PALETTE = QtGui.QPalette()
 RED_PALETTE.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
@@ -23,6 +19,43 @@ RED_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(125)
 def percentcolor(value):
     """ returns a color between green and red based on the value """
     return QtGui.QColor(int(255*(100-value)/100), int(255*value/100), 0, 128)
+
+def formatSph(value):
+    """ Ensure that the values are shown with 2 decimals
+        and that + and - sign is always visible
+        0.00 
+        +4.50
+        -3.75     """
+    value = float(value)
+    if value == 0:
+        return '0.00'
+    elif value > 0:
+        return '+%0.2f' % value
+    else:
+        return '%0.2f' % value
+
+def formatCyl(value):
+    """ Ensure that the values are shown with 2 decimals
+        and that -0.00 is displayed with a negative sign 
+        (-0.00) 
+        (-4.50
+        (-3.75)     """
+    value = float(value)
+    if value == 0:
+        return '(-0.00)'
+    elif value < 0:
+        return '(%0.2f)' % value
+    else:
+        return '(+%0.2f)' % value
+
+def formatAxis(value):
+    """ Ensure that 3 digits are displayed 
+        and append a "°" at the end
+        005°
+        045°
+        180°       """
+    value = float(value)
+    return u'%03d°' % value
 
 def formatType(value):
     """ Convert saved numbers into respective human readable text """
