@@ -2,6 +2,8 @@
 autosave/
 build/
 dist/
+license/build/
+license/dist/
 
 # OS generated files #
 ######################
