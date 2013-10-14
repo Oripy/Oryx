@@ -1,4 +1,7 @@
 *.pyc
+autosave/
+build/
+dist/
 
 # OS generated files #
 ######################
