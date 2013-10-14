@@ -59,5 +59,5 @@ data_files = [
 ],
 
 # If you choose the bundle above, you may want to use this, too.
-#     zipfile=None,
+     zipfile=None,
 )
