@@ -38,6 +38,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateClock)
 
+    def closeEvent(self, event):
+        """ Reimplementation of the closeEvent
+            to warn the user about potential dataloss """
+        if self.inventory_win.close() and self.search_win.close():
+            event.accept()
+        else:
+            event.ignore()
+    
     def inventory(self):
         """ show the inventory window maximized """
         self.inventory_win.showMaximized()
@@ -80,6 +88,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.passwordEdit.setText('')
 
     def updateClock(self):
+        """ Updates the display of time remaining
+            and updates the stored value """
         time_now = time.time()
         delta = int(time_now - self.start_time)
         if delta >= 0:
