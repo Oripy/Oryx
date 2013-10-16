@@ -39,8 +39,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer.timeout.connect(self.updateClock)
 
     def closeEvent(self, event):
-        """ Reimplementation of the closeEvent
-            to warn the user about potential dataloss """
+        """ Reimplementation of the closeEvent to close all windows """
         if self.inventory_win.close() and self.search_win.close():
             event.accept()
         else:
@@ -63,7 +62,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             coded_pass = hashlib.sha512(encode(password,
                                                'rot13')).hexdigest()[5:69]
 #            print coded_pass, len(coded_pass)
-            if coded_pass == '6ee8a0e5f49f94b81db62add489861890c608b57b0cdfca527cb6a26b8929f08':
+            if coded_pass == 'd4253200d60b1008f1aad559cd3fac59352d7585516496f6f571fbb026b3e44a':
                 self.searchButton.setEnabled(True)
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setPlaceholderText('Mot de passe principal')
