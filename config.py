@@ -15,7 +15,10 @@ def configSectionMap(section):
     """ Retreive values from a section of the config file
         return: a dictionnary containing all key: value from the section """
     dict1 = {}
-    options = CONFIG.options(section)
+    try:
+        options = CONFIG.options(section)
+    except ConfigParser.NoSectionError:
+        return False
     for option in options:
         try:
             dict1[option] = CONFIG.get(section, option)
@@ -32,7 +35,9 @@ FILENAME = MAIN['filename']
 AUTOSAVE_INTERVAL = float(MAIN['autosave_interval'])
 AUTOSAVE_MAX_NUM = int(MAIN['autosave_max_num'])
 AUTOSAVE_DIR = os.path.join(os.getcwd(), 'autosave')
-PASSWORD = MAIN['pass']
+
+if 'pass' in MAIN:
+    PASSWORD = MAIN['pass']
 
 CORRECTION = configSectionMap('Correction')
 
@@ -58,26 +63,28 @@ DEFAULT_ADD = float(CORRECTION['default_add'])
 
 SEARCH = configSectionMap('Search')
 
-MASTER_EYE_COEF = float(SEARCH['master_eye_coef'])
+if SEARCH:
 
-SPHERE_DELTA_MAX = float(SEARCH['sphere_delta_max'])+.25
-SPHERE_DELTA_MIN = float(SEARCH['sphere_delta_min'])-.25
+    MASTER_EYE_COEF = float(SEARCH['master_eye_coef'])
 
-CYL_DELTA_MAX = float(SEARCH['cyl_delta_max'])+.25
-CYL_DELTA_MIN = float(SEARCH['cyl_delta_min'])-.25
+    SPHERE_DELTA_MAX = float(SEARCH['sphere_delta_max'])+.25
+    SPHERE_DELTA_MIN = float(SEARCH['sphere_delta_min'])-.25
 
-PARAM_AXIS_TOL0 = float(SEARCH['param_axis_tol0'])
-PARAM_AXIS_TOL1 = float(SEARCH['param_axis_tol1'])
-PARAM_AXIS_TOL2 = float(SEARCH['param_axis_tol2'])
+    CYL_DELTA_MAX = float(SEARCH['cyl_delta_max'])+.25
+    CYL_DELTA_MIN = float(SEARCH['cyl_delta_min'])-.25
 
-ADD_DELTA_MAX = float(SEARCH['add_delta_max'])+.25
+    PARAM_AXIS_TOL0 = float(SEARCH['param_axis_tol0'])
+    PARAM_AXIS_TOL1 = float(SEARCH['param_axis_tol1'])
+    PARAM_AXIS_TOL2 = float(SEARCH['param_axis_tol2'])
 
-SPHERE_COEF = float(SEARCH['sphere_coef'])
-CYL_COEF = float(SEARCH['cyl_coef'])
-AXIS_COEF = float(SEARCH['axis_coef'])
-ADD_COEF = float(SEARCH['add_coef'])
+    ADD_DELTA_MAX = float(SEARCH['add_delta_max'])+.25
 
-SCORE_SHAPE_PARAM = float(SEARCH['score_shape_param'])
+    SPHERE_COEF = float(SEARCH['sphere_coef'])
+    CYL_COEF = float(SEARCH['cyl_coef'])
+    AXIS_COEF = float(SEARCH['axis_coef'])
+    ADD_COEF = float(SEARCH['add_coef'])
+
+    SCORE_SHAPE_PARAM = float(SEARCH['score_shape_param'])
 
 # Create the data file if it doesn't exists
 open(FILENAME, 'a').close()
