@@ -5,7 +5,7 @@ Created on Fri Oct 11 15:19:55 2013
 @author: pierre
 """
 
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from config import AUTOSAVE_DIR, AUTOSAVE_INTERVAL, AUTOSAVE_MAX_NUM, FILENAME
 from formatting import getData
 
@@ -32,6 +32,7 @@ def getLastAutoSaved():
 
 def writeCsv(data, filename = FILENAME):
     """ Write data in the CSV file """
+    print(filename)
     with open(filename, "wt", encoding="ISO-8859-1") as file_input:
         data_writer = csv.writer(file_input)
         for key, values in data.items():
@@ -63,9 +64,9 @@ def backup():
     new_filename = os.path.join(os.getcwd(),
             'oryxdata_backup_' + \
             time.strftime('%Y-%m-%d_%Hh%M', time.localtime()) + '.csv')
-    filename = QtGui.QFileDialog.getSaveFileName(None,
+    filename = QtWidgets.QFileDialog.getSaveFileName(None,
             u'Choix du nom de fichier de Backup',
-            new_filename, u'csv (*.csv)')
+            new_filename, u'csv (*.csv)')[0]
     if filename != '':
         data = loadCsv()
         writeCsv(data, filename)
@@ -76,16 +77,16 @@ def restore():
     text = (u'Attention, l\'ensemble des données actuelles seront '
             u'perdues et\n remplacées par les données du fichier de '
             u'backup sélectionné.\n\n Souhaitez-vous continuer ?')
-    question = QtGui.QMessageBox.warning(None,
+    question = QtWidgets.QMessageBox.warning(None,
         u'Ecraser les données ?',
         text,
-        QtGui.QMessageBox.Yes,
-        QtGui.QMessageBox.No)
+        QtWidgets.QMessageBox.Yes,
+        QtWidgets.QMessageBox.No)
 
-    if question == QtGui.QMessageBox.Yes:
-        filename = QtGui.QFileDialog.getOpenFileName(None,
+    if question == QtWidgets.QMessageBox.Yes:
+        filename = QtWidgets.QFileDialog.getOpenFileName(None,
                    u'Choix du fichier de Backup à restaurer',
-                   os.getcwd(), u'csv (*.csv)')
+                   os.getcwd(), u'csv (*.csv)')[0]
         if filename != '':
             data = loadCsv(filename)
             writeCsv(data)

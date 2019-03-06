@@ -395,13 +395,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 u'vont être supprimées.\n'
                 u'\n'
                 u'Souhaitez-vous continuer ?')
-        question = QtGui.QMessageBox.warning(self,
+        question = QtWidgets.QMessageBox.warning(self,
             u'Supprimer les données ?',
             text,
-            QtGui.QMessageBox.Yes,
-            QtGui.QMessageBox.No)
+            QtWidgets.QMessageBox.Yes,
+            QtWidgets.QMessageBox.No)
 
-        if question == QtGui.QMessageBox.Yes:
+        if question == QtWidgets.QMessageBox.Yes:
             if self.current_num in self.data:
                 rows = self.model.findItems(str(self.current_num))
                 if len(rows) == 1:
@@ -480,13 +480,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 text = (u'Les lunettes '+str(self.current_num)+' '
                         u'n\'ont pas été enregistrées.\n'
                         u'Abandonner les changements ?')
-                question = QtGui.QMessageBox.warning(self,
+                question = QtWidgets.QMessageBox.warning(self,
                     u'Lunettes Modifiées !',
                     text,
-                    QtGui.QMessageBox.Yes,
-                    QtGui.QMessageBox.No)
+                    QtWidgets.QMessageBox.Yes,
+                    QtWidgets.QMessageBox.No)
 
-                if question == QtGui.QMessageBox.Yes:
+                if question == QtWidgets.QMessageBox.Yes:
                     self.current_num = self.eyeglassesNum.value()
                     self.loadData()
                     return 'Discarded'
@@ -544,7 +544,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 if __name__ == '__main__':
     import sys
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
     mainWin.show()
     sys.exit(app.exec_())
