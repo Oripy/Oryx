@@ -6,6 +6,7 @@ license/build/
 license/dist/
 binary/
 courbe score.xls
+.python-version
 
 # OS generated files #
 ######################

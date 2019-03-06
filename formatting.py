@@ -5,7 +5,7 @@ Created on Fri Oct 11 15:12:10 2013
 @author: pierre
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 
 # Color constants
 RED_PALETTE = QtGui.QPalette()
@@ -23,7 +23,7 @@ def percentcolor(value):
 def formatSph(value):
     """ Ensure that the values are shown with 2 decimals
         and that + and - sign is always visible
-        0.00 
+        0.00
         +4.50
         -3.75     """
     value = float(value)
@@ -36,8 +36,8 @@ def formatSph(value):
 
 def formatCyl(value):
     """ Ensure that the values are shown with 2 decimals
-        and that -0.00 is displayed with a negative sign 
-        (-0.00) 
+        and that -0.00 is displayed with a negative sign
+        (-0.00)
         (-4.50
         (-3.75)     """
     value = float(value)
@@ -49,7 +49,7 @@ def formatCyl(value):
         return '(+%0.2f)' % value
 
 def formatAxis(value):
-    """ Ensure that 3 digits are displayed 
+    """ Ensure that 3 digits are displayed
         and append a "°" at the end
         005°
         045°
@@ -83,7 +83,7 @@ def formatFrame(value):
     elif value == 2:
         return u'Demi-lunes'
     else:
-        return u'Adulte'    
+        return u'Adulte'
 
 def getData(value):
     """ returns a float or string depending on the input type """

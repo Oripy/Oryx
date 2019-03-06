@@ -5,9 +5,10 @@ Created on Tue Jul 30 10:52:58 2013
 @author: pmaurier
 """
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from inventoryUI import Ui_MainWindow 
+# from inventoryUI import Ui_MainWindow
+Ui_MainWindow = uic.loadUiType("inventory.ui")[0]
 
 from printlist import createpdf
 
@@ -31,37 +32,37 @@ SORT_ROLE = QtCore.Qt.UserRole + 1
 
 ############## Main Window ################
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         super(Ui_MainWindow, self).__init__()
-        
+
         self.setupUi(self)
         self.initUI()
-        
+
         self.current_num = self.eyeglassesNum.value()
         self.modif = False
-        
-        # Data Structure (Name, formating function, get function, 
+
+        # Data Structure (Name, formating function, get function,
         #                 set function, default value)
         self.data_structure = [
-            ['Num', lambda n: str(int(n)), self.eyeglassesNum.value, 
+            ['Num', lambda n: str(int(n)), self.eyeglassesNum.value,
              self.eyeglassesNum.setValue, 1],
             ['OD Sphere', formatSph, self.rSphereSpin.value,
               self.rSphereSpin.setValue, DEFAULT_SPHERE],
-            ['OD Cylindre', formatCyl, self.rCylSpin.value, 
+            ['OD Cylindre', formatCyl, self.rCylSpin.value,
              self.rCylSpin.setValue, DEFAULT_CYL],
-            ['OD Axe', formatAxis, self.rAxisSpin.value, 
+            ['OD Axe', formatAxis, self.rAxisSpin.value,
              self.rAxisSpin.setValue, DEFAULT_AXIS],
-            ['OD Add', formatSph, self.rAddSpin.value, 
+            ['OD Add', formatSph, self.rAddSpin.value,
              self.rAddSpin.setValue, DEFAULT_ADD],
-            ['OG Sphere', formatSph, self.lSphereSpin.value, 
+            ['OG Sphere', formatSph, self.lSphereSpin.value,
              self.lSphereSpin.setValue, DEFAULT_SPHERE],
-            ['OG Cylindre', formatCyl, self.lCylSpin.value, 
+            ['OG Cylindre', formatCyl, self.lCylSpin.value,
              self.lCylSpin.setValue, DEFAULT_CYL],
-            ['OG Axe', formatAxis, self.lAxisSpin.value, 
+            ['OG Axe', formatAxis, self.lAxisSpin.value,
              self.lAxisSpin.setValue, DEFAULT_AXIS],
-            ['OG Add', formatSph, self.lAddSpin.value, 
+            ['OG Add', formatSph, self.lAddSpin.value,
              self.lAddSpin.setValue, DEFAULT_ADD],
             ['Multifocal', formatType, self.getAddType, self.setAddType, 0],
             ['Monture', formatFrame, self.getFrame, self.setFrame, 0],
@@ -69,69 +70,69 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             ['Commentaire', lambda n: unicode(n, encoding='latin_1'),
              self.getComment, self.setComment, ''],
             ['Stock', lambda n: str(int(n)), lambda: 1, lambda n: n, 1]]
-             
+
         self.data = dict()
         self.model = QtGui.QStandardItemModel(self)
-        
+
         self.data = loadCsv()
-        
+
         self.displayData(self.data)
         self.new()
 
     def initUI(self):
         """ create actions and default values of the interface """
         # List actions and create the menubar
-        self.exitAction.triggered.connect(QtGui.qApp.quit)
+        self.exitAction.triggered.connect(QtWidgets.qApp.quit)
         self.saveAction.triggered.connect(self.save)
         self.deleteAction.triggered.connect(self.delete)
         self.newAction.triggered.connect(self.new)
         self.backupAction.triggered.connect(backup)
         self.restoreAction.triggered.connect(self.restoreAndShow)
         self.printAction.triggered.connect(lambda: createpdf(self.model))
-               
+
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.warnModified)
-        
+
         self.current_num = self.eyeglassesNum.value()
         self.eyeglassesNum.noWarn = False
-        
+
         self.saveButton.clicked.connect(self.saveAction.trigger)
         self.deleteButton.clicked.connect(self.deleteAction.trigger)
         self.newButton.clicked.connect(self.newAction.trigger)
         self.backupButton.clicked.connect(self.backupAction.trigger)
         self.restoreButton.clicked.connect(self.restoreAction.trigger)
-        
-        # Right Eye     
+
+        # Right Eye
         # Correction
         self.rSphereSpin.setMaximum(MAX_SPHERE)
         self.rSphereSpin.setMinimum(MIN_SPHERE)
         self.rSphereSpin.setSingleStep(STEP_SPHERE)
         self.rSphereSpin.setValue(DEFAULT_SPHERE)
         self.rSphereSpin.valueChanged.connect(self.modified)
-        
+
         self.rCylSpin.setMaximum(MAX_CYL)
         self.rCylSpin.setMinimum(MIN_CYL)
         self.rCylSpin.setSingleStep(STEP_CYL)
         self.rCylSpin.setValue(DEFAULT_CYL)
         self.rCylSpin.valueChanged.connect(self.modified)
-        
+
         self.rLabelCylPos.setVisible(False)
         self.rLabelCylPos.setPalette(RED_PALETTE)
-        
+
         self.rAxisSpin.setMaximum(MAX_AXIS)
         self.rAxisSpin.setMinimum(MIN_AXIS)
         self.rAxisSpin.setSingleStep(STEP_AXIS)
         self.rAxisSpin.setValue(DEFAULT_AXIS)
         self.rAxisSpin.valueChanged.connect(self.modified)
-        
+
         self.rAddSpin.setMaximum(MAX_ADD)
         self.rAddSpin.setMinimum(MIN_ADD)
         self.rAddSpin.setSingleStep(STEP_ADD)
         self.rAddSpin.setValue(DEFAULT_ADD)
         self.rAddSpin.valueChanged.connect(self.enableAddition)
-        
+
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
-        
+
         # Left Eye
         # Correction
         self.lSphereSpin.setMaximum(MAX_SPHERE)
@@ -139,38 +140,38 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.lSphereSpin.setSingleStep(STEP_SPHERE)
         self.lSphereSpin.setValue(DEFAULT_SPHERE)
         self.lSphereSpin.valueChanged.connect(self.modified)
-        
+
         self.lCylSpin.setMaximum(MAX_CYL)
         self.lCylSpin.setMinimum(MIN_CYL)
         self.lCylSpin.setSingleStep(STEP_CYL)
         self.lCylSpin.setValue(DEFAULT_CYL)
         self.lCylSpin.valueChanged.connect(self.modified)
-        
+
         self.lLabelCylPos.setVisible(False)
         self.lLabelCylPos.setPalette(RED_PALETTE)
-        
+
         self.lAxisSpin.setMaximum(MAX_AXIS)
         self.lAxisSpin.setMinimum(MIN_AXIS)
         self.lAxisSpin.setSingleStep(STEP_AXIS)
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAxisSpin.valueChanged.connect(self.modified)
-        
+
         self.lAddSpin.setMaximum(MAX_ADD)
         self.lAddSpin.setMinimum(MIN_ADD)
         self.lAddSpin.setSingleStep(STEP_ADD)
         self.lAddSpin.setValue(DEFAULT_ADD)
         self.lAddSpin.valueChanged.connect(self.enableAddition)
-        
+
         self.lLinkCheckbox.stateChanged.connect(self.linkChanged)
-              
-        # Addition        
+
+        # Addition
         self.addRadioP.toggled.connect(self.modified)
         self.addRadioBF.toggled.connect(self.modified)
-               
+
         # Comments
         self.commentEdit.textChanged.connect(self.modified)
 
-        # Solar        
+        # Solar
         self.solarRadioNo.toggled.connect(self.modified)
         self.solarRadioYes.toggled.connect(self.modified)
 
@@ -178,11 +179,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.childRadioNo.toggled.connect(self.modified)
         self.childRadioYes.toggled.connect(self.modified)
         self.childRadioHalf.toggled.connect(self.modified)
-        
+
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
         self.tableView.setSortingEnabled(True)
-            
+
     def closeEvent(self, event):
         """ Reimplementation of the closeEvent
             to warn the user about potential dataloss """
@@ -198,27 +199,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.addGroupBox.setDisabled(True)
         else:
             self.addGroupBox.setDisabled(False)
-            
+
         value = self.sender().value()
         if self.rLinkCheckbox.isChecked():
             self.rAddSpin.setValue(value)
             self.lAddSpin.setValue(value)
         self.modified()
-    
+
     def linkChanged(self):
         """ Link the state of the two checkboxes """
         state = self.sender().isChecked()
         self.lLinkCheckbox.setChecked(state)
         self.rLinkCheckbox.setChecked(state)
-        
+
     def modified(self):
         """ Action when a value is modified """
         self.setStatus('Modified')
         self.modif = True
-        
+
         self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
-    
+
     def getFirstNewNumber(self):
         """ returns the next available number
             (starting with the current number) """
@@ -226,7 +227,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         while self.data.has_key(n):
             n += 1
         return n
-    
+
     def new(self):
         """ set the number to the smallest available eyeglasses number """
         n = self.getFirstNewNumber()
@@ -236,7 +237,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.rSphereSpin.selectAll()
         else:
             self.warnModified()
-    
+
     def getAddType(self):
         """ returns the code corresponding to the selected radio button
             0 means section is disabled
@@ -250,7 +251,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 return 2
         else:
             return 0
-    
+
     def setAddType(self, value):
         """ selects the radio button corresponding to the input code
             0 or 1 selects Progressive
@@ -260,14 +261,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.addRadioBF.setChecked(True)
         else:
             self.addRadioP.setChecked((True))
-    
+
     def getSolar(self):
         """ returns the code corresponding to the selected radio button
             0 means normal lenses
             1 means solar lenses
         """
         return int(self.solarRadioYes.isChecked())
-    
+
     def setSolar(self, value):
         """ selects the radio button corresponding to the input code
             0 selects normal lenses
@@ -277,7 +278,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.solarRadioYes.setChecked(True)
         else:
             self.solarRadioNo.setChecked(True)
-            
+
     def getFrame(self):
         """ returns the code corresponding to the selected radio button
             0 means adult frame
@@ -290,7 +291,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return 0
         else:
             return 2
-    
+
     def setFrame(self, value):
         """ selects the radio button corresponding to the input code
             0 selects adult frame
@@ -303,15 +304,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.childRadioNo.setChecked(True)
         else:
             self.childRadioHalf.setChecked(True)
-            
+
     def getComment(self):
         """ returns the comment formated to suitable codec """
         return self.commentEdit.toPlainText().toLatin1()
-    
+
     def setComment(self, value):
         """ write the input value to the comment field """
         self.commentEdit.setPlainText(unicode(value, encoding='latin_1'))
-    
+
     def convert(self):
         """ convert the data entered if cylinder is positive """
         if self.data_structure[2][2]() > 0:
@@ -319,39 +320,39 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.data_structure[1][2]() + self.data_structure[2][2]())
             self.data_structure[2][3](-self.data_structure[2][2]())
             self.data_structure[3][3]((self.data_structure[3][2]() + 90) % 180)
-        
+
         if self.data_structure[6][2]() > 0:
             self.data_structure[5][3](
                     self.data_structure[5][2]() + self.data_structure[6][2]())
             self.data_structure[6][3](-self.data_structure[6][2]())
             self.data_structure[7][3]((self.data_structure[7][2]() + 90) % 180)
-    
+
     def save(self):
         """ Save the modifications and write it to the CSV file """
-        self.convert()        
-        
+        self.convert()
+
         item = [QtGui.QStandardItem(str(self.current_num))] \
                + [QtGui.QStandardItem( \
                    self.data_structure[i][1](self.data_structure[i][2]()) \
                    ) for i in range(len(self.data_structure))[1:]]
-        
+
         # For each item, add the data value to allow correct sorting
         for i, item_data in enumerate(item):
             item_data.setData(self.data_structure[i][2](), SORT_ROLE)
-        
+
         if self.data_structure[2][2]() == 0:
             item[3].setData(u'000°', QtCore.Qt.DisplayRole)
             item[3].setData(0, SORT_ROLE)
-        
+
         if self.data_structure[6][2]() == 0:
             item[7].setData(u'000°', QtCore.Qt.DisplayRole)
             item[7].setData(0, SORT_ROLE)
-        
+
         item[1].setBackground(RIGHT_COLOR)
         item[2].setBackground(RIGHT_COLOR)
         item[3].setBackground(RIGHT_COLOR)
         item[4].setBackground(RIGHT_COLOR)
-        
+
         item[5].setBackground(LEFT_COLOR)
         item[6].setBackground(LEFT_COLOR)
         item[7].setBackground(LEFT_COLOR)
@@ -374,8 +375,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.data[self.current_num] = [self.data_structure[i][2]()
                           for i in range(len(self.data_structure))[1:]]
             if self.data[self.current_num][1] == 0:
-                self.data[self.current_num][2] = 0 
-            if self.data[self.current_num][5] == 0: 
+                self.data[self.current_num][2] = 0
+            if self.data[self.current_num][5] == 0:
                 self.data[self.current_num][6] = 0
             writeCsv(self.data)
             autoSave(self.data)
@@ -383,11 +384,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.modif = False
         self.scrollTo(self.current_num)
 
-        self.new()    
-        
+        self.new()
+
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-    
+
     def delete(self):
         """ Delete given entry and write the modification to the CSV file """
         text = (u'Les lunettes numéro '+str(self.current_num)+' '
@@ -409,11 +410,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     print "Error when trying to find the right row to delete"
                 self.data = loadCsv()
                 self.data.pop(self.current_num)
-                writeCsv(self.data)    
+                writeCsv(self.data)
                 self.setStatus('New')
                 self.modif = False
                 self.reset()
-    
+
     def loadData(self):
         """ Load data from the self.data variable
             and display it in the form """
@@ -428,9 +429,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         if self.rAddSpin.value() == self.lAddSpin.value():
             self.rLinkCheckbox.setChecked(True)
-    
+
         self.scrollTo(self.current_num)
-    
+
     def scrollTo(self, number):
         """ scrolls and selects the line corresponding to the input number """
         items = self.model.findItems(str(number))
@@ -448,11 +449,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def reset(self):
         """ Reset the values in the form to the default values """
         for element in self.data_structure[1:]:
-            element[3](element[4])        
+            element[3](element[4])
         self.modif = False
-        
+
         self.setStatus('New')
-    
+
     def setStatus(self, value):
         """ Display the current status (Saved/Modified/New)
             with different colors """
@@ -473,7 +474,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.status.setPalette(palette)
 
     def warnModified(self):
-        """ Warn the user that unsaved data will be lost if unsaved """      
+        """ Warn the user that unsaved data will be lost if unsaved """
         if not(self.eyeglassesNum.noWarn):
             if self.modif:
                 text = (u'Les lunettes '+str(self.current_num)+' '
@@ -503,7 +504,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def restoreAndShow(self):
         """ Restore data from file and displays it in the table """
-        restored_data = restore() 
+        restored_data = restore()
         if restored_data != []:
             self.data = restored_data
             self.displayData(self.data)
@@ -513,17 +514,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.data_structure[i][0]
                           for i in xrange(len(self.data_structure))])
-                          
+
         for key, values in data.iteritems():
             row = [key] + values
-            
-            items = [QtGui.QStandardItem(self.data_structure[i][1](row[i])) 
+
+            items = [QtGui.QStandardItem(self.data_structure[i][1](row[i]))
                          for i in xrange(len(self.data_structure))]
 
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
                 item.setData(getData(row[i]), SORT_ROLE)
-            
+
             items[1].setBackground(RIGHT_COLOR)
             items[2].setBackground(RIGHT_COLOR)
             items[3].setBackground(RIGHT_COLOR)
@@ -533,14 +534,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             items[6].setBackground(LEFT_COLOR)
             items[7].setBackground(LEFT_COLOR)
             items[8].setBackground(LEFT_COLOR)
-            
+
             self.model.appendRow(items)
-                
-        self.tableView.setModel(self.model)        
+
+        self.tableView.setModel(self.model)
         self.tableView.resizeColumnsToContents()
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-         
+
 if __name__ == '__main__':
     import sys
     app = QtGui.QApplication(sys.argv)
