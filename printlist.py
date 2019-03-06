@@ -5,7 +5,7 @@ Created on Tue Sep 24 15:30:21 2013
 @author: pmaurier
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport, uic
 
 # from printUI import Ui_Dialog
 Ui_Dialog = uic.loadUiType("print.ui")[0]
@@ -78,20 +78,20 @@ def createpdf(model):
         sort, stock = dlg.getValues()
 
         new_filename = os.path.join(os.getcwd(), 'oryx_print_'+time.strftime('%Y-%m-%d_%Hh%M',time.localtime())+'.pdf')
-        filename = QtGui.QFileDialog.getSaveFileName(None,
+        filename = QtWidgets.QFileDialog.getSaveFileName(None,
                        u'Choix du nom du fichier PDF',
-                       new_filename, u'PDF (*.pdf)')
+                       new_filename, u'PDF (*.pdf)')[0]
 
         if filename != '':
-            printer = QtGui.QPrinter(QtGui.QPrinter.HighResolution)
-            printer.setOutputFormat(QtGui.QPrinter.PdfFormat)
-            printer.setOrientation(QtGui.QPrinter.Landscape)
+            printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
+            printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+            printer.setOrientation(QtPrintSupport.QPrinter.Landscape)
 
             printer.setOutputFileName(filename)
             printtable(model, printer, sort, stock)
 
 def printtable(model, printer, sortedcolum, stock):
-    editor = QtGui.QTextBrowser()
+    editor = QtWidgets.QTextBrowser()
 
     #Print title and print date/time
     editor.setCurrentCharFormat(TitleFormat)
