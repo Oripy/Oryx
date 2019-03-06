@@ -61,8 +61,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Test the password and unlock if successful """
         password = self.passwordEdit.text()
         if password != '':
-            coded_pass = hashlib.sha512(encode(password,
-                                               'rot13')).hexdigest()[5:69]
+            coded_pass = hashlib.sha512(encode(encode(password,
+                                               'rot13'),'utf-8')).hexdigest()[5:69]
 #            print coded_pass, len(coded_pass)
             if coded_pass == 'd4253200d60b1008f1aad559cd3fac59352d7585516496f6f571fbb026b3e44a':
                 self.searchButton.setEnabled(True)

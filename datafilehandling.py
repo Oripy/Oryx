@@ -32,15 +32,15 @@ def getLastAutoSaved():
 
 def writeCsv(data, filename = FILENAME):
     """ Write data in the CSV file """
-    with open(filename, "wb") as file_input:
+    with open(filename, "wt", encoding="ISO-8859-1") as file_input:
         data_writer = csv.writer(file_input)
-        for key, values in data.iteritems():
+        for key, values in data.items():
             data_writer.writerow([key]+values)
 
 def loadCsv(filename = FILENAME):
     """ Returns data from the CSV file """
     data = dict()
-    with open(filename, "rb") as file_input:
+    with open(filename, "rt", encoding="ISO-8859-1") as file_input:
         for row in csv.reader(file_input):
             data[int(row[0])] = [getData(row[a]) for a in range(14)[1:]]
     return data

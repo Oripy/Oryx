@@ -64,11 +64,9 @@ class myDialog(QtWidgets.QDialog, Ui_Dialog):
         return sort, self.stockCheckBox.isChecked()
 
     def on_acceptButton_clicked(self):
-        print "pwet"
         self.close()
 
     def on_rejectButton_clicked(self):
-        print "prout"
         self.close()
 
 def createpdf(model):
@@ -110,7 +108,7 @@ def printtable(model, printer, sortedcolum, stock):
     # Calculate the number of rows to print
     if stock:
         rowCount = 0
-        for row in xrange(model.rowCount()):
+        for row in range(model.rowCount()):
             if model.item(row, stockColumn).text() == "1":
                 rowCount += 1
     else:
@@ -125,7 +123,7 @@ def printtable(model, printer, sortedcolum, stock):
     frame.setFrameFormat(frameFormat)
 
     #Headers
-    for i in xrange(model.columnCount()):
+    for i in range(model.columnCount()):
         # selecting the right cell
         titre = table.cellAt(0,i)
 
@@ -142,10 +140,10 @@ def printtable(model, printer, sortedcolum, stock):
     model.sort(sortedcolum, QtCore.Qt.AscendingOrder)
 
     rowPrint = 0
-    for row in xrange(0, model.rowCount()):
+    for row in range(0, model.rowCount()):
         if (model.item(row, stockColumn).text() == "1") or (not stock):
             rowPrint += 1
-            for col in xrange(table.columns()):
+            for col in range(table.columns()):
                 cell = table.cellAt(rowPrint,col)
                 cellCursor = cell.firstCursorPosition()
                 cellCursor.setBlockFormat(centerAlignment)
