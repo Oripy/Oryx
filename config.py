@@ -5,10 +5,10 @@ Created on Fri Oct 11 15:05:31 2013
 @author: pierre
 """
 
-import ConfigParser
+import configparser
 import os
 
-CONFIG = ConfigParser.ConfigParser()
+CONFIG = configparser.ConfigParser()
 CONFIG.read('config.ini')
 
 def configSectionMap(section):
@@ -17,15 +17,15 @@ def configSectionMap(section):
     dict1 = {}
     try:
         options = CONFIG.options(section)
-    except ConfigParser.NoSectionError:
+    except configparser.NoSectionError:
         return False
     for option in options:
         try:
             dict1[option] = CONFIG.get(section, option)
             if dict1[option] == -1:
-                print 'skip: %s' % option
+                print('skip: %s' % option)
         except:
-            print 'exception on %s!' % option
+            print('exception on %s!' % option)
             dict1[option] = None
     return dict1
 

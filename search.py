@@ -131,7 +131,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
              self.setFrame, -1, self.setFrameLabel],
             ['Teinte', formatSun, self.getSolar,
              self.setSolar, -1, self.setSolarLabel],
-            ['Commentaire', lambda n: unicode(n, encoding='latin_1'),
+            ['Commentaire', lambda n: str(n),
              lambda: '', lambda n: n, '', self.setComment],
             ['Stock', lambda n: str(int(n)), lambda: 1,
              lambda n: n, 1, lambda n: n]
@@ -316,20 +316,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data = loadCsv()
         new_data = dict()
 
-        for num, value in self.data.iteritems():
+        for num, value in self.data.items():
             score = self.score(value, query)
             if value[12] == 1 and score != 0 and \
                ((not no_add) or value[8] == 0):
                 new_data[num] = [score]+value
 
-        self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.iteritems()])
+        self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.items()])
 
     def displayData(self, data):
         """ display the search results in the tableview """
         self.model.clear()
         self.model.setHorizontalHeaderLabels(
                 [u'Score'] + [self.data_structure[i][0]
-                for i in xrange(len(self.data_structure))])
+                for i in range(len(self.data_structure))])
 
         frame = self.getFrame()
         solar = self.getSolar()
@@ -337,7 +337,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for row in data:
             items = [QtGui.QStandardItem("{0:.2f}%".format(row[0]))]+[
                      QtGui.QStandardItem(self.data_structure[i][1](row[i+1]))
-                         for i in xrange(len(self.data_structure))]
+                         for i in range(len(self.data_structure))]
 
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
@@ -367,7 +367,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)
         self.tableView.resizeColumnsToContents()
         w = self.tableView.width()
-        for column in xrange(self.model.columnCount()-2):
+        for column in range(self.model.columnCount()-2):
             w -= self.tableView.columnWidth(column)
         self.tableView.setColumnWidth(13, max(w - 60, 100))
 
@@ -547,7 +547,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def setComment(self, value):
         """ write the input value to the comment field """
-        self.commentEdit.setPlainText(unicode(value, encoding='latin_1'))
+        self.commentEdit.setPlainText(str(value))
 
     def convert(self):
         """ convert the data entered if cylinder is positive """
@@ -567,7 +567,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Load data from the self.data variable
             and display it in the stock box """
         self.rLinkCheckbox.setChecked(False)
-        if self.data.has_key(num):
+        if num in self.data:
             for i, element in enumerate(self.data_structure[1:]):
                 element[5](self.data[num][i])
             self.eyeglassesNum.setValue(num)

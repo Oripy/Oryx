@@ -67,7 +67,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ['Multifocal', formatType, self.getAddType, self.setAddType, 0],
             ['Monture', formatFrame, self.getFrame, self.setFrame, 0],
             ['Teinte', formatSun, self.getSolar, self.setSolar, 0],
-            ['Commentaire', lambda n: unicode(n, encoding='latin_1'),
+            ['Commentaire', lambda n: str(n),
              self.getComment, self.setComment, ''],
             ['Stock', lambda n: str(int(n)), lambda: 1, lambda n: n, 1]]
 
@@ -224,7 +224,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ returns the next available number
             (starting with the current number) """
         n = self.current_num
-        while self.data.has_key(n):
+        while n in self.data:
             n += 1
         return n
 
@@ -307,11 +307,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def getComment(self):
         """ returns the comment formated to suitable codec """
-        return self.commentEdit.toPlainText().toLatin1()
+        return self.commentEdit.toPlainText()
 
     def setComment(self, value):
         """ write the input value to the comment field """
-        self.commentEdit.setPlainText(unicode(value, encoding='latin_1'))
+        self.commentEdit.setPlainText(str(value))
 
     def convert(self):
         """ convert the data entered if cylinder is positive """
@@ -357,7 +357,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         item[6].setBackground(LEFT_COLOR)
         item[7].setBackground(LEFT_COLOR)
         item[8].setBackground(LEFT_COLOR)
-        if not self.data.has_key(self.current_num) and self.modif:
+        if not self.current_num in self.data and self.modif:
             # Add a line to the table if the current item do not exists
             # (and has been modified)
             self.model.appendRow(item)
@@ -369,7 +369,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 for column, elem in enumerate(item):
                     self.model.setItem(row, column, elem)
             else:
-                print "Error when trying to update the TableView"
+                print("Error when trying to update the TableView")
         if self.modif:
             self.data = loadCsv()
             self.data[self.current_num] = [self.data_structure[i][2]()
@@ -402,12 +402,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
 
         if question == QtGui.QMessageBox.Yes:
-            if self.data.has_key(self.current_num):
+            if self.current_num in self.data:
                 rows = self.model.findItems(str(self.current_num))
                 if len(rows) == 1:
                     self.model.takeRow(rows[0].row())
                 else:
-                    print "Error when trying to find the right row to delete"
+                    print("Error when trying to find the right row to delete")
                 self.data = loadCsv()
                 self.data.pop(self.current_num)
                 writeCsv(self.data)
@@ -419,7 +419,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Load data from the self.data variable
             and display it in the form """
         self.rLinkCheckbox.setChecked(False)
-        if self.data.has_key(self.current_num):
+        if self.current_num in self.data:
             for i, element in enumerate(self.data_structure[1:]):
                 element[3](self.data[self.current_num][i])
             self.modif = False
@@ -513,13 +513,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Displays data in the table """
         self.model.clear()
         self.model.setHorizontalHeaderLabels([self.data_structure[i][0]
-                          for i in xrange(len(self.data_structure))])
+                          for i in range(len(self.data_structure))])
 
-        for key, values in data.iteritems():
+        for key, values in data.items():
             row = [key] + values
 
             items = [QtGui.QStandardItem(self.data_structure[i][1](row[i]))
-                         for i in xrange(len(self.data_structure))]
+                         for i in range(len(self.data_structure))]
 
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
