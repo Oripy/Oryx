@@ -7,8 +7,8 @@ Created on Tue Sep 24 15:30:21 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport, uic
 
-# from printUI import Ui_Dialog
-Ui_Dialog = uic.loadUiType("print.ui")[0]
+from printUI import Ui_Dialog
+# Ui_Dialog = uic.loadUiType("print.ui")[0]
 
 import os, time
 

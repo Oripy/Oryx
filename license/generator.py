@@ -7,8 +7,9 @@ Created on Mon Oct 14 10:34:38 2013
 
 from PyQt5 import QtWidgets, uic
 
-Ui_MainWindow = uic.loadUiType("generator.ui")[0]
-#from generatorUI import Ui_MainWindow
+# Ui_MainWindow = uic.loadUiType("generator.ui")[0]
+from generatorUI import Ui_MainWindow
+
 import hashlib
 from codecs import encode
 

@@ -7,8 +7,8 @@ Created on Thu Oct 03 12:30:55 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-# from mainUI import Ui_MainWindow
-Ui_MainWindow = uic.loadUiType("main.ui")[0]
+from mainUI import Ui_MainWindow
+# Ui_MainWindow = uic.loadUiType(os.path.join(basedir, "main.ui"))[0]
 
 import inventory
 import search

@@ -7,8 +7,8 @@ Created on Tue Jul 30 10:52:58 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-# from searchUI import Ui_MainWindow
-Ui_MainWindow = uic.loadUiType("search.ui")[0]
+from searchUI import Ui_MainWindow
+# Ui_MainWindow = uic.loadUiType("search.ui")[0]
 
 import os
 
