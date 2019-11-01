@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['Oryx.py'],
-             pathex=['/Users/pierre/Dropbox/python/Oryx'],
+             pathex=['C:/Users/CORSON/Downloads/Oryx'],
              binaries=[],
              datas=[],
              hiddenimports=[],
