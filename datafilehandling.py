@@ -34,7 +34,7 @@ def writeCsv(data, filename = FILENAME):
     """ Write data in the CSV file """
     print(filename)
     with open(filename, "wt", encoding="ISO-8859-1") as file_input:
-        data_writer = csv.writer(file_input)
+        data_writer = csv.writer(file_input, lineterminator="\n")
         for key, values in data.items():
             data_writer.writerow([key]+values)
 
