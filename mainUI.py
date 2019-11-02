@@ -2,9 +2,10 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.13.1
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -58,18 +59,21 @@ class Ui_MainWindow(object):
         self.inventoryButton.setAutoDefault(True)
         self.inventoryButton.setObjectName("inventoryButton")
         self.gridLayout_2.addWidget(self.inventoryButton, 3, 1, 1, 1)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(-1, 9, -1, -1)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.passwordEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Password)
-        self.passwordEdit.setObjectName("passwordEdit")
-        self.horizontalLayout.addWidget(self.passwordEdit)
+        self.gridLayout_3 = QtWidgets.QGridLayout()
+        self.gridLayout_3.setContentsMargins(-1, 9, -1, -1)
+        self.gridLayout_3.setObjectName("gridLayout_3")
         self.passwordButton = QtWidgets.QPushButton(self.centralwidget)
         self.passwordButton.setDefault(True)
         self.passwordButton.setObjectName("passwordButton")
-        self.horizontalLayout.addWidget(self.passwordButton)
-        self.gridLayout_2.addLayout(self.horizontalLayout, 2, 1, 1, 2)
+        self.gridLayout_3.addWidget(self.passwordButton, 0, 1, 1, 1)
+        self.passwordEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.passwordEdit.setObjectName("passwordEdit")
+        self.gridLayout_3.addWidget(self.passwordEdit, 0, 0, 1, 1)
+        self.showPasswordCheckBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.showPasswordCheckBox.setObjectName("showPasswordCheckBox")
+        self.gridLayout_3.addWidget(self.showPasswordCheckBox, 1, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout_3, 2, 1, 1, 2)
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -96,9 +100,18 @@ class Ui_MainWindow(object):
         self.searchButton.setText(_translate("MainWindow", "Search"))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:36pt; font-weight:600;\">Oryx Optical DBMS</span></p><p align=\"center\"><span style=\" font-size:12pt;\">Eyeglasses Inventory for Humanitarian Purposes</span></p></body></html>"))
         self.inventoryButton.setText(_translate("MainWindow", "Inventory"))
-        self.passwordEdit.setPlaceholderText(_translate("MainWindow", "mot de passe"))
         self.passwordButton.setText(_translate("MainWindow", "OK"))
+        self.passwordEdit.setPlaceholderText(_translate("MainWindow", "password"))
+        self.showPasswordCheckBox.setText(_translate("MainWindow", "show password"))
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>an XL-ant software by <a href=\"mailto:pierre.maurier@gadz.org?subject=Support%20Oryx\"><span style=\" text-decoration: underline; color:#0000ff;\">Pierre Maurier</span></a></p></body></html>"))
         self.timerLabel.setText(_translate("MainWindow", "00:00"))
 
 
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

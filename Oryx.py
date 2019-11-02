@@ -36,6 +36,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.passwordButton.clicked.connect(self.unlock)
         self.passwordEdit.returnPressed.connect(self.unlock)
 
+        self.showPasswordCheckBox.stateChanged.connect(self.showHidePassword)
+
         self.start_time = 0
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateClock)
@@ -69,8 +71,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setPlaceholderText('Mot de passe principal')
             elif coded_pass == PASSWORD:
-                self.time_remaining = passwords.value(coded_pass,
-                                                      300*60*60).toInt()[0]
+                self.time_remaining = passwords.value(coded_pass, 300*60*60)
                 self.start_time = time.time()
                 self.timer.start(10000)
                 self.updateClock()
@@ -93,15 +94,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             and updates the stored value """
         time_now = time.time()
         delta = int(time_now - self.start_time)
-        if delta >= 0:
+        if delta > 0:
             t = self.time_remaining - delta
-            hours = t / 3600
-            minutes = (t - hours * 3600) / 60
-#            seconds = t - hours * 3600 - minutes * 60
+            hours = t // 3600
+            minutes = (t - hours * 3600) // 60
             self.timerLabel.setText('%d:%02d' % (hours, minutes))
             self.time_remaining = t
             self.start_time = time_now
             passwords.setValue(PASSWORD, t)
+
+    def showHidePassword(self):
+        """ Show or hide password depending on the state of the checkbox """
+        if self.showPasswordCheckBox.isChecked():
+            self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
+        else:
+            self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Password)
 
 if __name__ == '__main__':
     import sys
