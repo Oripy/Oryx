@@ -7,8 +7,20 @@ Created on Mon Oct 14 10:34:38 2013
 
 from PyQt5 import QtWidgets, uic
 
-# Ui_MainWindow = uic.loadUiType("generator.ui")[0]
-from generatorUI import Ui_MainWindow
+import os
+# Define function to import external files when using PyInstaller.
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+Ui_MainWindow = uic.loadUiType(resource_path('generator.ui'))[0]
+# from generatorUI import Ui_MainWindow
 
 import hashlib
 from codecs import encode
