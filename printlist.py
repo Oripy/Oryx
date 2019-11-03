@@ -7,8 +7,20 @@ Created on Tue Sep 24 15:30:21 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport, uic
 
-from printUI import Ui_Dialog
-# Ui_Dialog = uic.loadUiType("print.ui")[0]
+import os, sys
+# Define function to import external files when using PyInstaller.
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+Ui_Dialog = uic.loadUiType(resource_path('print.ui'))[0]
+# from printUI import Ui_Dialog
 
 import os, time
 

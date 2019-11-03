@@ -7,8 +7,20 @@ Created on Thu Oct 03 12:30:55 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from mainUI import Ui_MainWindow
-# Ui_MainWindow = uic.loadUiType(os.path.join(basedir, "main.ui"))[0]
+import os, sys
+# Define function to import external files when using PyInstaller.
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+Ui_MainWindow = uic.loadUiType(resource_path('main.ui'))[0]
+# from mainUI import Ui_MainWindow
 
 import inventory
 import search
