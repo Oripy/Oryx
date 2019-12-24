@@ -64,75 +64,6 @@
           <layout class="QGridLayout" name="gridLayout_7">
            <item row="4" column="0">
             <layout class="QGridLayout" name="rightEyeLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Sphere</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QLabel" name="label_5">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Addition</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <widget class="QLabel" name="label_4">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Axe</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="angleSpinBox" name="rAxisSpin">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-               <property name="wrapping">
-                <bool>true</bool>
-               </property>
-               <property name="minimum">
-                <number>5</number>
-               </property>
-               <property name="maximum">
-                <number>180</number>
-               </property>
-               <property name="singleStep">
-                <number>5</number>
-               </property>
-               <property name="value">
-                <number>180</number>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="1">
               <widget class="QLabel" name="label_3">
                <property name="font">
@@ -148,7 +79,46 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="3">
+             <item row="0" column="4">
+              <widget class="QLabel" name="label_5">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Addition</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Sphere</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="negativeZeroSpinBox" name="rCylSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
               <widget class="QCheckBox" name="rLinkCheckbox">
                <property name="font">
                 <font>
@@ -163,24 +133,6 @@
                </property>
                <property name="checked">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="dotSpinBox" name="rAddSpin">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="negativeZeroSpinBox" name="rCylSpin">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
                </property>
               </widget>
              </item>
@@ -207,6 +159,74 @@
                </property>
                <property name="text">
                 <string>Cylindre positif</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="dotSpinBox" name="rAddSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QCheckBox" name="rFineCheckbox">
+               <property name="text">
+                <string>fin</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="angleSpinBox" name="rAxisSpin">
+               <property name="font">
+                <font>
+                 <pointsize>16</pointsize>
+                </font>
+               </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
+               <property name="minimum">
+                <number>5</number>
+               </property>
+               <property name="maximum">
+                <number>180</number>
+               </property>
+               <property name="singleStep">
+                <number>5</number>
+               </property>
+               <property name="value">
+                <number>180</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" colspan="2">
+              <widget class="QLabel" name="label_4">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Axe</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="r90Button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>90°</string>
                </property>
               </widget>
              </item>
@@ -268,16 +288,7 @@
           <layout class="QGridLayout" name="gridLayout_8">
            <item row="2" column="0">
             <layout class="QGridLayout" name="leftEyeLayout">
-             <item row="1" column="1">
-              <widget class="negativeZeroSpinBox" name="lCylSpin">
-               <property name="font">
-                <font>
-                 <pointsize>16</pointsize>
-                </font>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
+             <item row="1" column="5">
               <widget class="dotSpinBox" name="lAddSpin">
                <property name="font">
                 <font>
@@ -289,7 +300,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="3">
+             <item row="2" column="5">
               <widget class="QCheckBox" name="lLinkCheckbox">
                <property name="font">
                 <font>
@@ -307,33 +318,12 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
-              <widget class="QLabel" name="label_8">
+             <item row="1" column="1">
+              <widget class="negativeZeroSpinBox" name="lCylSpin">
                <property name="font">
                 <font>
-                 <pointsize>8</pointsize>
+                 <pointsize>16</pointsize>
                 </font>
-               </property>
-               <property name="text">
-                <string>Axe</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_6">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Sphere</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -352,7 +342,7 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="3">
+             <item row="0" column="5">
               <widget class="QLabel" name="label_7">
                <property name="font">
                 <font>
@@ -376,7 +366,59 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Sphere</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="lLabelCylPos">
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Le cylindre indiqué est positif, une conversion sera effectuée lors de la Recherche</string>
+               </property>
+               <property name="text">
+                <string>Cylindre positif</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="l90Button">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>90°</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
+              <widget class="QCheckBox" name="lFineCheckbox">
+               <property name="text">
+                <string>fin</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="3">
               <widget class="angleSpinBox" name="lAxisSpin">
                <property name="font">
                 <font>
@@ -400,20 +442,18 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="lLabelCylPos">
+             <item row="0" column="2" colspan="3">
+              <widget class="QLabel" name="label_8">
                <property name="font">
                 <font>
                  <pointsize>8</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
-               <property name="toolTip">
-                <string>Le cylindre indiqué est positif, une conversion sera effectuée lors de la Recherche</string>
-               </property>
                <property name="text">
-                <string>Cylindre positif</string>
+                <string>Axe</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -1071,7 +1111,7 @@
      <x>0</x>
      <y>0</y>
      <width>807</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

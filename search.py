@@ -201,6 +201,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rAxisSpin.setValue(DEFAULT_AXIS)
         self.rAxisSpin.valueChanged.connect(self.modified)
 
+        self.r90Button.clicked.connect(self.r90Action)
+        self.rFineCheckbox.stateChanged.connect(self.rFineChanged)
+
         self.rAddSpin.setMaximum(MAX_ADD)
         self.rAddSpin.setMinimum(MIN_ADD)
         self.rAddSpin.setSingleStep(STEP_ADD)
@@ -235,6 +238,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lAxisSpin.setSingleStep(STEP_AXIS)
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAxisSpin.valueChanged.connect(self.modified)
+
+        self.l90Button.clicked.connect(self.l90Action)
+        self.lFineCheckbox.stateChanged.connect(self.lFineChanged)
 
         self.lAddSpin.setMaximum(MAX_ADD)
         self.lAddSpin.setMinimum(MIN_ADD)
@@ -438,6 +444,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rMasterRadio.setDisabled(state)
         if state:
             self.lMasterRadio.setChecked(state)
+    def r90Action(self):
+        self.rAxisSpin.setValue(90)
+
+    def l90Action(self):
+        self.lAxisSpin.setValue(90)
+
+    def rFineChanged(self):
+        if self.rFineCheckbox.isChecked():
+            self.rAxisSpin.setSingleStep(1)
+            self.rAxisSpin.setMinimum(1)
+        else:
+            self.rAxisSpin.setMinimum(MIN_AXIS)
+            self.rAxisSpin.setSingleStep(5)
+            self.rAxisSpin.setValue(self.rAxisSpin.value()-self.rAxisSpin.value()%5)
+
+    def lFineChanged(self):
+        if self.lFineCheckbox.isChecked():
+            self.lAxisSpin.setSingleStep(1)
+            self.lAxisSpin.setMinimum(1)
+        else:
+            self.lAxisSpin.setMinimum(MIN_AXIS)
+            self.lAxisSpin.setSingleStep(5)
+            self.lAxisSpin.setValue(self.lAxisSpin.value()-self.lAxisSpin.value()%5)
 
     def modified(self):
         """ Action when a value is modified """

@@ -51,10 +51,10 @@ MIN_CYL = float(CORRECTION['min_cyl'])
 STEP_CYL = float(CORRECTION['step_cyl'])
 DEFAULT_CYL = float(CORRECTION['default_cyl'])
 
-MAX_AXIS = float(CORRECTION['max_axis'])
-MIN_AXIS = float(CORRECTION['min_axis'])
-STEP_AXIS = float(CORRECTION['step_axis'])
-DEFAULT_AXIS = float(CORRECTION['default_axis'])
+MAX_AXIS = int(CORRECTION['max_axis'])
+MIN_AXIS = int(CORRECTION['min_axis'])
+STEP_AXIS = int(CORRECTION['step_axis'])
+DEFAULT_AXIS = int(CORRECTION['default_axis'])
 
 MAX_ADD = float(CORRECTION['max_add'])
 MIN_ADD = float(CORRECTION['min_add'])
@@ -85,6 +85,12 @@ if SEARCH:
     ADD_COEF = float(SEARCH['add_coef'])
 
     SCORE_SHAPE_PARAM = float(SEARCH['score_shape_param'])
+
+STOCK = configSectionMap("Stock")
+
+if STOCK:
+    # Config of colors for glasses tags
+    UNIT_COLORS = [int(STOCK['unit'+str(a)], 16) for a in range(10)]
 
 # Create the data file if it doesn't exists
 open(FILENAME, 'a').close()

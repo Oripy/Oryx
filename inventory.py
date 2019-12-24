@@ -137,6 +137,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rAxisSpin.setValue(DEFAULT_AXIS)
         self.rAxisSpin.valueChanged.connect(self.modified)
 
+        self.r90Button.clicked.connect(self.r90Action)
+        self.rFineCheckbox.stateChanged.connect(self.rFineChanged)
+
         self.rAddSpin.setMaximum(MAX_ADD)
         self.rAddSpin.setMinimum(MIN_ADD)
         self.rAddSpin.setSingleStep(STEP_ADD)
@@ -144,6 +147,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rAddSpin.valueChanged.connect(self.enableAddition)
 
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
+
+        self.rCopyButton.clicked.connect(self.copyRtoL)
 
         # Left Eye
         # Correction
@@ -167,6 +172,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lAxisSpin.setSingleStep(STEP_AXIS)
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAxisSpin.valueChanged.connect(self.modified)
+
+        self.l90Button.clicked.connect(self.l90Action)
+        self.lFineCheckbox.stateChanged.connect(self.lFineChanged)
 
         self.lAddSpin.setMaximum(MAX_ADD)
         self.lAddSpin.setMinimum(MIN_ADD)
@@ -223,6 +231,46 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         state = self.sender().isChecked()
         self.lLinkCheckbox.setChecked(state)
         self.rLinkCheckbox.setChecked(state)
+
+    def r90Action(self):
+        if self.r90Button.text() == "90°":
+            self.rAxisSpin.setValue(90)
+            self.r90Button.setText("180°")
+        else:
+            self.rAxisSpin.setValue(180)
+            self.r90Button.setText("90°")
+
+    def l90Action(self):
+        if self.l90Button.text() == "90°":
+            self.lAxisSpin.setValue(90)
+            self.l90Button.setText("180°")
+        else:
+            self.lAxisSpin.setValue(180)
+            self.l90Button.setText("90°")
+
+    def rFineChanged(self):
+        if self.rFineCheckbox.isChecked():
+            self.rAxisSpin.setSingleStep(1)
+            self.rAxisSpin.setMinimum(1)
+        else:
+            self.rAxisSpin.setMinimum(MIN_AXIS)
+            self.rAxisSpin.setSingleStep(5)
+            self.rAxisSpin.setValue(self.rAxisSpin.value()-self.rAxisSpin.value()%5)
+
+    def lFineChanged(self):
+        if self.lFineCheckbox.isChecked():
+            self.lAxisSpin.setSingleStep(1)
+            self.lAxisSpin.setMinimum(1)
+        else:
+            self.lAxisSpin.setMinimum(MIN_AXIS)
+            self.lAxisSpin.setSingleStep(5)
+            self.lAxisSpin.setValue(self.lAxisSpin.value()-self.lAxisSpin.value()%5)
+
+    def copyRtoL(self):
+        self.lSphereSpin.setValue(self.rSphereSpin.value())
+        self.lCylSpin.setValue(self.rCylSpin.value())
+        self.lAxisSpin.setValue(self.rAxisSpin.value())
+        self.lAddSpin.setValue(self.rAddSpin.value())
 
     def modified(self):
         """ Action when a value is modified """
@@ -536,6 +584,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # For each item, add the data value to allow correct sorting
             for i, item in enumerate(items):
                 item.setData(getData(row[i]), SORT_ROLE)
+            items[0].setBackground(QtGui.QColor(UNIT_COLORS[int(str(row[0])[-1])]))
 
             items[1].setBackground(RIGHT_COLOR)
             items[2].setBackground(RIGHT_COLOR)
