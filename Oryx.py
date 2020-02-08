@@ -83,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setPlaceholderText('Mot de passe principal')
             elif coded_pass == PASSWORD:
-                self.time_remaining = passwords.value(coded_pass, 150*60*60)
+                self.time_remaining = int(passwords.value(coded_pass, 150*60*60))
                 self.start_time = time.time()
                 self.timer.start(10000)
                 self.updateClock()
@@ -91,6 +91,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.searchButton.setEnabled(True)
                     self.inventoryButton.setEnabled(True)
                     self.passwordEdit.setPlaceholderText('Mot de passe OK')
+                    t = self.time_remaining
+                    hours = t // 3600
+                    minutes = (t - hours * 3600) // 60
+                    self.timerLabel.setText('%d:%02d' % (hours, minutes))
                 else:
                     self.passwordEdit.setPlaceholderText('Temps écoulé')
             else:
