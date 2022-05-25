@@ -571,7 +571,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif value == 2:
             self.frameLabel.setText(u'Demi-lune')
         else:
-            self.frameLabel.setText(u'Aucune lunettes avec ce numéro')
+            self.frameLabel.setText(u'Aucune lunette avec ce numéro')
 
     def setFrame(self, value):
         """ selects the radio button corresponding to the input code
