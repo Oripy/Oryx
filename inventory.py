@@ -103,7 +103,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.printAction.triggered.connect(lambda: createpdf(self.model))
 
         # Numbering/Actions panel
-        self.eyeglassesNum.valueChanged.connect(self.warnModified)
+        self.eyeglassesNum.valueChanged.connect(self.eyeglassesNumModified)
 
         self.current_num = self.eyeglassesNum.value()
         self.eyeglassesNum.noWarn = False
@@ -532,6 +532,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             palette = QtGui.QPalette()
             palette.setColor(QtGui.QPalette.Foreground, QtCore.Qt.blue)
             self.status.setPalette(palette)
+
+    def eyeglassesNumModified(self):
+        """ Event when num is modified """
+        self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
+        self.warnModified()
 
     def warnModified(self):
         """ Warn the user that unsaved data will be lost if unsaved """
