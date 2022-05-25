@@ -17,3 +17,5 @@ courbe score.xls
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+venv/
