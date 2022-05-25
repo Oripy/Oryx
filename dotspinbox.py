@@ -6,6 +6,7 @@ Created on Fri Aug 02 17:19:43 2013
 """
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QTimer
 
 from formatting import formatSph
 
@@ -22,3 +23,7 @@ class dotSpinBox(QtWidgets.QDoubleSpinBox):
 
     def textFromValue(self, value):
         return formatSph(value)
+
+    def focusInEvent(self, event):
+        super(dotSpinBox, self).focusInEvent(event)
+        QTimer.singleShot(0, self.selectAll)

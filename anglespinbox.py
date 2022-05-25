@@ -6,6 +6,7 @@ Created on Fri Aug 02 17:19:43 2013
 """
 
 from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtCore import QTimer
 
 from formatting import formatAxis
 
@@ -37,3 +38,7 @@ class angleSpinBox(QtWidgets.QSpinBox):
             return (QtGui.QValidator.Acceptable, text, num)
         else:
             return (QtGui.QValidator.Intermediate, text, num)
+
+    def focusInEvent(self, event):
+        super(angleSpinBox, self).focusInEvent(event)
+        QTimer.singleShot(0, self.selectAll)

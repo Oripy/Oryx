@@ -6,6 +6,7 @@ Created on Fri Aug 02 17:19:43 2013
 """
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QTimer
 
 from formatting import formatCyl
 
@@ -22,3 +23,7 @@ class negativeZeroSpinBox(QtWidgets.QDoubleSpinBox):
             (-4.25) """
     def textFromValue(self, value):
         return formatCyl(value)
+
+    def focusInEvent(self, event):
+        super(negativeZeroSpinBox, self).focusInEvent(event)
+        QTimer.singleShot(0, self.selectAll)
