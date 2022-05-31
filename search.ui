@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>914</width>
-    <height>641</height>
+    <width>968</width>
+    <height>656</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -232,6 +232,19 @@
                </property>
                <property name="text">
                 <string>90°</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5" rowspan="3">
+              <widget class="QPushButton" name="rCopyButton">
+               <property name="maximumSize">
+                <size>
+                 <width>35</width>
+                 <height>90</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>&gt;</string>
                </property>
               </widget>
              </item>
@@ -1152,6 +1165,24 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="inventoryWindowButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Inventory</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -1159,7 +1190,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>914</width>
+     <width>968</width>
      <height>24</height>
     </rect>
    </property>

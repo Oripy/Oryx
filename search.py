@@ -212,6 +212,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.rLinkCheckbox.stateChanged.connect(self.linkChanged)
 
+        self.rCopyButton.clicked.connect(self.copyRtoL)
+
         # Left Eye
         self.lMasterRadio.toggled.connect(self.modified)
 
@@ -478,9 +480,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lAxisSpin.setSingleStep(5)
             self.lAxisSpin.setValue(self.lAxisSpin.value()-self.lAxisSpin.value()%5)
 
+    def copyRtoL(self):
+        if self.lSphereSpin.value() != self.rSphereSpin.value():
+            self.lSphereSpin.setValue(self.rSphereSpin.value())
+            self.lSphereSpin.setStyleSheet("background-color: lightgrey")
+        if self.lCylSpin.value() != self.rCylSpin.value():
+            self.lCylSpin.setValue(self.rCylSpin.value())
+            self.lCylSpin.setStyleSheet("background-color: lightgrey")
+        if self.lAxisSpin.value() != self.rAxisSpin.value():
+            self.lAxisSpin.setValue(self.rAxisSpin.value())
+            self.lAxisSpin.setStyleSheet("background-color: lightgrey")
+        if self.lAddSpin.value() != self.rAddSpin.value():
+            self.lAddSpin.setValue(self.rAddSpin.value())
+            self.lAddSpin.setStyleSheet("background-color: lightgrey")
+
     def modified(self):
         """ Action when a value is modified """
         self.model.clear()
+        self.sender().setStyleSheet("")
         self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
 

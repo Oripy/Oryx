@@ -39,11 +39,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        self.inventoryButton.clicked.connect(self.inventory)
-        self.searchButton.clicked.connect(self.search)
-
         self.inventory_win = inventory.MainWindow()
         self.search_win = search.MainWindow()
+
+        self.inventoryButton.clicked.connect(self.inventory)
+        self.inventory_win.searchWindowButton.clicked.connect(self.search)
+        self.searchButton.clicked.connect(self.search)
+        self.search_win.inventoryWindowButton.clicked.connect(self.inventory)
 
         self.passwordButton.clicked.connect(self.unlock)
         self.passwordEdit.returnPressed.connect(self.unlock)
@@ -63,13 +65,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def inventory(self):
         """ show the inventory window maximized """
+        self.inventory_win.setWindowFlags(self.inventory_win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)
         self.inventory_win.showMaximized()
         self.inventory_win.activateWindow()
+        self.inventory_win.setWindowFlags(self.inventory_win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
 
     def search(self):
         """ show the search window maximized """
+        self.search_win.setWindowFlags(self.search_win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)
         self.search_win.showMaximized()
         self.search_win.activateWindow()
+        self.search_win.setWindowFlags(self.search_win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
 
     def unlock(self):
         """ Test the password and unlock if successful """

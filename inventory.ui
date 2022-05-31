@@ -26,7 +26,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="mainLayout" stretch="0,0,0,0,0">
+     <layout class="QVBoxLayout" name="mainLayout" stretch="0,0,0,0,0,0">
       <property name="spacing">
        <number>6</number>
       </property>
@@ -93,6 +93,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="deleteButton">
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
           <property name="focusPolicy">
            <enum>Qt::ClickFocus</enum>
           </property>
@@ -116,6 +121,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="backupButton">
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
           <property name="focusPolicy">
            <enum>Qt::ClickFocus</enum>
           </property>
@@ -126,6 +136,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="restoreButton">
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
           <property name="focusPolicy">
            <enum>Qt::ClickFocus</enum>
           </property>
@@ -782,6 +797,27 @@
         <attribute name="verticalHeaderStretchLastSection">
          <bool>false</bool>
         </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="searchWindowButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="text">
+         <string>Search</string>
+        </property>
        </widget>
       </item>
      </layout>
