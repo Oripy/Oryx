@@ -24,20 +24,24 @@ class angleSpinBox(QtWidgets.QSpinBox):
 
     def valueFromText(self, text):
         try:
-            out = int(text[0:3])
-            if out % 5 >= 3:
-                out = out / 5 * 5 + 5
-            else:
-                out = out / 5 * 5
+            out = int(text.replace("°", ""))
         except:
             out = 180
         return out
 
     def validate(self, text, num):
-        if self.valueFromText(text) % 5 == 0:
+        if self.valueFromText(text) % self.singleStep() == 0:
             return (QtGui.QValidator.Acceptable, text, num)
         else:
             return (QtGui.QValidator.Intermediate, text, num)
+    
+    def fixup(self, text):
+        try:
+            text = int(round(self.valueFromText(text) / self.singleStep()) * self.singleStep())
+            self.setValue(text)
+        except:
+            text = text
+        return str(text)
 
     def focusInEvent(self, event):
         super(angleSpinBox, self).focusInEvent(event)

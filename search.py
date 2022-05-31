@@ -445,10 +445,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if state:
             self.lMasterRadio.setChecked(state)
     def r90Action(self):
-        self.rAxisSpin.setValue(90)
+        if self.r90Button.text() == "90°":
+            self.rAxisSpin.setValue(90)
+            self.r90Button.setText("180°")
+        else:
+            self.rAxisSpin.setValue(180)
+            self.r90Button.setText("90°")
 
     def l90Action(self):
-        self.lAxisSpin.setValue(90)
+        if self.l90Button.text() == "90°":
+            self.lAxisSpin.setValue(90)
+            self.l90Button.setText("180°")
+        else:
+            self.lAxisSpin.setValue(180)
+            self.l90Button.setText("90°")
 
     def rFineChanged(self):
         if self.rFineCheckbox.isChecked():

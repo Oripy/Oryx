@@ -3,11 +3,12 @@
 Created on Tue Jul 30 10:52:58 2013
 
 @author: pmaurier
-"""
+""",
+
+import os, sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-import os, sys
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -221,9 +222,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.addGroupBox.setDisabled(False)
 
         value = self.sender().value()
-        if self.rLinkCheckbox.isChecked():
-            self.rAddSpin.setValue(value)
-            self.lAddSpin.setValue(value)
+        if self.rLinkCheckbox.isChecked() and self.rAddSpin.value() != self.lAddSpin.value():
+            if self.sender() == self.rAddSpin:
+                self.lAddSpin.setValue(value)
+            elif self.sender() == self.lAddSpin:
+                self.rAddSpin.setValue(value)
         self.modified()
 
     def linkChanged(self):
