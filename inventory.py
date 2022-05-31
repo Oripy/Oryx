@@ -496,10 +496,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             and display it in the form """
         self.rLinkCheckbox.setChecked(False)
         if self.current_num in self.data:
+            self.rFineCheckbox.setChecked(self.data[self.current_num][3] % 5 != 0)
+            self.lFineCheckbox.setChecked(self.data[self.current_num][7] % 5 != 0)
             for i, element in enumerate(self.data_structure[1:]):
                 element[3](self.data[self.current_num][i])
-            self.rFineCheckbox.setChecked(self.rAxisSpin.value() % 5 != 0)
-            self.lFineCheckbox.setChecked(self.lAxisSpin.value() % 5 != 0)
             self.modif = False
             self.setStatus('Saved')
         else:
@@ -526,6 +526,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def reset(self):
         """ Reset the values in the form to the default values """
+        self.rFineCheckbox.setChecked(False)
+        self.lFineCheckbox.setChecked(False)
         for element in self.data_structure[1:]:
             element[3](element[4])
         self.modif = False
