@@ -365,6 +365,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             items[0].setBackground(percentcolor(row[0]))
 
+            items[1].setBackground(QtGui.QColor(UNIT_COLORS[int(str(row[1])[-1])]))
+
             items[2].setBackground(RIGHT_COLOR)
             items[3].setBackground(RIGHT_COLOR)
             items[4].setBackground(RIGHT_COLOR)
@@ -651,6 +653,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 element[5](element[4])
             self.addButton.setDisabled(True)
             self.removeButton.setDisabled(True)
+        self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
 
     def selectLine(self):
         """ change the eyeglasses number to the selected line in the table """
@@ -684,5 +687,6 @@ if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
+    mainWin.inventoryWindowButton.hide()
     mainWin.show()
     sys.exit(app.exec_())
