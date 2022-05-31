@@ -270,6 +270,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lAxisSpin.setValue(self.lAxisSpin.value()-self.lAxisSpin.value()%5)
 
     def copyRtoL(self):
+        if (self.rFineCheckbox.isChecked()):
+            self.lFineCheckbox.setChecked(True)
         if self.lSphereSpin.value() != self.rSphereSpin.value():
             self.lSphereSpin.setValue(self.rSphereSpin.value())
             self.lSphereSpin.setStyleSheet("background-color: lightgrey")
@@ -420,7 +422,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             item[7].setData(u'000°', QtCore.Qt.DisplayRole)
             item[7].setData(0, SORT_ROLE)
 
-        item[0].setBackground(QtGui.QColor(UNIT_COLORS[int(self.current_num)]))
+        item[0].setBackground(QtGui.QColor(UNIT_COLORS[int(str(self.current_num)[-1])]))
 
         item[1].setBackground(RIGHT_COLOR)
         item[2].setBackground(RIGHT_COLOR)
@@ -496,6 +498,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.current_num in self.data:
             for i, element in enumerate(self.data_structure[1:]):
                 element[3](self.data[self.current_num][i])
+            self.rFineCheckbox.setChecked(self.rAxisSpin.value() % 5 != 0)
+            self.lFineCheckbox.setChecked(self.lAxisSpin.value() % 5 != 0)
             self.modif = False
             self.setStatus('Saved')
         else:

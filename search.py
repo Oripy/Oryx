@@ -483,6 +483,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lAxisSpin.setValue(self.lAxisSpin.value()-self.lAxisSpin.value()%5)
 
     def copyRtoL(self):
+        if (self.rFineCheckbox.isChecked()):
+            self.lFineCheckbox.setChecked(True)
         if self.lSphereSpin.value() != self.rSphereSpin.value():
             self.lSphereSpin.setValue(self.rSphereSpin.value())
             self.lSphereSpin.setStyleSheet("background-color: lightgrey")
@@ -675,6 +677,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.childRadioNo.setChecked(True)
         self.solarRadioNo.setChecked(True)
+
+        self.rFineCheckbox.setChecked(False)
+        self.lFineCheckbox.setChecked(False)
 
         self.rLinkCheckbox.setChecked(True)
         self.lLinkCheckbox.setChecked(True)
