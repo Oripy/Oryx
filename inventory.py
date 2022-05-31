@@ -417,6 +417,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             item[7].setData(u'000°', QtCore.Qt.DisplayRole)
             item[7].setData(0, SORT_ROLE)
 
+        item[0].setBackground(QtGui.QColor(UNIT_COLORS[int(self.current_num)]))
+
         item[1].setBackground(RIGHT_COLOR)
         item[2].setBackground(RIGHT_COLOR)
         item[3].setBackground(RIGHT_COLOR)
