@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>919</width>
+    <width>1012</width>
     <height>642</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
          <widget class="QSpinBox" name="eyeglassesNum">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="minimum">
@@ -57,7 +57,7 @@
          <widget class="QLabel" name="status">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -71,7 +71,7 @@
          <widget class="QPushButton" name="newButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -83,7 +83,7 @@
          <widget class="QPushButton" name="saveButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -95,7 +95,7 @@
          <widget class="QPushButton" name="deleteButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="focusPolicy">
@@ -123,7 +123,7 @@
          <widget class="QPushButton" name="backupButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="focusPolicy">
@@ -138,7 +138,7 @@
          <widget class="QPushButton" name="restoreButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="focusPolicy">
@@ -616,9 +616,16 @@
           <property name="title">
            <string>Multifocal</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_9">
-           <item row="1" column="1">
-            <layout class="QVBoxLayout" name="addLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QRadioButton" name="addRadioBF">
+               <property name="text">
+                <string>Bifocal</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QRadioButton" name="addRadioP">
                <property name="text">
@@ -626,13 +633,6 @@
                </property>
                <property name="checked">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="addRadioBF">
-               <property name="text">
-                <string>Bifocal</string>
                </property>
               </widget>
              </item>
@@ -655,7 +655,14 @@
           <property name="title">
            <string>Teinte</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QRadioButton" name="solarRadioYes">
+             <property name="text">
+              <string>Teintés (Photochromiques ou T3, T4)</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QRadioButton" name="solarRadioNo">
              <property name="text">
@@ -663,13 +670,6 @@
              </property>
              <property name="checked">
               <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="solarRadioYes">
-             <property name="text">
-              <string>Teintés (Photochromiques ou T3, T4)</string>
              </property>
             </widget>
            </item>
@@ -687,14 +687,11 @@
           <property name="title">
            <string>Monture</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QRadioButton" name="childRadioNo">
+            <widget class="QRadioButton" name="childRadioYes">
              <property name="text">
-              <string>Adulte</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
+              <string>Enfant</string>
              </property>
             </widget>
            </item>
@@ -706,9 +703,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QRadioButton" name="childRadioYes">
+            <widget class="QRadioButton" name="childRadioNo">
              <property name="text">
-              <string>Enfant</string>
+              <string>Adulte</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -809,7 +809,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>16</pointsize>
+          <pointsize>12</pointsize>
          </font>
         </property>
         <property name="layoutDirection">
@@ -829,7 +829,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>919</width>
+     <width>1012</width>
      <height>24</height>
     </rect>
    </property>

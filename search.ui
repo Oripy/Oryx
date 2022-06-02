@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>968</width>
+    <width>990</width>
     <height>656</height>
    </rect>
   </property>
@@ -55,7 +55,7 @@
          <widget class="QGroupBox" name="rightEyeGroupBox">
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="title">
@@ -297,7 +297,7 @@
          <widget class="QGroupBox" name="leftEyeGroupBox">
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="title">
@@ -577,7 +577,14 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="1" column="1">
-            <layout class="QVBoxLayout" name="addLayout">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QRadioButton" name="addRadioBF">
+               <property name="text">
+                <string>Bifocal</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QRadioButton" name="addRadioP">
                <property name="text">
@@ -585,13 +592,6 @@
                </property>
                <property name="checked">
                 <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="addRadioBF">
-               <property name="text">
-                <string>Bifocal</string>
                </property>
               </widget>
              </item>
@@ -611,7 +611,14 @@
           <property name="title">
            <string>Teinte</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QRadioButton" name="solarRadioYes">
+             <property name="text">
+              <string>Teintés (Photochromiques ou T3, T4)</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="QRadioButton" name="solarRadioNo">
              <property name="text">
@@ -619,13 +626,6 @@
              </property>
              <property name="checked">
               <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="solarRadioYes">
-             <property name="text">
-              <string>Teintés (Photochromiques ou T3, T4)</string>
              </property>
             </widget>
            </item>
@@ -643,14 +643,11 @@
           <property name="title">
            <string>Monture</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
-            <widget class="QRadioButton" name="childRadioNo">
+            <widget class="QRadioButton" name="childRadioYes">
              <property name="text">
-              <string>Adulte</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
+              <string>Enfant</string>
              </property>
             </widget>
            </item>
@@ -662,9 +659,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QRadioButton" name="childRadioYes">
+            <widget class="QRadioButton" name="childRadioNo">
              <property name="text">
-              <string>Enfant</string>
+              <string>Adulte</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -692,7 +692,7 @@
          <widget class="QPushButton" name="resetButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -717,7 +717,7 @@
          <widget class="QPushButton" name="searchButton">
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -735,7 +735,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>16</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
@@ -807,6 +807,11 @@
          <widget class="QPushButton" name="addButton">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
           <property name="text">
            <string>Remettre en Stock</string>
@@ -1156,32 +1161,37 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Sortir du Stock</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="inventoryWindowButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Inventory</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="inventoryWindowButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Inventory</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
@@ -1190,7 +1200,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>968</width>
+     <width>990</width>
      <height>24</height>
     </rect>
    </property>
