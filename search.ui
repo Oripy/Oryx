@@ -767,13 +767,6 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Résultat de la recherche</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QTableView" name="tableView">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
