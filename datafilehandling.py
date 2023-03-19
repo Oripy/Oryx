@@ -43,7 +43,7 @@ def loadCsv(filename = FILENAME):
     data = dict()
     with open(filename, "rt", encoding="ISO-8859-1") as file_input:
         for row in csv.reader(file_input):
-            data[int(row[0])] = [getData(row[a]) for a in range(14)[1:]]
+            data[int(row[0])] = [getData(row[a]) for a in range(15)[1:]]
     return data
 
 def autoSave(data):

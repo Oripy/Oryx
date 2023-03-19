@@ -3,10 +3,10 @@
 Created on Tue Jul 30 10:52:58 2013
 
 @author: pmaurier
-""",
+"""
 
 import os, sys
-
+from datetime import date
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 # Define function to import external files when using PyInstaller.
@@ -61,33 +61,36 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_structure = [
             ['Num', lambda n: str(int(n)), self.eyeglassesNum.value,
              self.eyeglassesNum.setValue, 1],
-            ['OD Sphere', formatSph, self.rSphereSpin.value,
+            ['OD Sph', formatSph, self.rSphereSpin.value,
               self.rSphereSpin.setValue, DEFAULT_SPHERE],
-            ['OD Cylindre', formatCyl, self.rCylSpin.value,
+            ['OD Cyl', formatCyl, self.rCylSpin.value,
              self.rCylSpin.setValue, DEFAULT_CYL],
             ['OD Axe', formatAxis, self.rAxisSpin.value,
              self.rAxisSpin.setValue, DEFAULT_AXIS],
             ['OD Add', formatSph, self.rAddSpin.value,
              self.rAddSpin.setValue, DEFAULT_ADD],
-            ['OG Sphere', formatSph, self.lSphereSpin.value,
+            ['OG Sph', formatSph, self.lSphereSpin.value,
              self.lSphereSpin.setValue, DEFAULT_SPHERE],
-            ['OG Cylindre', formatCyl, self.lCylSpin.value,
+            ['OG Cyl', formatCyl, self.lCylSpin.value,
              self.lCylSpin.setValue, DEFAULT_CYL],
             ['OG Axe', formatAxis, self.lAxisSpin.value,
              self.lAxisSpin.setValue, DEFAULT_AXIS],
             ['OG Add', formatSph, self.lAddSpin.value,
              self.lAddSpin.setValue, DEFAULT_ADD],
-            ['Multifocal', formatType, self.getAddType, self.setAddType, 0],
-            ['Monture', formatFrame, self.getFrame, self.setFrame, 0],
+            ['Foyer', formatType, self.getAddType, self.setAddType, 0],
+            ['Mont', formatFrame, self.getFrame, self.setFrame, 0],
             ['Teinte', formatSun, self.getSolar, self.setSolar, 0],
-            ['Commentaire', lambda n: str(n),
+            ['Com', lambda n: str(n),
              self.getComment, self.setComment, ''],
-            ['Stock', lambda n: str(int(n)), lambda: 1, lambda n: n, 1]]
+            ['Statut', formatStock, lambda: 1, lambda n: n, 1],
+            ['Date Mvmt', formatDate, self.getDateMvmt, 
+             self.setDateMvmt, date.today()],
+            ]
 
         self.data = dict()
         self.model = QtGui.QStandardItemModel(self)
 
-        self.data = loadCsv()
+        self.data = self.loadDataFromCsv()
 
         self.displayData(self.data)
         self.new()
@@ -102,6 +105,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.backupAction.triggered.connect(backup)
         self.restoreAction.triggered.connect(self.restoreAndShow)
         self.printAction.triggered.connect(lambda: createpdf(self.model))
+        self.printButton.clicked.connect(lambda: createpdf(self.model))
 
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.eyeglassesNumModified)
@@ -204,6 +208,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
         self.tableView.setSortingEnabled(True)
+
+    def loadDataFromCsv(self):
+        out = loadCsv()
+        for key in out:
+            for j in range(len(self.data_structure)):
+                if j > len(out[key]):
+                    out[key].append(0)
+        return out
 
     def closeEvent(self, event):
         """ Reimplementation of the closeEvent
@@ -353,6 +365,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.solarRadioNo.setChecked(True)
 
+    def getDateMvmt(self):
+        return date.today()
+
+    def setDateMvmt(self, value):
+        pass
+
     def getFrame(self):
         """ returns the code corresponding to the selected radio button
             0 means adult frame
@@ -447,7 +465,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 print("Error when trying to update the TableView")
         if self.modif:
-            self.data = loadCsv()
+            self.data = self.loadDataFromCsv()
             self.data[self.current_num] = [self.data_structure[i][2]()
                           for i in range(len(self.data_structure))[1:]]
             if self.data[self.current_num][1] == 0:
@@ -468,7 +486,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def delete(self):
         """ Delete given entry and write the modification to the CSV file """
         text = (u'Les lunettes numéro '+str(self.current_num)+' '
-                u'vont être supprimées.\n'
+                u'vont être retirées de l\'inventaire.\n'
                 u'\n'
                 u'Souhaitez-vous continuer ?')
         question = QtWidgets.QMessageBox.warning(self,
@@ -484,7 +502,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.model.takeRow(rows[0].row())
                 else:
                     print("Error when trying to find the right row to delete")
-                self.data = loadCsv()
+                self.data = self.loadDataFromCsv()
                 self.data.pop(self.current_num)
                 writeCsv(self.data)
                 self.setStatus('New')
@@ -597,8 +615,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def displayData(self, data):
         """ Displays data in the table """
         self.model.clear()
-        self.model.setHorizontalHeaderLabels([self.data_structure[i][0]
-                          for i in range(len(self.data_structure))])
+        labels = [self.data_structure[i][0] for i in range(len(self.data_structure))]
+        labels.insert(1, "Boite")
+        self.model.setHorizontalHeaderLabels(labels)
 
         for key, values in data.items():
             row = [key] + values
@@ -621,17 +640,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items[7].setBackground(LEFT_COLOR)
             items[8].setBackground(LEFT_COLOR)
 
+            items[13].setBackground(STATUS_COLOR[int(row[13])])
+
+            box = int(row[0])//NBR_PER_BOX
+            box_letter = chr(65+box//4)
+            box_number = box % 4 + 1
+            box_label = f'''{box_letter}{box_number}'''
+            items.insert(1, QtGui.QStandardItem(box_label))
+
             self.model.appendRow(items)
 
         self.tableView.setModel(self.model)
         self.tableView.resizeColumnsToContents()
+        self.tableView.horizontalHeader().setStretchLastSection(False)
+        self.tableView.horizontalHeader().moveSection(14, 2)
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
-if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.searchWindowButton.hide()
-    mainWin.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     mainWin = MainWindow()
+#     mainWin.searchWindowButton.hide()
+#     mainWin.show()
+#     sys.exit(app.exec_())

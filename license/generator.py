@@ -7,7 +7,7 @@ Created on Mon Oct 14 10:34:38 2013
 
 from PyQt5 import QtWidgets, uic
 
-import os
+import os, uuid
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -39,8 +39,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def generate(self):
         password = self.inputEdit.text()
-        if password != '':
-            coded_pass = hashlib.sha512(encode(encode(password,
+        computerID = self.computerIDEdit.text()
+        self.resultLabel.setText('')
+        if password != '' and computerID != '':
+            coded_pass = hashlib.sha512(encode(encode(f'''{password}{computerID}''',
                                                'rot13'),'utf-8')).hexdigest()[5:69]
             self.resultLabel.setText(coded_pass)
 
@@ -49,10 +51,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if coded_pass != '':
             app.clipboard().setText(coded_pass)
 
+def unlock(password):
+    """ Test the password and unlock if successful """
+    if password != '':
+        coded_pass = hashlib.sha512(encode(encode(f'''{password}''',
+                                            'rot13'),'utf-8')).hexdigest()[5:69]
+#            print coded_pass, len(coded_pass)
+        if coded_pass == 'd4253200d60b1008f1aad559cd3fac59352d7585516496f6f571fbb026b3e44a':
+            return True
+    return False
 
 if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.show()
+    password, ok = QtWidgets.QInputDialog().getText(None, "Master Password",
+                                     "Master Password:", QtWidgets.QLineEdit.Normal)
+    if ok:
+        if unlock(password):
+            mainWin = MainWindow()
+            mainWin.show()
     sys.exit(app.exec_())

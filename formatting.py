@@ -6,6 +6,7 @@ Created on Fri Oct 11 15:12:10 2013
 """
 
 from PyQt5 import QtCore, QtGui
+from datetime import datetime
 
 # Color constants
 RED_PALETTE = QtGui.QPalette()
@@ -15,6 +16,11 @@ RIGHT_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(180)
 LEFT_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(180)
 
 RED_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(125)
+YELLOW_COLOR = QtGui.QColor(QtCore.Qt.yellow).lighter(125)
+BLUE_COLOR = QtGui.QColor(QtCore.Qt.blue).lighter(125)
+GREEN_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(125)
+
+STATUS_COLOR = [RED_COLOR, GREEN_COLOR, BLUE_COLOR, YELLOW_COLOR]
 
 def percentcolor(value):
     """ returns a color between green and red based on the value """
@@ -61,9 +67,9 @@ def formatType(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
     if value == 1:
-        return u'Progressif'
+        return u'Pr'
     elif value == 2:
-        return u'Bifocal'
+        return u'Bf'
     else:
         return u''
 
@@ -71,19 +77,36 @@ def formatSun(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
     if value == 1:
-        return u'Teintés'
+        return u'TT'
     else:
-        return u'Non teintés'
+        return u'NT'
 
 def formatFrame(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
     if value == 1:
-        return u'Enfant'
+        return u'En'
     elif value == 2:
-        return u'Demi-lunes'
+        return u'DL'
     else:
-        return u'Adulte'
+        return u'Ad'
+    
+def formatStock(value):
+    """ Convert saved numbers into respective human readable text """
+    value = float(value)
+    if value == 2:
+        return u'Donnée'
+    elif value == 1:
+        return u'En Stock'
+    elif value == 3:
+        return u'Egarée'
+    elif value == 0:
+        return u'Supprimée'
+
+def formatDate(value):
+    if value == 0:
+        return ""
+    return datetime.strftime(datetime.strptime(value, '%Y-%m-%d'), '%Y-%m-%d')
 
 def getData(value):
     """ returns a float or string depending on the input type """

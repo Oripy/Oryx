@@ -7,7 +7,7 @@ Created on Thu Oct 03 12:30:55 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-import os, sys
+import os, sys, uuid
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -52,6 +52,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.showPasswordCheckBox.stateChanged.connect(self.showHidePassword)
 
+        self.computerIDLabel.setText(str(uuid.getnode()))
+
+        self.copyComputerIDButton.clicked.connect(self.copyComputerID)
+
+        self.showHidePassword()
+
         self.start_time = 0
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateClock)
@@ -81,15 +87,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Test the password and unlock if successful """
         password = self.passwordEdit.text()
         if password != '':
-            coded_pass = hashlib.sha512(encode(encode(password,
+            coded_pass = hashlib.sha512(encode(encode(f'''{password}{uuid.getnode()}''',
                                                'rot13'),'utf-8')).hexdigest()[5:69]
-#            print coded_pass, len(coded_pass)
-            if coded_pass == 'd4253200d60b1008f1aad559cd3fac59352d7585516496f6f571fbb026b3e44a':
+            coded_pass_master = hashlib.sha512(encode(encode(password,
+                                               'rot13'),'utf-8')).hexdigest()[5:69]
+            if coded_pass_master == 'd4253200d60b1008f1aad559cd3fac59352d7585516496f6f571fbb026b3e44a':
                 self.searchButton.setEnabled(True)
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setPlaceholderText('Mot de passe principal')
             elif coded_pass == PASSWORD:
-                self.time_remaining = int(passwords.value(coded_pass, 150*60*60))
+                self.time_remaining = int(passwords.value(coded_pass, 333*60*60))
                 self.start_time = time.time()
                 self.timer.start(10000)
                 self.updateClock()
@@ -131,6 +138,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
         else:
             self.passwordEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+
+    def copyComputerID(self):
+        cb = QtWidgets.QApplication.clipboard()
+        cb.setText(self.computerIDLabel.text())
 
 if __name__ == '__main__':
     import sys

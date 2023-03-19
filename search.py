@@ -8,6 +8,7 @@ Created on Tue Jul 30 10:52:58 2013
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 import os, sys
+from datetime import date
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -21,8 +22,6 @@ def resource_path(relative_path):
 
 Ui_MainWindow = uic.loadUiType(resource_path('search.ui'))[0]
 # from searchUI import Ui_MainWindow
-
-import os
 
 from config import *
 from formatting import *
@@ -121,39 +120,41 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data_structure = [
             ['Num', lambda n: str(int(n)), lambda: 1,
              lambda n: n, 1, self.eyeglassesNum.setValue],
-            ['OD Sphere', formatSph, self.rSphereSpin.value,
+            ['OD Sph', formatSph, self.rSphereSpin.value,
              self.rSphereSpin.setValue, DEFAULT_SPHERE, self.setRSphere],
-            ['OD Cylindre', formatCyl, self.rCylSpin.value,
+            ['OD Cyl', formatCyl, self.rCylSpin.value,
              self.rCylSpin.setValue, DEFAULT_CYL, self.setRCyl],
             ['OD Axe', formatAxis, self.rAxisSpin.value,
              self.rAxisSpin.setValue, DEFAULT_AXIS, self.setRAxis],
             ['OD Add', formatSph, self.rAddSpin.value,
              self.rAddSpin.setValue, DEFAULT_ADD, self.setRAdd],
-            ['OG Sphere', formatSph, self.lSphereSpin.value,
+            ['OG Sph', formatSph, self.lSphereSpin.value,
              self.lSphereSpin.setValue, DEFAULT_SPHERE, self.setLSphere],
-            ['OG Cylindre', formatCyl, self.lCylSpin.value,
+            ['OG Cyl', formatCyl, self.lCylSpin.value,
              self.lCylSpin.setValue, DEFAULT_CYL, self.setLCyl],
             ['OG Axe', formatAxis, self.lAxisSpin.value,
              self.lAxisSpin.setValue, DEFAULT_AXIS, self.setLAxis],
             ['OG Add', formatSph, self.lAddSpin.value,
              self.lAddSpin.setValue, DEFAULT_ADD, self.setLAdd],
-            ['Multifocal', formatType, lambda: 0,
+            ['Foyer', formatType, lambda: 0,
              lambda n: n, 0, self.setAddType],
-            ['Monture', formatFrame, self.getFrame,
+            ['Mont', formatFrame, self.getFrame,
              self.setFrame, -1, self.setFrameLabel],
             ['Teinte', formatSun, self.getSolar,
              self.setSolar, -1, self.setSolarLabel],
-            ['Commentaire', lambda n: str(n),
+            ['Com.', lambda n: str(n),
              lambda: '', lambda n: n, '', self.setComment],
-            ['Stock', lambda n: str(int(n)), lambda: 1,
-             lambda n: n, 1, lambda n: n]
+            ['Stk', formatStock, lambda: 1,
+             lambda n: n, 1, lambda n: n],
+            ['Date Mvmt', formatDate, self.getDateMvmt, 
+             self.setDateMvmt, date.today(), lambda n: n],
             ]
 
         self.data = dict()
         self.model = QtGui.QStandardItemModel(self)
         self.tableView.setModel(self.model)
 
-        self.data = loadCsv()
+        self.data = self.loadDataFromCsv()
         self.loadData(self.eyeglassesNum.value())
         self.tableView.sortByColumn(1, QtCore.Qt.AscendingOrder)
         self.rLinkCheckbox.setChecked(True)
@@ -173,6 +174,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.resetButton.clicked.connect(self.resetAction.trigger)
         self.addButton.clicked.connect(self.addToStock)
         self.removeButton.clicked.connect(self.removeFromStock)
+        self.givenButton.clicked.connect(self.givenFromStock)
+        self.lostButton.clicked.connect(self.lostFromStock)
 
         # Right Eye
         self.rMasterRadio.toggled.connect(self.modified)
@@ -266,29 +269,79 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Table
         self.tableView.clicked.connect(self.selectLine)
 
+    def loadDataFromCsv(self):
+        out = loadCsv()
+        for key in out:
+            print(out[key])
+            for j in range(len(self.data_structure)):
+                if j > len(out[key]):
+                    out[key].append(0)
+                    print('pwet')
+        return out
+
     def addToStock(self):
         """ Place the selected glasses back in stock """
-        self.data = loadCsv()
+        self.data = self.loadDataFromCsv()
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 0:
             self.data[num][12] = 1
 
+        self.data[num][13] = date.today()
+
         self.addButton.setDisabled(True)
         self.removeButton.setDisabled(False)
+        self.givenButton.setDisabled(False)
+        self.lostButton.setDisabled(False)
 
         writeCsv(self.data)
 
     def removeFromStock(self):
-        """ Place the selected glasses from stock """
-        self.data = loadCsv()
+        """ Mark the selected glasses as out of stock """
+        self.data = self.loadDataFromCsv()
         num = self.eyeglassesNum.value()
         if self.data[num][12] == 1:
             self.data[num][12] = 0
 
+        self.data[num][13] = date.today()
+
         self.addButton.setDisabled(False)
         self.removeButton.setDisabled(True)
+        self.givenButton.setDisabled(True)
+        self.lostButton.setDisabled(True)
 
         autoSave(self.data)
+        writeCsv(self.data)
+    
+    def givenFromStock(self):
+        """ Mark the selected glasses as given from stock """
+        self.data = self.loadDataFromCsv()
+        num = self.eyeglassesNum.value()
+        if self.data[num][12] == 1:
+            self.data[num][12] = 2
+
+        self.data[num][13] = date.today()
+
+        self.addButton.setDisabled(False)
+        self.removeButton.setDisabled(True)
+        self.givenButton.setDisabled(True)
+        self.lostButton.setDisabled(True)
+
+        autoSave(self.data)
+        writeCsv(self.data)
+    
+    def lostFromStock(self):
+        """ Mark the selected glasses as lost from stock """
+        self.data = self.loadDataFromCsv()
+        num = self.eyeglassesNum.value()
+        if self.data[num][12] == 1:
+            self.data[num][12] = 3
+
+        self.addButton.setDisabled(False)
+        self.removeButton.setDisabled(True)
+        self.givenButton.setDisabled(True)
+        self.lostButton.setDisabled(True)
+
+        autoSave(self.data) 
         writeCsv(self.data)
 
     def search(self):
@@ -333,7 +386,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def abstractSearch(self, query, no_add = False):
         """ abstract search function that actually do the search mecanism """
         # Get database from file
-        self.data = loadCsv()
+        self.data = self.loadDataFromCsv()
         new_data = dict()
 
         for num, value in self.data.items():
@@ -347,9 +400,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def displayData(self, data):
         """ display the search results in the tableview """
         self.model.clear()
-        self.model.setHorizontalHeaderLabels(
-                [u'Score'] + [self.data_structure[i][0]
-                for i in range(len(self.data_structure))])
+        labels = [u'Score'] + [self.data_structure[i][0]
+                for i in range(len(self.data_structure))] 
+        labels.insert(2, "Boite")
+        self.model.setHorizontalHeaderLabels(labels)
 
         frame = self.getFrame()
         solar = self.getSolar()
@@ -377,6 +431,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items[8].setBackground(LEFT_COLOR)
             items[9].setBackground(LEFT_COLOR)
 
+            items[14].setBackground(STATUS_COLOR[int(row[14])])
+
+            box = int(row[0])//NBR_PER_BOX
+            box_letter = chr(65+box//4)
+            box_number = box % 4 + 1
+            box_label = f'''{box_letter}{box_number}'''
+            items.insert(2, QtGui.QStandardItem(box_label))
+
             if row[11] != frame:
                 items[11].setBackground(RED_COLOR)
 
@@ -388,10 +450,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)
         self.tableView.resizeColumnsToContents()
-        w = self.tableView.width()
-        for column in range(self.model.columnCount()-2):
-            w -= self.tableView.columnWidth(column)
-        self.tableView.setColumnWidth(13, max(w - 60, 100))
+        self.tableView.horizontalHeader().setStretchLastSection(False)
 
     def score(self, data, target):
         """ Scoring function, taking into account the selected checkboxes """
@@ -409,6 +468,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enableAddition(self):
         """ Change the state of both spinboxes in case the link is checked """
+        if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
+            self.addGroupBox.setDisabled(True)
+        else:
+            self.addGroupBox.setDisabled(False)
+
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
             self.nearSearchButton.setDisabled(True)
             self.distantSearchButton.setDisabled(True)
@@ -553,9 +617,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ set the text corresponding to the solar value
         """
         if value == 0:
-            self.solarLabel.setText(u'Non teinté')
+            self.solarLabel.setText(u'Non teintés')
         elif value == 1:
-            self.solarLabel.setText(u'Teinté')
+            self.solarLabel.setText(u'Teintés')
         else:
             self.solarLabel.setText(u'')
 
@@ -578,6 +642,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.addLabel.setText(u'Progressif')
         else:
             self.addLabel.setText(u'')
+    
+    def getDateMvmt(self):
+        return date.today()
+
+    def setDateMvmt(self, value):
+        pass
 
     def getFrame(self):
         """ returns the code corresponding to the selected radio button
@@ -641,20 +711,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rLinkCheckbox.setChecked(False)
         if num in self.data:
             for i, element in enumerate(self.data_structure[1:]):
-                element[5](self.data[num][i])
+                # if i < len(self.data[num]):
+                    element[5](self.data[num][i])
             self.eyeglassesNum.setValue(num)
 
             if self.data[num][12] == 1:
                 self.addButton.setDisabled(True)
                 self.removeButton.setDisabled(False)
+                self.givenButton.setDisabled(False)
+                self.lostButton.setDisabled(False)
             else:
                 self.addButton.setDisabled(False)
                 self.removeButton.setDisabled(True)
+                self.givenButton.setDisabled(True)
+                self.lostButton.setDisabled(True)
         else:
             for i, element in enumerate(self.data_structure[1:]):
                 element[5](element[4])
             self.addButton.setDisabled(True)
             self.removeButton.setDisabled(True)
+            self.givenButton.setDisabled(True)
+            self.lostButton.setDisabled(True)
         self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
 
     def selectLine(self):
@@ -688,10 +765,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lIndifCheckBox.setChecked(False)
         self.model.clear()
 
-if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.inventoryWindowButton.hide()
-    mainWin.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     mainWin = MainWindow()
+#     mainWin.inventoryWindowButton.hide()
+#     mainWin.show()
+#     sys.exit(app.exec_())

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>633</width>
+    <width>524</width>
     <height>422</height>
    </rect>
   </property>
@@ -22,8 +22,89 @@
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="spacing">
-       <number>20</number>
+       <number>0</number>
       </property>
+      <item row="2" column="1" colspan="2">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="passwordButton">
+          <property name="text">
+           <string>OK</string>
+          </property>
+          <property name="default">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="passwordEdit">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+          <property name="placeholderText">
+           <string>password</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QCheckBox" name="showPasswordCheckBox">
+          <property name="text">
+           <string>show password</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="inventoryButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Inventory</string>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="4" column="2">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="3" column="2">
        <widget class="QPushButton" name="searchButton">
         <property name="enabled">
@@ -41,45 +122,6 @@
          <bool>true</bool>
         </property>
        </widget>
-      </item>
-      <item row="4" column="2">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="4" column="3">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="1" column="1" colspan="2">
        <widget class="QLabel" name="label">
@@ -112,82 +154,89 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="inventoryButton">
-        <property name="enabled">
-         <bool>false</bool>
+      <item row="0" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>20</pointsize>
-         </font>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
         </property>
-        <property name="text">
-         <string>Inventory</string>
-        </property>
-        <property name="autoDefault">
-         <bool>true</bool>
-        </property>
-       </widget>
+       </spacer>
       </item>
-      <item row="2" column="1" colspan="2">
-       <layout class="QGridLayout" name="gridLayout_3">
-        <property name="topMargin">
-         <number>9</number>
+      <item row="6" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>20</number>
         </property>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="passwordButton">
-          <property name="text">
-           <string>OK</string>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
-          <property name="default">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;an XL-ant software by &lt;a href=&quot;mailto:pierre.maurier@gadz.org?subject=Support%20Oryx&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Pierre Maurier&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="openExternalLinks">
            <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLineEdit" name="passwordEdit">
-          <property name="echoMode">
-           <enum>QLineEdit::Password</enum>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="placeholderText">
-           <string>password</string>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="computerIDLabel">
+          <property name="text">
+           <string>Computer ID</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="textInteractionFlags">
+           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QCheckBox" name="showPasswordCheckBox">
+        <item>
+         <widget class="QPushButton" name="copyComputerIDButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
-           <string>show password</string>
+           <string>Copy</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="timerLabel">
+          <property name="text">
+           <string>00:00</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="5" column="0" colspan="3">
-       <widget class="QLabel" name="label_3">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;an XL-ant software by &lt;a href=&quot;mailto:pierre.maurier@gadz.org?subject=Support%20Oryx&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Pierre Maurier&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="3">
-       <widget class="QLabel" name="timerLabel">
-        <property name="text">
-         <string>00:00</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>
@@ -197,8 +246,10 @@
  <tabstops>
   <tabstop>passwordEdit</tabstop>
   <tabstop>passwordButton</tabstop>
+  <tabstop>showPasswordCheckBox</tabstop>
   <tabstop>inventoryButton</tabstop>
   <tabstop>searchButton</tabstop>
+  <tabstop>copyComputerIDButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

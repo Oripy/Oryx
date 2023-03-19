@@ -35,6 +35,7 @@ FILENAME = MAIN['filename']
 AUTOSAVE_INTERVAL = float(MAIN['autosave_interval'])
 AUTOSAVE_MAX_NUM = int(MAIN['autosave_max_num'])
 AUTOSAVE_DIR = os.path.join(os.getcwd(), 'autosave')
+NBR_PER_BOX = int(MAIN['nbr_per_box'])
 
 if 'pass' in MAIN:
     PASSWORD = MAIN['pass']
