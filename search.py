@@ -272,11 +272,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def loadDataFromCsv(self):
         out = loadCsv()
         for key in out:
-            print(out[key])
             for j in range(len(self.data_structure)):
                 if j > len(out[key]):
                     out[key].append(0)
-                    print('pwet')
         return out
 
     def addToStock(self):
@@ -433,7 +431,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             items[14].setBackground(STATUS_COLOR[int(row[14])])
 
-            box = int(row[0])//NBR_PER_BOX
+            box = int(row[1])//NBR_PER_BOX
             box_letter = chr(65+box//4)
             box_number = box % 4 + 1
             box_label = f'''{box_letter}{box_number}'''
