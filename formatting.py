@@ -7,6 +7,7 @@ Created on Fri Oct 11 15:12:10 2013
 
 from PyQt5 import QtCore, QtGui
 from datetime import datetime
+from config import *
 
 # Color constants
 RED_PALETTE = QtGui.QPalette()
@@ -105,8 +106,17 @@ def formatStock(value):
 
 def formatDate(value):
     if value == 0:
-        return ""
-    return datetime.strftime(datetime.strptime(value, '%Y-%m-%d'), '%Y-%m-%d')
+        return 0
+    if isinstance(value, str):
+        return value
+    else:
+        return datetime.strftime(value, '%Y-%m-%d')
+
+def getBoxLabel(item_number):
+    box = int(float(item_number)//NBR_PER_BOX)
+    box_letter = chr(65+box//4)
+    box_number = box % 4 + 1
+    return f'''{box_letter}{box_number}'''
 
 def getData(value):
     """ returns a float or string depending on the input type """

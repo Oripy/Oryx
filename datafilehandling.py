@@ -32,7 +32,6 @@ def getLastAutoSaved():
 
 def writeCsv(data, filename = FILENAME):
     """ Write data in the CSV file """
-    print(filename)
     with open(filename, "wt", encoding="ISO-8859-1") as file_input:
         data_writer = csv.writer(file_input, lineterminator="\n")
         for key, values in data.items():
@@ -43,7 +42,12 @@ def loadCsv(filename = FILENAME):
     data = dict()
     with open(filename, "rt", encoding="ISO-8859-1") as file_input:
         for row in csv.reader(file_input):
-            data[int(row[0])] = [getData(row[a]) for a in range(len(row))[1:]]
+            key = float(row[0])
+            if float(row[13]) != 1:
+                key += 0.01
+            while str(key) in data:
+                key += .01
+            data[f"""{key:.2f}"""] = [getData(row[a]) for a in range(len(row))[1:]]
     return data
 
 def autoSave(data):

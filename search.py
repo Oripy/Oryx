@@ -118,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Data Structure [Name, formating function, get function,
         #                 set function, default value, display stock function]
         self.data_structure = [
-            ['Num', lambda n: str(int(n)), lambda: 1,
+            ['Num', lambda n: f'''{float(n):.0f}''', lambda: 1,
              lambda n: n, 1, self.eyeglassesNum.setValue],
             ['OD Sph', formatSph, self.rSphereSpin.value,
              self.rSphereSpin.setValue, DEFAULT_SPHERE, self.setRSphere],
@@ -154,8 +154,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model = QtGui.QStandardItemModel(self)
         self.tableView.setModel(self.model)
 
+        self.selectedGlassesNum = "1.00"
         self.data = self.loadDataFromCsv()
-        self.loadData(self.eyeglassesNum.value())
+        self.loadData(self.selectedGlassesNum)
         self.tableView.sortByColumn(1, QtCore.Qt.AscendingOrder)
         self.rLinkCheckbox.setChecked(True)
 
@@ -279,9 +280,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def addToStock(self):
         """ Place the selected glasses back in stock """
-        self.data = self.loadDataFromCsv()
-        num = self.eyeglassesNum.value()
-        if self.data[num][12] == 0:
+        # self.data = self.loadDataFromCsv()
+        num = self.selectedGlassesNum
+        if self.data[num][12] != 1:
             self.data[num][12] = 1
 
         self.data[num][13] = date.today()
@@ -295,8 +296,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def removeFromStock(self):
         """ Mark the selected glasses as out of stock """
-        self.data = self.loadDataFromCsv()
-        num = self.eyeglassesNum.value()
+        # self.data = self.loadDataFromCsv()
+        num = self.selectedGlassesNum
         if self.data[num][12] == 1:
             self.data[num][12] = 0
 
@@ -312,8 +313,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def givenFromStock(self):
         """ Mark the selected glasses as given from stock """
-        self.data = self.loadDataFromCsv()
-        num = self.eyeglassesNum.value()
+        # self.data = self.loadDataFromCsv()
+        num = self.selectedGlassesNum
         if self.data[num][12] == 1:
             self.data[num][12] = 2
 
@@ -329,8 +330,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def lostFromStock(self):
         """ Mark the selected glasses as lost from stock """
-        self.data = self.loadDataFromCsv()
-        num = self.eyeglassesNum.value()
+        # self.data = self.loadDataFromCsv()
+        num = self.selectedGlassesNum
         if self.data[num][12] == 1:
             self.data[num][12] = 3
 
@@ -431,11 +432,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             items[14].setBackground(STATUS_COLOR[int(row[14])])
 
-            box = int(row[1])//NBR_PER_BOX
-            box_letter = chr(65+box//4)
-            box_number = box % 4 + 1
-            box_label = f'''{box_letter}{box_number}'''
-            items.insert(2, QtGui.QStandardItem(box_label))
+            items.insert(2, QtGui.QStandardItem(getBoxLabel(row[1])))
 
             if row[11] != frame:
                 items[11].setBackground(RED_COLOR)
@@ -707,13 +704,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Load data from the self.data variable
             and display it in the stock box """
         self.rLinkCheckbox.setChecked(False)
-        if num in self.data:
+        item_num = f"""{float(num):.2f}"""
+        add = 0
+        while not item_num in self.data:
+            if add >= 0.99:
+                break
+            add += 0.01
+            item_num = f"""{float(num + add):.2f}"""
+            
+        if item_num in self.data:
             for i, element in enumerate(self.data_structure[1:]):
-                # if i < len(self.data[num]):
-                    element[5](self.data[num][i])
-            self.eyeglassesNum.setValue(num)
+                # if i < len(self.data[item_num]):
+                    element[5](self.data[item_num][i])
+            self.eyeglassesNum.setValue(float(item_num))
+            self.selectedGlassesNum = item_num
 
-            if self.data[num][12] == 1:
+            if self.data[item_num][12] == 1:
                 self.addButton.setDisabled(True)
                 self.removeButton.setDisabled(False)
                 self.givenButton.setDisabled(False)
@@ -735,7 +741,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def selectLine(self):
         """ change the eyeglasses number to the selected line in the table """
         row = self.tableView.selectionModel().currentIndex().row()
-        self.loadData(int(self.model.item(row, 1).text()))
+        self.loadData(self.model.item(row, 1).data())
 
     def reset(self):
         """ Reset the values in the form to the default values """
@@ -763,10 +769,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lIndifCheckBox.setChecked(False)
         self.model.clear()
 
-# if __name__ == '__main__':
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     mainWin = MainWindow()
-#     mainWin.inventoryWindowButton.hide()
-#     mainWin.show()
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = MainWindow()
+    mainWin.inventoryWindowButton.hide()
+    mainWin.show()
+    sys.exit(app.exec_())

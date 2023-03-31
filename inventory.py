@@ -310,8 +310,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ returns the next available number
             (starting with the current number) """
         n = self.current_num
-        while n in self.data:
+        used_keys = [key for key in self.data if self.data[key][12] == 1]
+        while True:
+            if not n in used_keys:
+                add = 0
+                for i in range(99):
+                    if n + add in used_keys:
+                        break
+                    add += 0.01
+                if i == 98:
+                    break
             n += 1
+        while n in self.data:
+            n += 0.01
         return n
 
     def new(self):
@@ -642,11 +653,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             items[13].setBackground(STATUS_COLOR[int(row[13])])
 
-            box = int(row[0])//NBR_PER_BOX
-            box_letter = chr(65+box//4)
-            box_number = box % 4 + 1
-            box_label = f'''{box_letter}{box_number}'''
-            items.insert(1, QtGui.QStandardItem(box_label))
+            items.insert(1, QtGui.QStandardItem(getBoxLabel(row[0])))
 
             self.model.appendRow(items)
 
@@ -657,10 +664,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
-# if __name__ == '__main__':
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     mainWin = MainWindow()
-#     mainWin.searchWindowButton.hide()
-#     mainWin.show()
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = MainWindow()
+    mainWin.searchWindowButton.hide()
+    mainWin.show()
+    sys.exit(app.exec_())
