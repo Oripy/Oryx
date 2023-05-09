@@ -144,10 +144,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
              self.setSolar, -1, self.setSolarLabel],
             ['Com.', lambda n: str(n),
              lambda: '', lambda n: n, '', self.setComment],
-            ['Stk', formatStock, lambda: 1,
-             lambda n: n, 1, lambda n: n],
-            ['Date Mvmt', formatDate, self.getDateMvmt, 
-             self.setDateMvmt, date.today(), lambda n: n],
             ]
 
         self.data = dict()
@@ -428,8 +424,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items[7].setBackground(LEFT_COLOR)
             items[8].setBackground(LEFT_COLOR)
             items[9].setBackground(LEFT_COLOR)
-
-            items[14].setBackground(STATUS_COLOR[int(row[14])])
 
             box = int(row[1])//NBR_PER_BOX
             box_letter = chr(65+box//4)
