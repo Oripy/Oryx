@@ -426,8 +426,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items[9].setBackground(LEFT_COLOR)
 
             box = int(row[1])//NBR_PER_BOX
-            box_letter = chr(65+box//4)
-            box_number = box % 4 + 1
+            box_letter = chr(65+box//6)
+            box_number = box % 6 + 1
             box_label = f'''{box_letter}{box_number}'''
             items.insert(2, QtGui.QStandardItem(box_label))
 
