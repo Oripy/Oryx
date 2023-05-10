@@ -643,8 +643,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items[13].setBackground(STATUS_COLOR[int(row[13])])
 
             box = int(row[0])//NBR_PER_BOX
-            box_letter = chr(65+box//4)
-            box_number = box % 4 + 1
+            box_letter = chr(65+box//6)
+            box_number = box % 6 + 1
             box_label = f'''{box_letter}{box_number}'''
             items.insert(1, QtGui.QStandardItem(box_label))
 
@@ -657,10 +657,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
-# if __name__ == '__main__':
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     mainWin = MainWindow()
-#     mainWin.searchWindowButton.hide()
-#     mainWin.show()
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = MainWindow()
+    mainWin.searchWindowButton.hide()
+    mainWin.show()
+    sys.exit(app.exec_())
