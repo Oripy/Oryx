@@ -7,7 +7,8 @@ Created on Thu Oct 03 12:30:55 2013
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-import os, sys, uuid
+import os, sys
+import machineid
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -52,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.showPasswordCheckBox.stateChanged.connect(self.showHidePassword)
 
-        self.computerIDLabel.setText(str(uuid.getnode()))
+        self.computerIDLabel.setText(str(machineid.hashed_id('oryx')[:10]))
 
         self.copyComputerIDButton.clicked.connect(self.copyComputerID)
 
@@ -87,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Test the password and unlock if successful """
         password = self.passwordEdit.text()
         if password != '':
-            coded_pass = hashlib.sha512(encode(encode(f'''{password}{uuid.getnode()}''',
+            coded_pass = hashlib.sha512(encode(encode(f'''{password}{machineid.hashed_id('oryx')[:10]}''',
                                                'rot13'),'utf-8')).hexdigest()[5:69]
             coded_pass_master = hashlib.sha512(encode(encode(password,
                                                'rot13'),'utf-8')).hexdigest()[5:69]

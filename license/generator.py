@@ -7,7 +7,8 @@ Created on Mon Oct 14 10:34:38 2013
 
 from PyQt5 import QtWidgets, uic
 
-import os, uuid
+import os
+import machineid
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -32,10 +33,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
+        self.thisCompButton.clicked.connect(self.loadCompID)
         self.generateButton.clicked.connect(self.generate)
         self.inputEdit.returnPressed.connect(self.generate)
 
         self.copyButton.clicked.connect(self.copy)
+
+    def loadCompID(self):
+        self.computerIDEdit.setText(machineid.hashed_id('oryx')[:10])
 
     def generate(self):
         password = self.inputEdit.text()
@@ -65,7 +70,7 @@ if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     password, ok = QtWidgets.QInputDialog().getText(None, "Master Password",
-                                     "Master Password:", QtWidgets.QLineEdit.Normal)
+                                     "Master Password:", QtWidgets.QLineEdit.Password)
     if ok:
         if unlock(password):
             mainWin = MainWindow()
