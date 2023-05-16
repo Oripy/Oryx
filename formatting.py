@@ -106,7 +106,7 @@ def formatStock(value):
 def formatDate(value):
     if value == 0:
         return ""
-    return datetime.strftime(datetime.strptime(value, '%Y-%m-%d'), '%Y-%m-%d')
+    return datetime.strftime(value, '%Y-%m-%d')
 
 def getData(value):
     """ returns a float or string depending on the input type """
