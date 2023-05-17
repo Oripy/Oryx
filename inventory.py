@@ -451,31 +451,40 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         item[6].setBackground(LEFT_COLOR)
         item[7].setBackground(LEFT_COLOR)
         item[8].setBackground(LEFT_COLOR)
-        if not self.current_num in self.data and self.modif:
-            # Add a line to the table if the current item do not exists
-            # (and has been modified)
+
+        item[13].setBackground(STATUS_COLOR[int(item[13].data())])
+
+        box = int(self.current_num)//NBR_PER_BOX
+        box_letter = chr(65+box//6)
+        box_number = box % 6 + 1
+        box_label = f'''{box_letter}{box_number}'''
+        box_item = QtGui.QStandardItem(box_label)
+        box_item.setData(box_label)
+        item.insert(1, box_item)
+
+        # Alter the existing line or create a new one
+        rows = self.model.findItems(str(self.current_num))
+        if len(rows) == 0:
             self.model.appendRow(item)
+        elif len(rows) == 1:
+            row = rows[0].row()
+            for column, elem in enumerate(item):
+                self.model.setItem(row, column, elem)
         else:
-            # Alter the existing line
-            rows = self.model.findItems(str(self.current_num))
-            if len(rows) == 1:
-                row = rows[0].row()
-                for column, elem in enumerate(item):
-                    self.model.setItem(row, column, elem)
-            else:
-                print("Error when trying to update the TableView")
-        if self.modif:
-            self.data = self.loadDataFromCsv()
-            self.data[self.current_num] = [self.data_structure[i][2]()
-                          for i in range(len(self.data_structure))[1:]]
-            if self.data[self.current_num][1] == 0:
-                self.data[self.current_num][2] = 0
-            if self.data[self.current_num][5] == 0:
-                self.data[self.current_num][6] = 0
-            writeCsv(self.data)
-            autoSave(self.data)
-            self.setStatus('Saved')
-            self.modif = False
+            print("Error when trying to update the TableView")
+        # if self.modif:
+        self.data = self.loadDataFromCsv()
+        self.data[self.current_num] = [self.data_structure[i][2]()
+                        for i in range(len(self.data_structure))[1:]]
+        if self.data[self.current_num][1] == 0:
+            self.data[self.current_num][2] = 0
+        if self.data[self.current_num][5] == 0:
+            self.data[self.current_num][6] = 0
+        writeCsv(self.data)
+        autoSave(self.data)
+        self.setStatus('Saved')
+        self.modif = False
+
         self.scrollTo(self.current_num)
 
         self.new()
@@ -646,7 +655,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             box_letter = chr(65+box//6)
             box_number = box % 6 + 1
             box_label = f'''{box_letter}{box_number}'''
-            items.insert(1, QtGui.QStandardItem(box_label))
+            box_item = QtGui.QStandardItem(box_label)
+            box_item.setData(box_label)
+            items.insert(1, box_item)
 
             self.model.appendRow(items)
 
