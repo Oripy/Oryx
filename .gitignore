@@ -19,3 +19,6 @@ ehthumbs.db
 Thumbs.db
 
 venv/
+
+config.ini
+oryxdata.csv
