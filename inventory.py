@@ -310,7 +310,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def getFirstNewNumber(self):
         """ returns the next available number
             (starting with the current number) """
-        n = 0
+        n = 1
         while n in self.data:
             if self.data[n][12] == 0:
                 break
