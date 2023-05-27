@@ -540,7 +540,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def scrollTo(self, number):
         """ scrolls and selects the line corresponding to the input number """
-        items = self.model.findItems(str(number))
+        index_to_scroll = number
+        while index_to_scroll not in self.data:
+            index_to_scroll -= 1
+            if index_to_scroll <= 0:
+                self.tableView.scrollToBottom()
+        items = self.model.findItems(str(index_to_scroll))
         if len(items) != 0:
             self.tableView.scrollTo(items[0].index())
             self.tableView.selectRow(items[0].index().row())
@@ -585,7 +590,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Event when num is modified """
         self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
         self.warnModified()
-        self.scrollToCurrent()
 
     def warnModified(self):
         """ Warn the user that unsaved data will be lost if unsaved """
@@ -669,16 +673,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableView.horizontalHeader().moveSection(14, 2)
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
-
-    def scrollToCurrent(self):
-        start = self.model.index(0, 0)
-        index_to_scroll = self.eyeglassesNum.value()
-        while index_to_scroll not in self.data:
-            index_to_scroll -= 1
-            if index_to_scroll <= 0:
-                return
-        item_to_scroll = self.model.match(start, SORT_ROLE, index_to_scroll, 1, QtCore.Qt.MatchFixedString)[0]
-        self.tableView.scrollTo(item_to_scroll, QAbstractItemView.PositionAtBottom)
 
 # if __name__ == '__main__':
 #     import sys
