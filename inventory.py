@@ -8,6 +8,7 @@ Created on Tue Jul 30 10:52:58 2013
 import os, sys
 from datetime import date
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtWidgets import QAbstractItemView
 
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
@@ -584,6 +585,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Event when num is modified """
         self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
         self.warnModified()
+        self.scrollToCurrent()
 
     def warnModified(self):
         """ Warn the user that unsaved data will be lost if unsaved """
@@ -667,6 +669,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableView.horizontalHeader().moveSection(14, 2)
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+
+    def scrollToCurrent(self):
+        start = self.model.index(0, 0)
+        index_to_scroll = self.eyeglassesNum.value()
+        while index_to_scroll not in self.data:
+            index_to_scroll -= 1
+            if index_to_scroll <= 0:
+                return
+        item_to_scroll = self.model.match(start, SORT_ROLE, index_to_scroll, 1, QtCore.Qt.MatchFixedString)[0]
+        self.tableView.scrollTo(item_to_scroll, QAbstractItemView.PositionAtBottom)
 
 # if __name__ == '__main__':
 #     import sys

@@ -72,6 +72,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def inventory(self):
         """ show the inventory window maximized """
+        self.inventory_win.data = self.inventory_win.loadDataFromCsv()
+        self.inventory_win.displayData(self.inventory_win.data)
+        self.inventory_win.scrollToCurrent()
         self.inventory_win.setWindowFlags(self.inventory_win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)
         self.inventory_win.showMaximized()
         self.inventory_win.activateWindow()
