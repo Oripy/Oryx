@@ -99,7 +99,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.inventoryButton.setEnabled(True)
                 self.passwordEdit.setPlaceholderText('Mot de passe principal')
             elif coded_pass == PASSWORD:
-                self.time_remaining = int(passwords.value(coded_pass, 333*60*60))
+                self.time_remaining = int(passwords.value(coded_pass, 999*60*60))
                 self.start_time = time.time()
                 self.timer.start(10000)
                 self.updateClock()
