@@ -432,10 +432,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             items.insert(2, QtGui.QStandardItem(box_label))
 
             if row[11] != frame:
-                items[11].setBackground(RED_COLOR)
+                items[12].setBackground(RED_COLOR)
 
             if row[12] != solar:
-                items[12].setBackground(RED_COLOR)
+                items[13].setBackground(RED_COLOR)
 
             self.model.appendRow(items)
 
