@@ -8,6 +8,8 @@ Created on Fri Oct 11 15:12:10 2013
 from PyQt5 import QtCore, QtGui
 from datetime import datetime
 
+from config import *
+
 # Color constants
 RED_PALETTE = QtGui.QPalette()
 RED_PALETTE.setColor(QtGui.QPalette.Foreground, QtCore.Qt.red)
@@ -21,6 +23,12 @@ BLUE_COLOR = QtGui.QColor(QtCore.Qt.blue).lighter(125)
 GREEN_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(125)
 
 STATUS_COLOR = [RED_COLOR, GREEN_COLOR, BLUE_COLOR, YELLOW_COLOR]
+
+def getBoxNum(value):
+    box = value//NBR_PER_BOX
+    box_letter = chr(65+box//6)
+    box_number = box % 6 + 1
+    return f'''{box_letter}{box_number}'''
 
 def percentcolor(value):
     """ returns a color between green and red based on the value """

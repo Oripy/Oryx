@@ -458,10 +458,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         item[13].setBackground(STATUS_COLOR[int(item[13].data())])
 
-        box = int(self.current_num)//NBR_PER_BOX
-        box_letter = chr(65+box//6)
-        box_number = box % 6 + 1
-        box_label = f'''{box_letter}{box_number}'''
+        box_label = getBoxNum(int(self.current_num))
         box_item = QtGui.QStandardItem(box_label)
         box_item.setData(box_label)
         item.insert(1, box_item)
@@ -538,6 +535,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if self.rAddSpin.value() == self.lAddSpin.value():
             self.rLinkCheckbox.setChecked(True)
+
+        self.boxNum.setText(getBoxNum(self.current_num))
 
         self.scrollTo(self.current_num)
 
@@ -660,10 +659,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             items[13].setBackground(STATUS_COLOR[int(row[13])])
 
-            box = int(row[0])//NBR_PER_BOX
-            box_letter = chr(65+box//6)
-            box_number = box % 6 + 1
-            box_label = f'''{box_letter}{box_number}'''
+            box_label = getBoxNum(int(row[0]))
             box_item = QtGui.QStandardItem(box_label)
             box_item.setData(box_label)
             items.insert(1, box_item)

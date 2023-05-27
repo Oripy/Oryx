@@ -54,6 +54,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="boxNum">
+          <property name="text">
+           <string>undefined</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="status">
           <property name="font">
            <font>
