@@ -310,8 +310,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def getFirstNewNumber(self):
         """ returns the next available number
             (starting with the current number) """
-        n = self.current_num
+        n = 0
         while n in self.data:
+            if self.data[n][12] == 0:
+                break
             n += 1
         return n
 
@@ -320,6 +322,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         n = self.getFirstNewNumber()
         if n != self.current_num:
             self.eyeglassesNum.setValue(n)
+            self.reset()
             self.rSphereSpin.setFocus()
             self.rSphereSpin.selectAll()
         else:
