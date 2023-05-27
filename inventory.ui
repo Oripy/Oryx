@@ -720,7 +720,7 @@
            <item>
             <widget class="QRadioButton" name="solarRadioYes">
              <property name="text">
-              <string>Teintés (Photochromiques ou T3, T4)</string>
+              <string>Teintés (T3, T4)</string>
              </property>
             </widget>
            </item>

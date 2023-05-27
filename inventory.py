@@ -667,9 +667,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.model.appendRow(items)
 
+        self.tableView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.tableView.setModel(self.model)
-        self.tableView.resizeColumnsToContents()
-        self.tableView.horizontalHeader().setStretchLastSection(False)
         self.tableView.horizontalHeader().moveSection(14, 2)
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)

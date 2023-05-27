@@ -439,9 +439,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.model.appendRow(items)
 
+        self.tableView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.model.setSortRole(SORT_ROLE)
         self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)
-        self.tableView.resizeColumnsToContents()
         self.tableView.horizontalHeader().setStretchLastSection(False)
 
     def score(self, data, target):
