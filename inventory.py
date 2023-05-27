@@ -320,11 +320,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def new(self):
         """ set the number to the smallest available eyeglasses number """
         n = self.getFirstNewNumber()
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
         if n != self.current_num:
             self.eyeglassesNum.setValue(n)
-            self.reset()
-            self.rSphereSpin.setFocus()
-            self.rSphereSpin.selectAll()
+            self.reset()    
         else:
             self.warnModified()
 

@@ -289,6 +289,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         writeCsv(self.data)
 
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
+
     def removeFromStock(self):
         """ Mark the selected glasses as out of stock """
         self.data = self.loadDataFromCsv()
@@ -305,6 +308,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         autoSave(self.data)
         writeCsv(self.data)
+
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
     
     def givenFromStock(self):
         """ Mark the selected glasses as given from stock """
@@ -322,6 +328,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         autoSave(self.data)
         writeCsv(self.data)
+
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
     
     def lostFromStock(self):
         """ Mark the selected glasses as lost from stock """
@@ -337,6 +346,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         autoSave(self.data) 
         writeCsv(self.data)
+
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
 
     def search(self):
         """ basic search function """
@@ -390,6 +402,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 new_data[num] = [score]+value
 
         self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.items()])
+
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
 
     def displayData(self, data):
         """ display the search results in the tableview """
@@ -753,6 +768,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rIndifCheckBox.setChecked(False)
         self.lIndifCheckBox.setChecked(False)
         self.model.clear()
+
+        self.rSphereSpin.setFocus()
+        self.rSphereSpin.selectAll()
 
 # if __name__ == '__main__':
 #     import sys
