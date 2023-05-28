@@ -277,7 +277,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Place the selected glasses back in stock """
         self.data = self.loadDataFromCsv()
         num = self.eyeglassesNum.value()
-        if self.data[num][12] == 0:
+        if self.data[num][12] == 0 or self.data[num][12] == 2 or self.data[num][12] == 3:
             self.data[num][12] = 1
 
         self.data[num][13] = date.today()
