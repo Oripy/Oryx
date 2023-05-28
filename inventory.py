@@ -547,6 +547,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             index_to_scroll -= 1
             if index_to_scroll <= 0:
                 self.tableView.scrollToBottom()
+                break
         items = self.model.findItems(str(index_to_scroll))
         if len(items) != 0:
             self.tableView.scrollTo(items[0].index())
