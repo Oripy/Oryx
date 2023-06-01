@@ -9,6 +9,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 import os, sys
 from datetime import date
+
+saved_columns_width = QtCore.QSettings("XL-ant", "Oryx")
+
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -264,6 +267,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Table
         self.tableView.clicked.connect(self.selectLine)
+        self.tableView.horizontalHeader().sectionResized.connect(self.saveColumnsState)
 
     def loadDataFromCsv(self):
         out = loadCsv()
@@ -406,9 +410,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rSphereSpin.setFocus()
         self.rSphereSpin.selectAll()
 
+    def saveColumnsState(self):
+        """ Save width of columns to reload next startup """
+        saved_columns_width.setValue("search columns", self.tableView.horizontalHeader().saveState())
+    
+    def loadColumnsState(self):
+        """ Reload columns width from saved value """
+        columns_state = saved_columns_width.value("search columns", "Not saved")
+        if columns_state == "Not saved":
+            return
+        self.tableView.horizontalHeader().restoreState(columns_state)
+
     def displayData(self, data):
         """ display the search results in the tableview """
-        self.model.clear()
+        self.model.removeRows(0, self.model.rowCount())
         labels = [u'Score'] + [self.data_structure[i][0]
                 for i in range(len(self.data_structure))] 
         labels.insert(2, "Boite")
@@ -452,9 +467,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.model.appendRow(items)
 
         self.model.setSortRole(SORT_ROLE)
-        self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)
-        self.tableView.resizeColumnsToContents()
+        
+        self.tableView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
         self.tableView.horizontalHeader().setStretchLastSection(False)
+
+        self.loadColumnsState()
+
+        self.tableView.sortByColumn(0, QtCore.Qt.DescendingOrder)
 
     def score(self, data, target):
         """ Scoring function, taking into account the selected checkboxes """
@@ -568,7 +587,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def modified(self):
         """ Action when a value is modified """
-        self.model.clear()
+        self.model.removeRows(0, self.model.rowCount())
         self.sender().setStyleSheet("")
         self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
@@ -767,7 +786,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.rIndifCheckBox.setChecked(False)
         self.lIndifCheckBox.setChecked(False)
-        self.model.clear()
+        self.model.removeRows(0, self.model.rowCount())
 
         self.rSphereSpin.setFocus()
         self.rSphereSpin.selectAll()

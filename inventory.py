@@ -10,6 +10,8 @@ from datetime import date
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QAbstractItemView
 
+saved_columns_width = QtCore.QSettings("XL-ant", "Oryx")
+
 # Define function to import external files when using PyInstaller.
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -208,6 +210,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
+        self.tableView.horizontalHeader().sectionResized.connect(self.saveColumnsState)
         self.tableView.setSortingEnabled(True)
 
     def loadDataFromCsv(self):
@@ -560,6 +563,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         row = self.tableView.selectionModel().currentIndex().row()
         self.eyeglassesNum.setValue(int(self.model.item(row, 0).text()))
 
+    def saveColumnsState(self):
+        """ Save width of columns to reload next startup """
+        saved_columns_width.setValue("inventory columns", self.tableView.horizontalHeader().saveState())
+    
+    def loadColumnsState(self):
+        """ Reload columns width from saved value """
+        columns_state = saved_columns_width.value("inventory columns", "Not saved")
+        if columns_state == "Not saved":
+            return
+        self.tableView.horizontalHeader().restoreState(columns_state)
+
     def reset(self):
         """ Reset the values in the form to the default values """
         self.rFineCheckbox.setChecked(False)
@@ -635,6 +649,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.clear()
         labels = [self.data_structure[i][0] for i in range(len(self.data_structure))]
         labels.insert(1, "Boite")
+        labels.insert(2, labels.pop(14))
         self.model.setHorizontalHeaderLabels(labels)
 
         for key, values in data.items():
@@ -664,14 +679,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             box_item = QtGui.QStandardItem(box_label)
             box_item.setData(box_label)
             items.insert(1, box_item)
+            items.insert(2, items.pop(14))
 
             self.model.appendRow(items)
 
-        self.tableView.setModel(self.model)
-        self.tableView.resizeColumnsToContents()
-        self.tableView.horizontalHeader().setStretchLastSection(False)
-        self.tableView.horizontalHeader().moveSection(14, 2)
         self.model.setSortRole(SORT_ROLE)
+        
+        # self.tableView.resizeColumnsToContents()
+        self.tableView.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Interactive)
+        self.tableView.horizontalHeader().setStretchLastSection(False)
+        
+        self.loadColumnsState()
+
+        self.tableView.setModel(self.model)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
 # if __name__ == '__main__':
