@@ -119,7 +119,7 @@
               <widget class="negativeZeroSpinBox" name="rCylSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
               </widget>
@@ -146,7 +146,7 @@
               <widget class="dotSpinBox" name="rSphereSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
               </widget>
@@ -172,7 +172,7 @@
               <widget class="dotSpinBox" name="rAddSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
               </widget>
@@ -193,7 +193,7 @@
               <widget class="angleSpinBox" name="rAxisSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
                <property name="wrapping">
@@ -334,7 +334,7 @@
               <widget class="dotSpinBox" name="lAddSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
                <property name="buttonSymbols">
@@ -364,7 +364,7 @@
               <widget class="negativeZeroSpinBox" name="lCylSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
               </widget>
@@ -403,7 +403,7 @@
               <widget class="dotSpinBox" name="lSphereSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
               </widget>
@@ -457,7 +457,7 @@
               <widget class="angleSpinBox" name="lAxisSpin">
                <property name="font">
                 <font>
-                 <pointsize>16</pointsize>
+                 <pointsize>14</pointsize>
                 </font>
                </property>
                <property name="wrapping">
