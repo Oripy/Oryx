@@ -99,13 +99,17 @@ def score_axis(data, target):
 
 def score_add(data, target):
     """ returns the score related to the addition """
-    # if the search is without addition, returns a null score
+    # if the search is without addition (and the data have an addition), returns a null score
     if target[3] == 0 and data[3] != 0:
         return 0
+    # if the data does not have addition, return a perfect score for score_add
+    if data[3] == 0:
+        return 1
     delta_add = target[3] - data[3]
-    return scoringFunction(delta_add, -ADD_DELTA_MAX, target[3]+0.25)
+    return scoringFunction(delta_add, -ADD_DELTA_MAX, target[3]+0.5)
 
 ###########################################
+
 
 
 ############## Main Window ################
@@ -261,9 +265,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.solarRadioYes.toggled.connect(self.modified)
 
         # Frame
-        self.childRadioNo.toggled.connect(self.modified)
-        self.childRadioYes.toggled.connect(self.modified)
-        self.childRadioHalf.toggled.connect(self.modified)
+        self.age1Radio.toggled.connect(self.modified)
+        self.age2Radio.toggled.connect(self.modified)
+        self.age3Radio.toggled.connect(self.modified)
+        self.age4Radio.toggled.connect(self.modified)
+        self.age5Radio.toggled.connect(self.modified)
 
         # Table
         self.tableView.clicked.connect(self.selectLine)
@@ -357,9 +363,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def search(self):
         """ basic search function """
         self.convert()
+
         # Fetch query from form
         query = [self.data_structure[i][2]()
                     for i in range(len(self.data_structure))[1:]]
+        
+        # Modify query based on age (if no Addition entered by user)
+        if self.rAddSpin.value() == 0 and self.lAddSpin.value() == 0:
+            if self.age3Radio.isChecked():
+                query[3] = 1.5
+                query[7] = 1.5
+            elif self.age4Radio.isChecked():
+                query[3] = 2
+                query[7] = 2
+            elif self.age5Radio.isChecked():
+                query[3] = 2.5
+                query[7] = 2.5
+        elif self.rAddSpin.value() == 0 and self.lAddSpin.value() != 0:
+            query[3] = query[7]
+        elif self.lAddSpin.value() == 0 and self.rAddSpin.value() != 0:
+            query[7] = query[3]
 
         self.abstractSearch(query)
 
@@ -395,14 +418,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def abstractSearch(self, query, no_add = False):
         """ abstract search function that actually do the search mecanism """
+        print(query)
         # Get database from file
         self.data = self.loadDataFromCsv()
         new_data = dict()
 
         for num, value in self.data.items():
             score = self.score(value, query)
-            if value[12] == 1 and score != 0 and \
-               ((not no_add) or value[8] == 0):
+            if value[12] == 1 and score != 0:
                 new_data[num] = [score]+value
 
         self.displayData([[y[0]]+[x]+y[1:] for x, y in new_data.items()])
@@ -426,7 +449,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model.removeRows(0, self.model.rowCount())
         labels = [u'Score'] + [self.data_structure[i][0]
                 for i in range(len(self.data_structure))] 
-        labels.insert(2, "Boite")
+        labels.insert(2, "Box")
         self.model.setHorizontalHeaderLabels(labels)
 
         frame = self.getFrame()
@@ -490,18 +513,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return 100 * left_score**coef_left * right_score**coef_right
 
     def enableAddition(self):
-        """ Change the state of both spinboxes in case the link is checked """
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
-            self.addGroupBox.setDisabled(True)
+            self.ageGroupBox.setDisabled(False)
         else:
-            self.addGroupBox.setDisabled(False)
+            self.ageGroupBox.setDisabled(True)
 
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
             self.nearSearchButton.setDisabled(True)
             self.distantSearchButton.setDisabled(True)
+            self.age1Radio.setDisabled(False)
+            self.age2Radio.setDisabled(False)
+            self.age3Radio.setDisabled(False)
+            self.age4Radio.setDisabled(False)
+            self.age5Radio.setDisabled(False)
         else:
             self.nearSearchButton.setDisabled(False)
             self.distantSearchButton.setDisabled(False)
+            self.age1Radio.setDisabled(True)
+            self.age2Radio.setDisabled(True)
+            self.age3Radio.setDisabled(True)
+            self.age4Radio.setDisabled(True)
+            self.age5Radio.setDisabled(True)
+
+        """ Change the state of both spinboxes in case the link is checked """
         value = self.sender().value()
         if self.rLinkCheckbox.isChecked():
             self.rAddSpin.setValue(value)
@@ -676,14 +710,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ returns the code corresponding to the selected radio button
             0 means adult frame
             1 means child frame
-            2 means half-lenses
         """
-        if self.childRadioYes.isChecked():
+        if self.age1Radio.isChecked():
             return 1
-        elif self.childRadioNo.isChecked():
-            return 0
         else:
-            return 2
+            return 0
 
     def setFrameLabel(self, value):
         """ set the text corresponding to the Frame value
@@ -701,14 +732,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ selects the radio button corresponding to the input code
             0 selects adult frame
             1 selects child frame
-            2 selects half-lenses
         """
         if value == 1:
-            self.childRadioYes.setChecked(True)
-        elif value == 0:
-            self.childRadioNo.setChecked(True)
+            self.age1Radio.setChecked(True)
         else:
-            self.childRadioHalf.setChecked(True)
+            self.age3Radio.setChecked(True)
 
     def setComment(self, value):
         """ write the input value to the comment field """
@@ -775,7 +803,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAddSpin.setValue(DEFAULT_ADD)
 
-        self.childRadioNo.setChecked(True)
+        self.age3Radio.setChecked(True)
         self.solarRadioNo.setChecked(True)
 
         self.rFineCheckbox.setChecked(False)

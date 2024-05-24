@@ -22,3 +22,5 @@ venv/
 
 config.ini
 oryxdata.csv
+
+*_ui.py

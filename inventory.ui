@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
+    <width>1097</width>
     <height>642</height>
    </rect>
   </property>
@@ -114,6 +114,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="availCheckBox">
+          <property name="text">
+           <string>Non disponible</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -153,6 +160,16 @@
           </property>
           <property name="text">
            <string>Restaurer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="purgeButton">
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
+          </property>
+          <property name="text">
+           <string>Purger</string>
           </property>
          </widget>
         </item>
@@ -659,51 +676,6 @@
          </spacer>
         </item>
         <item>
-         <widget class="QGroupBox" name="addGroupBox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QRadioButton" name="addRadioBF">
-               <property name="text">
-                <string>Bifocal</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="addRadioP">
-               <property name="text">
-                <string>Progressif</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <layout class="QVBoxLayout" name="optionsLayout"/>
         </item>
         <item>
@@ -769,13 +741,6 @@
             <widget class="QRadioButton" name="childRadioYes">
              <property name="text">
               <string>Enfant</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="childRadioHalf">
-             <property name="text">
-              <string>Demi-lunes</string>
              </property>
             </widget>
            </item>
@@ -992,7 +957,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>newButton</tabstop>
   <tabstop>eyeglassesNum</tabstop>
   <tabstop>rSphereSpin</tabstop>
   <tabstop>rCylSpin</tabstop>
@@ -1003,21 +967,15 @@
   <tabstop>lCylSpin</tabstop>
   <tabstop>lAxisSpin</tabstop>
   <tabstop>lAddSpin</tabstop>
-  <tabstop>addRadioBF</tabstop>
-  <tabstop>addRadioP</tabstop>
   <tabstop>solarRadioYes</tabstop>
   <tabstop>solarRadioNo</tabstop>
   <tabstop>childRadioYes</tabstop>
-  <tabstop>childRadioHalf</tabstop>
   <tabstop>childRadioNo</tabstop>
   <tabstop>commentEdit</tabstop>
+  <tabstop>newButton</tabstop>
   <tabstop>saveButton</tabstop>
-  <tabstop>r90Button</tabstop>
-  <tabstop>rFineCheckbox</tabstop>
-  <tabstop>l90Button</tabstop>
-  <tabstop>lFineCheckbox</tabstop>
-  <tabstop>searchWindowButton</tabstop>
-  <tabstop>printButton</tabstop>
+  <tabstop>availCheckBox</tabstop>
+  <tabstop>purgeButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

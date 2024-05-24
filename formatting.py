@@ -19,10 +19,11 @@ LEFT_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(180)
 
 RED_COLOR = QtGui.QColor(QtCore.Qt.red).lighter(125)
 YELLOW_COLOR = QtGui.QColor(QtCore.Qt.yellow).lighter(125)
+ORANGE_COLOR = QtGui.QColor("#ff7f00").lighter(125)
 BLUE_COLOR = QtGui.QColor(QtCore.Qt.blue).lighter(125)
 GREEN_COLOR = QtGui.QColor(QtCore.Qt.green).lighter(125)
 
-STATUS_COLOR = [RED_COLOR, GREEN_COLOR, BLUE_COLOR, YELLOW_COLOR]
+STATUS_COLOR = [RED_COLOR, GREEN_COLOR, BLUE_COLOR, ORANGE_COLOR, YELLOW_COLOR]
 
 def getBoxNum(value):
     box = value//NBR_PER_BOX
@@ -108,8 +109,10 @@ def formatStock(value):
         return u'Stock'
     elif value == 3:
         return u'Egarée'
+    elif value == 4:
+        return u'Non Disp'
     elif value == 0:
-        return u'Supprimée'
+        return u'Rebut'
 
 def formatDate(value):
     if value == 0:

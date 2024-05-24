@@ -57,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.initUI()
 
         self.current_num = self.eyeglassesNum.value()
-        self.modif = False
+        self.setModified(False)
 
         # Data Structure (Name, formating function, get function,
         #                 set function, default value)
@@ -85,7 +85,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             ['Teinte', formatSun, self.getSolar, self.setSolar, 0],
             ['Com', lambda n: str(n),
              self.getComment, self.setComment, ''],
-            ['Statut', formatStock, lambda: 1, lambda n: n, 1],
+            ['Statut', formatStock, self.getStock, self.setStock, 1],
             ['Date Mvmt', formatDate, self.getDateMvmt, 
              self.setDateMvmt, date.today()],
             ]
@@ -98,6 +98,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.displayData(self.data)
         self.new()
 
+    def setModified(self, value):
+        self.modif = value
+        self.saveAction.setEnabled(value)
+        self.saveButton.setEnabled(value)
+
     def initUI(self):
         """ create actions and default values of the interface """
         # List actions and create the menubar
@@ -109,6 +114,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.restoreAction.triggered.connect(self.restoreAndShow)
         self.printAction.triggered.connect(lambda: createpdf(self.model))
         self.printButton.clicked.connect(lambda: createpdf(self.model))
+        self.purgeButton.clicked.connect(self.purgeData)
 
         # Numbering/Actions panel
         self.eyeglassesNum.valueChanged.connect(self.eyeglassesNumModified)
@@ -121,6 +127,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.newButton.clicked.connect(self.newAction.trigger)
         self.backupButton.clicked.connect(self.backupAction.trigger)
         self.restoreButton.clicked.connect(self.restoreAction.trigger)
+        
+        self.availCheckBox.stateChanged.connect(self.modified)
 
         # Right Eye
         # Correction
@@ -192,10 +200,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.lLinkCheckbox.stateChanged.connect(self.linkChanged)
 
-        # Addition
-        self.addRadioP.toggled.connect(self.modified)
-        self.addRadioBF.toggled.connect(self.modified)
-
         # Comments
         self.commentEdit.textChanged.connect(self.modified)
 
@@ -206,7 +210,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Frame
         self.childRadioNo.toggled.connect(self.modified)
         self.childRadioYes.toggled.connect(self.modified)
-        self.childRadioHalf.toggled.connect(self.modified)
 
         # Table
         self.tableView.doubleClicked.connect(self.selectLine)
@@ -230,13 +233,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             event.ignore()
 
     def enableAddition(self):
-        """ Enable the right addition group
-            when addition value is different from 0.00 """
-        if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
-            self.addGroupBox.setDisabled(True)
-        else:
-            self.addGroupBox.setDisabled(False)
-
         value = self.sender().value()
         if self.rLinkCheckbox.isChecked() and self.rAddSpin.value() != self.lAddSpin.value():
             if self.sender() == self.rAddSpin:
@@ -305,7 +301,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Action when a value is modified """
         self.setStatus('Modified')
         self.sender().setStyleSheet("")
-        self.modif = True
+        self.setModified(True)
 
         self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
@@ -315,7 +311,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             (starting with the current number) """
         n = 1
         while n in self.data:
-            if self.data[n][12] == 0:
+            if self.data[n][13] == 1:
                 break
             n += 1
         return n
@@ -333,27 +329,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def getAddType(self):
         """ returns the code corresponding to the selected radio button
-            0 means section is disabled
+            0 means flat
             1 means Progressive
-            2 means Bifocal
         """
         if (self.rAddSpin.value() != 0) or (self.lAddSpin.value() != 0):
-            if self.addRadioP.isChecked():
                 return 1
-            elif self.addRadioBF.isChecked():
-                return 2
         else:
             return 0
 
     def setAddType(self, value):
-        """ selects the radio button corresponding to the input code
-            0 or 1 selects Progressive
-            2 selects Bifocal
+        """ do Nothing
         """
-        if value == 2:
-            self.addRadioBF.setChecked(True)
-        else:
-            self.addRadioP.setChecked((True))
+        pass
 
     def getSolar(self):
         """ returns the code corresponding to the selected radio button
@@ -412,6 +399,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ write the input value to the comment field """
         self.commentEdit.setPlainText(str(value))
 
+    def getStock(self):
+        if self.availCheckBox.isChecked():
+            return 4
+        else:
+            return 1
+
+    def setStock(self, value):
+        if value == 4:
+            self.availCheckBox.setChecked(True)
+        else:
+            self.availCheckBox.setChecked(False)
+
     def convert(self):
         """ convert the data entered if cylinder is positive """
         if self.data_structure[2][2]() > 0:
@@ -465,6 +464,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         box_item = QtGui.QStandardItem(box_label)
         box_item.setData(box_label)
         item.insert(1, box_item)
+        item.insert(2, item.pop(14))
 
         # Alter the existing line or create a new one
         rows = self.model.findItems(str(self.current_num))
@@ -487,7 +487,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         writeCsv(self.data)
         autoSave(self.data)
         self.setStatus('Saved')
-        self.modif = False
+        self.saveAction.setEnabled(False)
+        self.saveButton.setEnabled(False)
+        self.setModified(False)
 
         self.scrollTo(self.current_num)
 
@@ -519,7 +521,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.data.pop(self.current_num)
                 writeCsv(self.data)
                 self.setStatus('New')
-                self.modif = False
+                self.setModified(False)
                 self.reset()
 
     def loadData(self):
@@ -531,7 +533,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lFineCheckbox.setChecked(self.data[self.current_num][7] % 5 != 0)
             for i, element in enumerate(self.data_structure[1:]):
                 element[3](self.data[self.current_num][i])
-            self.modif = False
+            self.setModified(False)
             self.setStatus('Saved')
         else:
             self.reset()
@@ -580,7 +582,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lFineCheckbox.setChecked(False)
         for element in self.data_structure[1:]:
             element[3](element[4])
-        self.modif = False
+        self.setModified(False)
 
         self.setStatus('New')
 
@@ -605,6 +607,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def eyeglassesNumModified(self):
         """ Event when num is modified """
+        if self.eyeglassesNum.value() >= NBR_PER_BOX*6*26:
+            old_value = self.eyeglassesNum.value()
+            self.eyeglassesNum.setValue(self.getFirstNewNumber())
+            QtWidgets.QMessageBox.critical(self, "Erreur",
+                                                 u"Valeur "+str(old_value)+" dépassant le maximum autorisé ("+str(NBR_PER_BOX*6*26-1)+").\n"
+                                                 u"La première valeur valide est proposée.\n"
+                                                 u"Vous pouvez aussi taper une valeur valide de votre choix.",
+                                                 QtWidgets.QMessageBox.Ok,
+                                                 QtWidgets.QMessageBox.NoButton)
         self.eyeglassesNum.setStyleSheet("QSpinBox { background-color: "+QtGui.QColor(UNIT_COLORS[int(str(self.eyeglassesNum.value())[-1])]).name()+"; }")
         self.warnModified()
 
@@ -648,7 +659,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Displays data in the table """
         self.model.clear()
         labels = [self.data_structure[i][0] for i in range(len(self.data_structure))]
-        labels.insert(1, "Boite")
+        labels.insert(1, "Box")
         labels.insert(2, labels.pop(14))
         self.model.setHorizontalHeaderLabels(labels)
 
@@ -693,6 +704,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.tableView.setModel(self.model)
         self.tableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+    
+    def purgeData(self):
+        self.data = self.loadDataFromCsv()
+        nbr = 0
+        for _, values in self.data.items():
+            if values[12] == 0 or values[12] == 2:
+                nbr += 1
+        text = (u'Attention '+str(nbr)+' lunettes vont être définitivement supprimées de la liste, souhaitez-vous vraiment continuer ?')
+        question = QtWidgets.QMessageBox.warning(self,
+            u'Purger les données ?',
+            text,
+            QtWidgets.QMessageBox.Yes,
+            QtWidgets.QMessageBox.No)
+
+        if question == QtWidgets.QMessageBox.Yes:
+            autoSave(self.data)
+            self.data = self.loadDataFromCsv()
+            for key in list(self.data.keys()):
+                if self.data[key][12] == 0 or self.data[key][12] == 2:
+                    self.data.pop(key)
+            writeCsv(self.data)
+            self.setStatus('New')
+            self.setModified(False)
+            self.reset()
+            self.data = self.loadDataFromCsv()
+            self.displayData(self.data)
 
 # if __name__ == '__main__':
 #     import sys
