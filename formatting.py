@@ -93,11 +93,11 @@ def formatFrame(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
     if value == 1:
-        return u'En'
+        return u'Enf'
     elif value == 2:
         return u'DL'
     else:
-        return u'Ad'
+        return u'Adult'
     
 def formatStock(value):
     """ Convert saved numbers into respective human readable text """
@@ -105,7 +105,7 @@ def formatStock(value):
     if value == 2:
         return u'Donnée'
     elif value == 1:
-        return u'En Stock'
+        return u'Stock'
     elif value == 3:
         return u'Egarée'
     elif value == 0:
