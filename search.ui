@@ -287,7 +287,7 @@
                 <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
-                <string>Œil droit préférentiel</string>
+                <string>Œil droit directeur</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -534,7 +534,7 @@
                 <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
-                <string>Œil gauche préférentiel</string>
+                <string>Œil gauche directeur</string>
                </property>
                <attribute name="buttonGroup">
                 <string notr="true">buttonGroup</string>
