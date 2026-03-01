@@ -59,23 +59,18 @@ def eye_score(data, target):
 #    print s, c, a, p
     return score
 
-def sphericalEquivalentRefraction(data, target):
+def sphericalEquivalentRefraction(sphere, cyl):
     """ returns the Spherical Equivalent Refraction Sphere parameter
         using a different cylinder """
-    delta_cyl =  data[1] - target[1]
-#    print data, target, target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
-    return target[0] - delta_cyl/2 + (delta_cyl/2 % .25)
+    return sphere + cyl/2
 
 def score_sphere(data, target):
     """ returns the score related to the sphere """
-    if (data[0] < 0 and target[0] > 0) or (data[0] > 0 and target[0] < 0):
-        return 0
-    delta_sph = data[0] - sphericalEquivalentRefraction(data, target)
+    delta_sph = sphericalEquivalentRefraction(data[0], data[1]) - sphericalEquivalentRefraction(target[0], target[1])
     if data[0] >= 0:
         score = scoringFunction(delta_sph, SPHERE_DELTA_MIN, SPHERE_DELTA_MAX)
     else:
-        score = scoringFunction(delta_sph, -SPHERE_DELTA_MAX,
-                                -SPHERE_DELTA_MIN)
+        score = scoringFunction(delta_sph, -SPHERE_DELTA_MAX, -SPHERE_DELTA_MIN)
     return score
 
 def score_cyl(data, target):
