@@ -286,16 +286,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lFineCheckbox.setChecked(True)
         if self.lSphereSpin.value() != self.rSphereSpin.value():
             self.lSphereSpin.setValue(self.rSphereSpin.value())
-            self.lSphereSpin.setStyleSheet("background-color: lightgrey")
         if self.lCylSpin.value() != self.rCylSpin.value():
             self.lCylSpin.setValue(self.rCylSpin.value())
-            self.lCylSpin.setStyleSheet("background-color: lightgrey")
         if self.lAxisSpin.value() != self.rAxisSpin.value():
             self.lAxisSpin.setValue(self.rAxisSpin.value())
-            self.lAxisSpin.setStyleSheet("background-color: lightgrey")
         if self.lAddSpin.value() != self.rAddSpin.value():
             self.lAddSpin.setValue(self.rAddSpin.value())
-            self.lAddSpin.setStyleSheet("background-color: lightgrey")
+        self.lSphereSpin.setStyleSheet("background-color: lightgrey")
+        self.lCylSpin.setStyleSheet("background-color: lightgrey")
+        self.lAxisSpin.setStyleSheet("background-color: lightgrey")
+        self.lAddSpin.setStyleSheet("background-color: lightgrey")
 
     def modified(self):
         """ Action when a value is modified """
