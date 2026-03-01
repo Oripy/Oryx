@@ -735,10 +735,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.data = self.loadDataFromCsv()
             self.displayData(self.data)
 
-if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.searchWindowButton.hide()
-    mainWin.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     mainWin = MainWindow()
+#     mainWin.searchWindowButton.hide()
+#     mainWin.show()
+#     sys.exit(app.exec_())

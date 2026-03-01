@@ -413,7 +413,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def abstractSearch(self, query, no_add = False):
         """ abstract search function that actually do the search mecanism """
-        print(query)
+        # print(query)
         # Get database from file
         self.data = self.loadDataFromCsv()
         new_data = dict()
@@ -422,9 +422,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for num, value in self.data.items():
             # Only select correct frames (Child or Adult)
-            print(value, frame_searched)
+            # print(value, frame_searched)
             if int(value[9]) != frame_searched:
-                print("skipped")
                 continue
             score, calculations = self.score(value, query)
             # value[11] = str(calculations)
@@ -517,26 +516,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def enableAddition(self):
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
-            self.ageGroupBox.setDisabled(False)
-        else:
-            self.ageGroupBox.setDisabled(True)
-
-        if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
             self.nearSearchButton.setDisabled(True)
             self.distantSearchButton.setDisabled(True)
-            self.age1Radio.setDisabled(False)
-            self.age2Radio.setDisabled(False)
-            self.age3Radio.setDisabled(False)
-            self.age4Radio.setDisabled(False)
-            self.age5Radio.setDisabled(False)
         else:
             self.nearSearchButton.setDisabled(False)
             self.distantSearchButton.setDisabled(False)
-            self.age1Radio.setDisabled(True)
-            self.age2Radio.setDisabled(True)
-            self.age3Radio.setDisabled(True)
-            self.age4Radio.setDisabled(True)
-            self.age5Radio.setDisabled(True)
 
         """ Change the state of both spinboxes in case the link is checked """
         value = self.sender().value()
@@ -628,6 +612,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sender().setStyleSheet("")
         self.rLabelCylPos.setVisible(self.rCylSpin.value() > 0)
         self.lLabelCylPos.setVisible(self.lCylSpin.value() > 0)
+        if self.age3Radio.isChecked():
+            self.rAddSpin.setValue(1.5)
+            self.lAddSpin.setValue(1.5)    
+        if self.age4Radio.isChecked():
+            self.rAddSpin.setValue(2.0)
+            self.lAddSpin.setValue(2.0)
+        if self.age5Radio.isChecked():
+            self.rAddSpin.setValue(2.5)
+            self.lAddSpin.setValue(2.5)
 
     def getMasterEyeCoef(self):
         """ returns the coefficient applied to both eyes score """
@@ -826,10 +819,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rSphereSpin.setFocus()
         self.rSphereSpin.selectAll()
 
-if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = MainWindow()
-    mainWin.inventoryWindowButton.hide()
-    mainWin.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     mainWin = MainWindow()
+#     mainWin.inventoryWindowButton.hide()
+#     mainWin.show()
+#     sys.exit(app.exec_())
