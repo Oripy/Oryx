@@ -418,7 +418,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.data = self.loadDataFromCsv()
         new_data = dict()
 
+        frame_searched = self.getFrame()
+
         for num, value in self.data.items():
+            # Only select correct frames (Child or Adult)
+            print(value, frame_searched)
+            if int(value[9]) != frame_searched:
+                print("skipped")
+                continue
             score = self.score(value, query)
             if value[12] == 1 and score != 0:
                 new_data[num] = [score]+value
