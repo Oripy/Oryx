@@ -76,7 +76,7 @@ def formatType(value):
     """ Convert saved numbers into respective human readable text """
     value = float(value)
     if value == 1:
-        return u'Pr'
+        return u'Prog'
     elif value == 2:
         return u'Bf'
     else:
