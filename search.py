@@ -57,7 +57,7 @@ def eye_score(data, target):
     p = score_add(data, target)
     score = s**SPHERE_COEF * c**CYL_COEF * a**AXIS_COEF * p**ADD_COEF
 #    print s, c, a, p
-    return score
+    return score, [s, c, a, p]
 
 def sphericalEquivalentRefraction(sphere, cyl):
     """ returns the Spherical Equivalent Refraction Sphere parameter
@@ -426,7 +426,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if int(value[9]) != frame_searched:
                 print("skipped")
                 continue
-            score = self.score(value, query)
+            score, calculations = self.score(value, query)
+            # value[11] = str(calculations)
             if value[12] == 1 and score != 0:
                 new_data[num] = [score]+value
 
@@ -504,15 +505,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Scoring function, taking into account the selected checkboxes """
         coef_left, coef_right = self.getMasterEyeCoef()
         if not self.lIndifCheckBox.isChecked():
-            left_score = eye_score(data[4:8], target[4:8])
+            left_score, l_calculations = eye_score(data[4:8], target[4:8])
         else:
-            left_score = 1
+            left_score, l_calculations = 1, []
         if not self.rIndifCheckBox.isChecked():
-            right_score = eye_score(data[0:4], target[0:4])
+            right_score, r_calculations = eye_score(data[0:4], target[0:4])
         else:
-            right_score = 1
+            right_score, r_calculations = 1, []
 
-        return 100 * left_score**coef_left * right_score**coef_right
+        return 100 * left_score**coef_left * right_score**coef_right, l_calculations + r_calculations
 
     def enableAddition(self):
         if (self.rAddSpin.value() == 0) and (self.lAddSpin.value() == 0):
