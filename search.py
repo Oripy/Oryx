@@ -804,6 +804,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lCylSpin.setValue(DEFAULT_CYL)
         self.lAxisSpin.setValue(DEFAULT_AXIS)
         self.lAddSpin.setValue(DEFAULT_ADD)
+        if self.r90Button.text() == "180°":
+            self.r90Button.setText("90°")
+        if self.l90Button.text() == "180°":
+            self.l90Button.setText("90°")
 
         self.age3Radio.setChecked(True)
         self.solarRadioNo.setChecked(True)
@@ -821,10 +825,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.rSphereSpin.setFocus()
         self.rSphereSpin.selectAll()
 
-# if __name__ == '__main__':
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     mainWin = MainWindow()
-#     mainWin.inventoryWindowButton.hide()
-#     mainWin.show()
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = MainWindow()
+    mainWin.inventoryWindowButton.hide()
+    mainWin.show()
+    sys.exit(app.exec_())

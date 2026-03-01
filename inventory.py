@@ -580,6 +580,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Reset the values in the form to the default values """
         self.rFineCheckbox.setChecked(False)
         self.lFineCheckbox.setChecked(False)
+        if self.r90Button.text() == "180°":
+            self.r90Button.setText("90°")
+        if self.l90Button.text() == "180°":
+            self.l90Button.setText("90°")
         for element in self.data_structure[1:]:
             element[3](element[4])
         self.setModified(False)
