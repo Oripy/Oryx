@@ -63,23 +63,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         #                 set function, default value)
         self.data_structure = [
             ['Num', lambda n: str(int(n)), self.eyeglassesNum.value,
-             self.eyeglassesNum.setValue, 1],
+             lambda n: self.eyeglassesNum.setValue(int(n)), 1],
             ['OD Sph', formatSph, self.rSphereSpin.value,
-              self.rSphereSpin.setValue, DEFAULT_SPHERE],
+             lambda f: self.rSphereSpin.setValue(float(f)), DEFAULT_SPHERE],
             ['OD Cyl', formatCyl, self.rCylSpin.value,
-             self.rCylSpin.setValue, DEFAULT_CYL],
+             lambda f: self.rCylSpin.setValue(float(f)), DEFAULT_CYL],
             ['OD Axe', formatAxis, self.rAxisSpin.value,
-             self.rAxisSpin.setValue, DEFAULT_AXIS],
+             lambda f: self.rAxisSpin.setValue(int(f)), DEFAULT_AXIS],
             ['OD Add', formatSph, self.rAddSpin.value,
-             self.rAddSpin.setValue, DEFAULT_ADD],
+             lambda f: self.rAddSpin.setValue(float(f)), DEFAULT_ADD],
             ['OG Sph', formatSph, self.lSphereSpin.value,
-             self.lSphereSpin.setValue, DEFAULT_SPHERE],
+             lambda f: self.lSphereSpin.setValue(float(f)), DEFAULT_SPHERE],
             ['OG Cyl', formatCyl, self.lCylSpin.value,
-             self.lCylSpin.setValue, DEFAULT_CYL],
+             lambda f: self.lCylSpin.setValue(float(f)), DEFAULT_CYL],
             ['OG Axe', formatAxis, self.lAxisSpin.value,
-             self.lAxisSpin.setValue, DEFAULT_AXIS],
+             lambda f: self.lAxisSpin.setValue(int(f)), DEFAULT_AXIS],
             ['OG Add', formatSph, self.lAddSpin.value,
-             self.lAddSpin.setValue, DEFAULT_ADD],
+             lambda f: self.lAddSpin.setValue(float(f)), DEFAULT_ADD],
             ['Foyer', formatType, self.getAddType, self.setAddType, 0],
             ['Mont', formatFrame, self.getFrame, self.setFrame, 0],
             ['Teinte', formatSun, self.getSolar, self.setSolar, 0],
@@ -532,10 +532,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.rFineCheckbox.setChecked(self.data[self.current_num][3] % 5 != 0)
             self.lFineCheckbox.setChecked(self.data[self.current_num][7] % 5 != 0)
             for i, element in enumerate(self.data_structure[1:]):
-                if type(self.data[self.current_num][i]) == int:
-                    element[3](self.data[self.current_num][i])
-                else:
-                    element[3](int(self.data[self.current_num][i]))
+                element[3](self.data[self.current_num][i])
             self.setModified(False)
             self.setStatus('Saved')
         else:
@@ -742,10 +739,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.data = self.loadDataFromCsv()
             self.displayData(self.data)
 
-# if __name__ == '__main__':
-#     import sys
-#     app = QtWidgets.QApplication(sys.argv)
-#     mainWin = MainWindow()
-#     mainWin.searchWindowButton.hide()
-#     mainWin.show()
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    mainWin = MainWindow()
+    mainWin.searchWindowButton.hide()
+    mainWin.show()
+    sys.exit(app.exec_())
