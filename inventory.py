@@ -613,7 +613,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         """ Event when num is modified """
         if self.eyeglassesNum.value() >= NBR_PER_BOX*6*26:
             old_value = self.eyeglassesNum.value()
+            self.eyeglassesNum.valueChanged.disconnect(self.eyeglassesNumModified)
             self.eyeglassesNum.setValue(self.getFirstNewNumber())
+            self.eyeglassesNum.valueChanged.connect(self.eyeglassesNumModified)
             QtWidgets.QMessageBox.critical(self, "Erreur",
                                                  u"Valeur "+str(old_value)+" dépassant le maximum autorisé ("+str(NBR_PER_BOX*6*26-1)+").\n"
                                                  u"La première valeur valide est proposée.\n"
@@ -643,7 +645,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 else:
                     if self.sender() != None:
                         self.eyeglassesNum.noWarn = True
+                    self.eyeglassesNum.valueChanged.disconnect(self.eyeglassesNumModified)
                     self.eyeglassesNum.setValue(self.current_num)
+                    self.eyeglassesNum.valueChanged.connect(self.eyeglassesNumModified)
                     return 'Canceled'
             else:
                 self.current_num = self.eyeglassesNum.value()
