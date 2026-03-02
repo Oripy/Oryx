@@ -532,7 +532,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.rFineCheckbox.setChecked(self.data[self.current_num][3] % 5 != 0)
             self.lFineCheckbox.setChecked(self.data[self.current_num][7] % 5 != 0)
             for i, element in enumerate(self.data_structure[1:]):
-                element[3](self.data[self.current_num][i])
+                if type(self.data[self.current_num][i]) == int:
+                    element[3](self.data[self.current_num][i])
+                else:
+                    element[3](int(self.data[self.current_num][i]))
             self.setModified(False)
             self.setStatus('Saved')
         else:
